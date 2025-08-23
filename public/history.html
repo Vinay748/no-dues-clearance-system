@@ -2,10 +2,12 @@
 <html lang="en">
 
 <head>
+   
   <meta charset="UTF-8">
-  <title>Application History</title>
+    <title>Application History</title>
+   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <style>
+    <style>
     body {
       font-family: Arial, sans-serif;
       margin: 0;
@@ -27,18 +29,6 @@
       gap: 1rem;
     }
 
-    nav a {
-      color: white;
-      text-decoration: none;
-      padding: 0.5rem 1rem;
-      border-radius: 4px;
-      transition: background-color 0.3s;
-    }
-
-    nav a:hover {
-      background-color: rgba(255, 255, 255, 0.1);
-    }
-
     .container {
       padding: 2rem;
     }
@@ -53,31 +43,14 @@
 
     .card h2 {
       margin-top: 0;
-      color: #333;
     }
 
-    .form-item {
-      background: #f8f9fa;
-      border: 1px solid #dee2e6;
-      border-radius: 4px;
-      padding: 15px;
-      margin: 10px 0;
+    .form-link {
+      color: #007bff;
+      text-decoration: underline;
       cursor: pointer;
-      transition: background-color 0.3s;
-    }
-
-    .form-item:hover {
-      background: #e9ecef;
-    }
-
-    .form-item-header {
-      font-weight: bold;
-      margin-bottom: 5px;
-    }
-
-    .form-item-meta {
-      color: #666;
-      font-size: 0.9em;
+      display: block;
+      margin: 8px 0;
     }
 
     .hidden {
@@ -92,6 +65,7 @@
       margin-top: 1rem;
     }
 
+
     .btn-download {
       margin-top: 10px;
       padding: 8px 12px;
@@ -100,379 +74,123 @@
       border: none;
       border-radius: 4px;
       cursor: pointer;
-      transition: background-color 0.3s;
-    }
-
-    .btn-download:hover {
-      background-color: #003366;
-    }
-
-    .btn-close {
-      margin-left: 10px;
-      padding: 8px 12px;
-      background-color: #6c757d;
-      color: white;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-      transition: background-color 0.3s;
-    }
-
-    .btn-close:hover {
-      background-color: #545b62;
-    }
-
-    .loading {
-      text-align: center;
-      color: #666;
-      font-style: italic;
-      padding: 2rem;
-    }
-
-    .error-message {
-      color: #dc3545;
-      background: #f8d7da;
-      padding: 10px;
-      border-radius: 4px;
-      border: 1px solid #f5c6cb;
-      margin-bottom: 15px;
-    }
-
-    .success-message {
-      color: #155724;
-      background: #d4edda;
-      padding: 10px;
-      border-radius: 4px;
-      border: 1px solid #c3e6cb;
-      margin-bottom: 15px;
-    }
-
-    .profile-select {
-      background: white;
-      color: #333;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-      padding: 0.5rem;
-    }
-
-    .empty-state {
-      text-align: center;
-      padding: 2rem;
-      color: #666;
-    }
-
-    .status-badge {
-      display: inline-block;
-      padding: 3px 8px;
-      border-radius: 12px;
-      font-size: 0.8em;
-      font-weight: bold;
-      text-transform: uppercase;
-    }
-
-    .status-pending {
-      background: #fff3cd;
-      color: #856404;
-    }
-
-    .status-approved {
-      background: #d4edda;
-      color: #155724;
-    }
-
-    .status-rejected {
-      background: #f8d7da;
-      color: #721c24;
-    }
-
-    .status-submitted {
-      background: #cce5ff;
-      color: #004085;
-    }
-
-    .detail-row {
-      display: flex;
-      justify-content: space-between;
-      margin: 8px 0;
-      padding: 5px 0;
-      border-bottom: 1px solid #eee;
-    }
-
-    .detail-label {
-      font-weight: bold;
-      color: #495057;
-    }
-
-    .detail-value {
-      color: #212529;
     }
   </style>
 </head>
 
 <body>
-  <nav>
-    <div class="left">
-      <strong>History</strong>
-      <a href="/dashboard.html">Home</a>
-      <a href="/employee.html">Apply</a>
-      <a href="/track.html">Track</a>
-      <a href="/history.html">History</a>
-    </div>
-    <div class="right">
-      <span id="welcomeUser">Welcome</span>
-      <select class="profile-select" onchange="handleProfileOption(this)">
-        <option hidden selected>Profile</option>
-        <option value="change">Change Password</option>
-        <option value="logout">Logout</option>
-      </select>
-    </div>
-  </nav>
+    <nav>
+        <div class="left">
+            <strong>History</strong>
+            <a href="dashboard.html" style="color: white;">Home</a>
+            <a href="employee.html" style="color: white;">Apply</a>
+            <a href="track.html" style="color: white;">Track</a>
+            <a href="history.html" style="color: white;">History</a>
+          </div>
+        <div class="right">
+            <span id="welcomeUser">Welcome</span>
+            <select onchange="handleProfileOption(this)">
+                <option hidden selected>Profile</option>
+                <option value="change">Change Password</option>
+                <option value="logout">Logout</option>
+              </select>
+          </div>
+      </nav>
 
-  <div class="container">
-    <div class="card">
-      <h2>Your Application History</h2>
-      <div id="messageArea"></div>
-      <div id="historyList" class="loading">Loading application history...</div>
-      <div id="formDetails" class="application-details hidden"></div>
-    </div>
-  </div>
 
+    <div class="container">
+        <div class="card">
+            <h2>Your Application History</h2>
+            <div id="historyList">Loading...</div>
+            <div id="formDetails" class="application-details hidden"></div>
+          </div>
+      </div>
+
+
+   
   <script>
-    // Show message function
-    function showMessage(message, type = 'error') {
-      const messageArea = document.getElementById('messageArea');
-      messageArea.innerHTML = `<div class="${type}-message">${message}</div>`;
-
-      setTimeout(() => {
-        messageArea.innerHTML = '';
-      }, 5000);
+    const employeeId = localStorage.getItem('employeeId');
+    if (!employeeId) {
+      alert("Login expired. Please login again.");
+      window.location.href = 'login.html';
     }
 
-    // Session validation
-    async function validateSession() {
-      try {
-        const res = await fetch('/api/auth/check-session', {
-          credentials: 'include'
-        });
 
-        if (!res.ok) {
-          throw new Error('Session expired');
-        }
+    document.getElementById('welcomeUser').textContent = `Welcome, ${employeeId}`;
 
-        const session = await res.json();
 
-        if (session.role !== 'employee') {
-          throw new Error('Invalid user role');
-        }
-
-        return session;
-      } catch (error) {
-        showMessage('Session expired. Please login again.', 'error');
-        setTimeout(() => {
-          window.location.href = '/';
-        }, 2000);
-        return null;
-      }
-    }
-
-    // Profile option handler
     function handleProfileOption(select) {
       const choice = select.value;
       if (choice === 'logout') {
-        window.location.href = '/api/auth/logout';
+        localStorage.removeItem('employeeId');
+        window.location.href = 'login.html';
       } else if (choice === 'change') {
-        showMessage('Password change feature will be available soon', 'success');
+        window.location.href = 'change-password.html';
       }
-      select.value = '';
     }
 
-    // Get status badge class
-    function getStatusBadgeClass(status) {
-      const statusLower = status.toLowerCase();
-      if (statusLower.includes('pending')) return 'status-pending';
-      if (statusLower.includes('approved')) return 'status-approved';
-      if (statusLower.includes('rejected')) return 'status-rejected';
-      if (statusLower.includes('submitted')) return 'status-submitted';
-      return 'status-pending';
-    }
 
-    // Load application history
     async function loadHistory() {
       try {
-        const session = await validateSession();
-        if (!session) return;
-
-        document.getElementById('welcomeUser').textContent = `Welcome, ${session.user.name || session.user.employeeId}`;
-
-        const res = await fetch('/api/employee/history', {
-          credentials: 'include'
-        });
-
-        if (!res.ok) {
-          throw new Error(`Server error: ${res.status}`);
-        }
-
+        const res = await fetch(`/api/history?employeeId=${employeeId}`);
         const data = await res.json();
 
-        const historyList = document.getElementById('historyList');
 
-        if (!data.success || !data.history || data.history.length === 0) {
-          historyList.innerHTML = `
-            <div class="empty-state">
-              <h3>No Applications Found</h3>
-              <p>You haven't submitted any applications yet.</p>
-              <a href="/employee.html" style="color: #007bff; text-decoration: none; font-weight: bold;">Submit your first application</a>
-            </div>
-          `;
+        const historyList = document.getElementById('historyList');
+        if (data.length === 0) {
+          historyList.textContent = "No previous applications found.";
           return;
         }
 
+
         historyList.innerHTML = '';
-        data.history.forEach(item => {
-          const formItem = document.createElement('div');
-          formItem.className = 'form-item';
-          formItem.onclick = () => loadDetails(item.formId);
-
-          const submissionDate = item.submissionDate ?
-            new Date(item.submissionDate).toLocaleDateString() : 'N/A';
-
-          formItem.innerHTML = `
-            <div class="form-item-header">
-              Form ID: ${item.formId}
-              <span class="status-badge ${getStatusBadgeClass(item.status)}">${item.status}</span>
-            </div>
-            <div class="form-item-meta">
-              Submitted: ${submissionDate} | Type: ${item.noDuesType || 'N/A'}
-            </div>
-          `;
-
-          historyList.appendChild(formItem);
+        data.forEach(item => {
+          const link = document.createElement('span');
+          link.textContent = `Form ID: ${item.formId}`;
+          link.className = 'form-link';
+          link.onclick = () => loadDetails(item.formId);
+          historyList.appendChild(link);
         });
 
-      } catch (error) {
-        document.getElementById('historyList').innerHTML = `
-          <div class="error-message">
-            Failed to load application history. Please try again later.
-          </div>
-        `;
+
+      } catch (err) {
+        document.getElementById('historyList').textContent = "Failed to load history.";
       }
     }
 
-    // Load application details
+
     async function loadDetails(formId) {
       try {
-        const res = await fetch(`/api/employee/history/${formId}`, {
-          credentials: 'include'
-        });
-
-        if (!res.ok) {
-          throw new Error(`Server error: ${res.status}`);
-        }
-
+        const res = await fetch(`/api/history/form/${formId}`);
         const data = await res.json();
 
-        if (!data.success) {
-          throw new Error(data.message || 'Failed to load details');
-        }
 
         const details = document.getElementById('formDetails');
         details.classList.remove('hidden');
 
-        const submissionDate = data.application.submissionDate ?
-          new Date(data.application.submissionDate).toLocaleString() : 'N/A';
 
         details.innerHTML = `
-          <h3>Application Details</h3>
-          
-          <div class="detail-row">
-            <span class="detail-label">Form ID:</span>
-            <span class="detail-value">${formId}</span>
-          </div>
-          
-          <div class="detail-row">
-            <span class="detail-label">Name:</span>
-            <span class="detail-value">${data.application.name}</span>
-          </div>
-          
-          <div class="detail-row">
-            <span class="detail-label">Employee ID:</span>
-            <span class="detail-value">${data.application.employeeId}</span>
-          </div>
-          
-          <div class="detail-row">
-            <span class="detail-label">Department:</span>
-            <span class="detail-value">${data.application.department}</span>
-          </div>
-          
-          <div class="detail-row">
-            <span class="detail-label">No Dues Type:</span>
-            <span class="detail-value">${data.application.noDuesType}</span>
-          </div>
-          
-          <div class="detail-row">
-            <span class="detail-label">Email:</span>
-            <span class="detail-value">${data.application.email}</span>
-          </div>
-          
-          <div class="detail-row">
-            <span class="detail-label">Status:</span>
-            <span class="detail-value">
-              <span class="status-badge ${getStatusBadgeClass(data.application.status)}">${data.application.status}</span>
-            </span>
-          </div>
-          
-          <div class="detail-row">
-            <span class="detail-label">Submitted:</span>
-            <span class="detail-value">${submissionDate}</span>
-          </div>
-          
-          ${data.application.reason ? `
-          <div class="detail-row">
-            <span class="detail-label">Reason:</span>
-            <span class="detail-value">${data.application.reason}</span>
-          </div>
-          ` : ''}
-          
-          <div style="margin-top: 20px;">
-            <button class="btn-download" onclick="downloadPDF('${formId}')">Download PDF</button>
-            <button class="btn-close" onclick="closeDetails()">Close Details</button>
-          </div>
-        `;
-
-        // Scroll to details
-        details.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-
-      } catch (error) {
-        showMessage('Failed to load application details. Please try again.', 'error');
+          <h3>Application Details (Form ID: ${formId})</h3>
+          <p><strong>Name:</strong> ${data.name}</p>
+          <p><strong>Employee ID:</strong> ${data.empId}</p>
+          <p><strong>Department:</strong> ${data.department}</p>
+          <p><strong>No Dues Type:</strong> ${data.noDuesType}</p>
+          <p><strong>Email:</strong> ${data.email}</p>
+          <p><strong>Submission Date:</strong> ${data.submissionDate || 'N/A'}</p>
+          <button class="btn-download" onclick="downloadPDF('${formId}')">Download PDF</button>
+        `;
+      } catch (err) {
+        alert("Failed to load application details.");
       }
     }
 
-    // Download PDF
+
     function downloadPDF(formId) {
-      try {
-        window.open(`/api/employee/form-pdf/${formId}`, '_blank');
-      } catch (error) {
-        showMessage('Failed to download PDF. Please try again.', 'error');
-      }
+      window.open(`/download-pdf/${formId}`, '_blank');
     }
 
-    // Close details panel
-    function closeDetails() {
-      const details = document.getElementById('formDetails');
-      details.classList.add('hidden');
-    }
 
-    // Initialize page
-    window.addEventListener('DOMContentLoaded', () => {
-      loadHistory();
-    });
-
-    // Add keyboard shortcuts
-    document.addEventListener('keydown', function (e) {
-      if (e.key === 'Escape') {
-        closeDetails();
-      }
-    });
+    loadHistory();
   </script>
 </body>
 

@@ -3,326 +3,174 @@
 
 <head>
   <meta charset="UTF-8">
+  <title>Microsoft 365 Disposal Confirmation</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Official Microsoft 365 Account Disposal Form for No-Dues System">
-  <meta name="theme-color" content="#2c5aa0">
-  <title>Microsoft 365 Disposal Form - No-Dues System</title>
-
-  <!-- Preload critical resources -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
-  <!-- Security headers -->
-  <meta http-equiv="X-Content-Type-Options" content="nosniff">
-  <meta http-equiv="X-Frame-Options" content="SAMEORIGIN">
-  <meta http-equiv="X-XSS-Protection" content="1; mode=block">
-
   <style>
-    /* =========================================
-       PRODUCTION CSS WITH MOBILE-FIRST DESIGN
-       ========================================= */
-
-    /* CSS Reset & Base Styles */
-    *,
-    *::before,
-    *::after {
+    * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
     }
 
-    :root {
-      --primary-color: #2c5aa0;
-      --primary-hover: #1a4480;
-      --success-color: #28a745;
-      --success-hover: #218838;
-      --error-color: #dc3545;
-      --warning-color: #ffc107;
-      --info-color: #17a2b8;
-      --light-bg: #f8f9fa;
-      --border-color: #dee2e6;
-      --text-primary: #2c3e50;
-      --text-secondary: #6c757d;
-      --shadow-sm: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
-      --shadow-md: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
-      --border-radius: 0.375rem;
-      --transition: all 0.15s ease-in-out;
-    }
-
     body {
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      font-size: 0.875rem;
+      background: #f8f9fa;
+      color: #2c3e50;
       line-height: 1.6;
-      color: var(--text-primary);
-      background: var(--light-bg);
-      padding: 1rem;
-      min-height: 100vh;
-      -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
+      padding: 20px;
+      font-weight: 400;
     }
 
-    /* Loading State */
-    .loading {
-      opacity: 0.7;
-      pointer-events: none;
-    }
-
-    .loading::after {
-      content: '';
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      width: 2rem;
-      height: 2rem;
-      border: 0.125rem solid var(--border-color);
-      border-top: 0.125rem solid var(--primary-color);
-      border-radius: 50%;
-      animation: spin 1s linear infinite;
-      z-index: 9999;
-    }
-
-    @keyframes spin {
-      0% {
-        transform: translate(-50%, -50%) rotate(0deg);
-      }
-
-      100% {
-        transform: translate(-50%, -50%) rotate(360deg);
-      }
-    }
-
-    /* Container */
+    /* Main Container */
     .container {
-      max-width: 64rem;
+      max-width: 1000px;
       margin: 0 auto;
-      background: white;
-      border-radius: var(--border-radius);
-      box-shadow: var(--shadow-md);
+      background: #fff;
+      border: 1px solid #e9ecef;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
       overflow: hidden;
     }
 
     /* Header */
     .form-header {
-      background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-hover) 100%);
+      background: #2c5aa0;
       color: white;
-      padding: 1.5rem;
+      padding: 25px;
       text-align: center;
     }
 
     .form-header h1 {
       font-size: 1.5rem;
       font-weight: 600;
-      margin-bottom: 0.5rem;
+      margin-bottom: 10px;
       letter-spacing: -0.025em;
     }
 
     .form-subtitle {
-      font-size: 0.875rem;
+      font-size: 0.9rem;
       opacity: 0.9;
       font-weight: 400;
     }
 
     /* Form Content */
     .form-content {
-      padding: 1.5rem;
-    }
-
-    /* Status Banner */
-    .form-status-banner {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 0.75rem 1rem;
-      border-radius: var(--border-radius);
-      margin-bottom: 1rem;
-      font-size: 0.875rem;
-      font-weight: 500;
-      box-shadow: var(--shadow-sm);
-      transition: var(--transition);
-    }
-
-    .form-status-banner.status-info {
-      background-color: #cce5ff;
-      color: #004085;
-      border: 1px solid #b3d7ff;
-    }
-
-    .form-status-banner.status-warning {
-      background-color: #fff3cd;
-      color: #856404;
-      border: 1px solid #ffeaa7;
-    }
-
-    .form-status-banner.status-success {
-      background-color: #d4edda;
-      color: #155724;
-      border: 1px solid #c3e6cb;
-    }
-
-    .form-status-banner.status-error {
-      background-color: #f8d7da;
-      color: #721c24;
-      border: 1px solid #f1aeb5;
-    }
-
-    .status-content {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-    }
-
-    .status-icon {
-      font-size: 1.125rem;
-    }
-
-    .close-btn {
-      background: none;
-      border: none;
-      font-size: 1.125rem;
-      cursor: pointer;
-      opacity: 0.7;
-      padding: 0.25rem;
-      border-radius: 50%;
-      transition: var(--transition);
-      width: 1.5rem;
-      height: 1.5rem;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .close-btn:hover {
-      opacity: 1;
-      background: rgba(0, 0, 0, 0.1);
+      padding: 30px;
     }
 
     /* Note Section */
     .note-section {
-      background: #e3f2fd;
-      border: 1px solid #bbdefb;
-      border-radius: var(--border-radius);
-      padding: 1rem;
-      margin-bottom: 1.5rem;
-      border-left: 4px solid var(--info-color);
+      background: #f8f9fa;
+      border: 1px solid #e9ecef;
+      border-radius: 6px;
+      padding: 20px;
+      margin-bottom: 30px;
     }
 
     .note-text {
       font-style: italic;
-      color: #1976d2;
-      font-size: 0.875rem;
+      color: #6c757d;
+      font-size: 0.9rem;
       line-height: 1.6;
     }
 
     .note-select {
       font-weight: 600;
-      color: var(--primary-color);
-      border: 1px solid var(--border-color);
+      color: #495057;
+      border: 1px solid #ced4da;
+      border-radius: 4px;
+      padding: 4px 8px;
       background: white;
-      border-radius: var(--border-radius);
-      padding: 0.25rem 0.5rem;
-      font-size: 0.875rem;
-      margin: 0 0.25rem;
-      cursor: pointer;
-      transition: var(--transition);
-    }
-
-    .note-select:focus {
-      outline: none;
-      border-color: var(--primary-color);
-      box-shadow: 0 0 0 0.2rem rgba(44, 90, 160, 0.25);
+      margin: 0 3px;
     }
 
     /* Form Sections */
     .form-section {
-      margin-bottom: 2rem;
-      padding: 1.5rem;
-      background: white;
-      border: 1px solid var(--border-color);
-      border-radius: var(--border-radius);
-      box-shadow: var(--shadow-sm);
+      margin-bottom: 30px;
+      padding: 25px;
+      background: #fff;
+      border: 1px solid #e9ecef;
+      border-radius: 8px;
     }
 
     .section-title {
-      font-size: 1.125rem;
+      font-size: 1.1rem;
       font-weight: 600;
-      color: var(--text-primary);
-      margin-bottom: 1rem;
-      padding-bottom: 0.5rem;
+      color: #2c3e50;
+      margin-bottom: 20px;
+      padding-bottom: 10px;
       border-bottom: 2px solid #e9ecef;
     }
 
     /* Form Fields */
     .field-group {
-      margin-bottom: 1.5rem;
+      margin-bottom: 20px;
     }
 
     .field-label {
       display: block;
-      font-size: 0.75rem;
+      font-size: 0.85rem;
       font-weight: 600;
-      color: var(--text-secondary);
-      margin-bottom: 0.25rem;
+      color: #495057;
+      margin-bottom: 5px;
       text-transform: uppercase;
       letter-spacing: 0.05em;
     }
 
     .field-input {
       width: 100%;
-      padding: 0.625rem 0.75rem;
-      border: 1px solid var(--border-color);
-      border-radius: var(--border-radius);
-      background: white;
-      color: var(--text-primary);
-      font-size: 0.875rem;
+      padding: 8px 12px;
+      border: 1px solid #ced4da;
+      border-radius: 4px;
+      background: #fff;
+      color: #495057;
+      font-size: 0.9rem;
+      font-weight: 500;
       font-family: 'Inter', sans-serif;
-      transition: var(--transition);
+      transition: border-color 0.3s ease;
     }
 
     .field-input:focus {
       outline: none;
-      border-color: var(--primary-color);
-      box-shadow: 0 0 0 0.2rem rgba(44, 90, 160, 0.25);
+      border-color: #2c5aa0;
+      box-shadow: 0 0 0 2px rgba(44, 90, 160, 0.1);
     }
 
     .auto-filled {
       background: #d4edda !important;
-      border-color: var(--success-color) !important;
-      color: #155724;
+      border-color: #28a745 !important;
     }
 
     /* Paragraph Inline Fields */
     .field-paragraph {
       line-height: 1.8;
-      font-size: 0.875rem;
-      color: var(--text-secondary);
-      margin-bottom: 1rem;
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      gap: 0.5rem;
+      font-size: 0.95rem;
+      color: #495057;
+      margin-bottom: 20px;
     }
 
     .inline-input {
-      border: 1px solid var(--border-color);
-      border-radius: var(--border-radius);
-      padding: 0.5rem 0.75rem;
+      border: none;
+      border-bottom: 1px solid #ced4da;
+      padding: 4px 8px;
       font-family: 'Inter', sans-serif;
-      font-size: 0.875rem;
-      background: white;
+      font-size: 0.95rem;
+      background: transparent;
       min-width: 120px;
-      transition: var(--transition);
+      transition: border-color 0.3s ease;
+      margin: 0 3px;
     }
 
     .inline-input:focus {
       outline: none;
-      border-color: var(--primary-color);
-      box-shadow: 0 0 0 0.2rem rgba(44, 90, 160, 0.25);
+      border-bottom-color: #2c5aa0;
+      background: #f8f9fa;
     }
 
     .inline-input.wide {
-      min-width: 200px;
+      min-width: 180px;
     }
 
     .inline-input.short {
@@ -330,46 +178,37 @@
     }
 
     .inline-select {
-      border: 1px solid var(--border-color);
-      border-radius: var(--border-radius);
-      padding: 0.5rem 0.75rem;
+      border: 1px solid #ced4da;
+      border-radius: 4px;
+      padding: 4px 8px;
       font-family: 'Inter', sans-serif;
-      font-size: 0.875rem;
+      font-size: 0.95rem;
       background: white;
-      cursor: pointer;
-      background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
-      background-position: right 0.5rem center;
-      background-repeat: no-repeat;
-      background-size: 1.5rem 1.5rem;
-      padding-right: 2.5rem;
-      -webkit-appearance: none;
-      -moz-appearance: none;
-      appearance: none;
-      transition: var(--transition);
+      margin: 0 3px;
     }
 
     .inline-select:focus {
       outline: none;
-      border-color: var(--primary-color);
-      box-shadow: 0 0 0 0.2rem rgba(44, 90, 160, 0.25);
+      border-color: #2c5aa0;
     }
 
     /* HOD Section */
     .hod-section {
       background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-      border-left: 4px solid var(--primary-color);
+      border: 1px solid #dee2e6;
+      border-left: 4px solid #2c5aa0;
     }
 
     .hod-grid {
       display: grid;
-      grid-template-columns: 1fr 250px;
-      gap: 2rem;
+      grid-template-columns: 1fr 300px;
+      gap: 30px;
       align-items: start;
     }
 
     .hod-details {
       display: grid;
-      gap: 1rem;
+      gap: 15px;
     }
 
     .input-group {
@@ -378,29 +217,23 @@
     }
 
     .input-group label {
-      font-size: 0.75rem;
+      font-size: 0.85rem;
       font-weight: 600;
-      color: var(--text-secondary);
-      margin-bottom: 0.25rem;
+      color: #495057;
+      margin-bottom: 5px;
       text-transform: uppercase;
       letter-spacing: 0.05em;
     }
 
     .input-group input {
-      padding: 0.625rem 0.75rem;
-      border: 1px solid var(--border-color);
-      border-radius: var(--border-radius);
-      background: white;
-      color: var(--text-primary);
-      font-size: 0.875rem;
+      padding: 8px 12px;
+      border: 1px solid #ced4da;
+      border-radius: 4px;
+      background: #f8f9fa;
+      color: #495057;
+      font-size: 0.9rem;
+      font-weight: 500;
       font-family: 'Inter', sans-serif;
-      transition: var(--transition);
-    }
-
-    .input-group input:focus {
-      outline: none;
-      border-color: var(--primary-color);
-      box-shadow: 0 0 0 0.2rem rgba(44, 90, 160, 0.25);
     }
 
     /* Signature Area */
@@ -413,92 +246,86 @@
     .signature-area {
       width: 100%;
       height: 80px;
-      border: 2px dashed var(--border-color);
-      border-radius: var(--border-radius);
+      border: 2px dashed #ced4da;
+      border-radius: 6px;
       display: flex;
       align-items: center;
       justify-content: center;
       cursor: pointer;
-      margin-bottom: 0.75rem;
-      transition: var(--transition);
-      background: white;
+      margin-bottom: 15px;
+      transition: all 0.3s ease;
+      background: #fff;
     }
 
     .signature-area:hover {
-      border-color: var(--primary-color);
+      border-color: #2c5aa0;
       background: #f8f9ff;
     }
 
     .signature-area.has-signature {
-      border-color: var(--success-color);
+      border-color: #28a745;
       background: #f8fff8;
     }
 
     .signature-placeholder {
-      color: var(--text-secondary);
-      font-size: 0.875rem;
+      color: #6c757d;
+      font-size: 0.9rem;
       text-align: center;
       font-weight: 500;
     }
 
     .signature-note {
-      font-size: 0.75rem;
-      color: var(--text-secondary);
+      font-size: 0.8rem;
+      color: #6c757d;
       text-align: center;
       font-style: italic;
     }
 
     /* Footer Section */
     .footer-section {
-      background: var(--light-bg);
-      padding: 1.5rem;
-      border-top: 1px solid var(--border-color);
+      background: #f8f9fa;
+      padding: 20px 25px;
+      border-top: 1px solid #e9ecef;
       text-align: center;
     }
 
     .footer-title {
       font-weight: 600;
-      color: var(--text-secondary);
-      margin-bottom: 0.5rem;
+      color: #495057;
+      margin-bottom: 5px;
       text-decoration: underline;
     }
 
     /* Action Buttons */
     .action-section {
-      padding: 1.5rem;
-      background: var(--light-bg);
-      border-top: 1px solid var(--border-color);
+      padding: 25px 30px;
+      background: #f8f9fa;
+      border-top: 1px solid #e9ecef;
       text-align: center;
     }
 
     .save-button {
-      background: var(--primary-color);
+      background: #2c5aa0;
       color: white;
       border: none;
-      padding: 0.75rem 2rem;
-      border-radius: var(--border-radius);
+      padding: 12px 30px;
+      border-radius: 6px;
       cursor: pointer;
-      font-size: 0.875rem;
+      font-size: 0.9rem;
       font-weight: 600;
       font-family: 'Inter', sans-serif;
-      transition: var(--transition);
+      transition: all 0.3s ease;
       text-transform: uppercase;
       letter-spacing: 0.05em;
-      min-width: 180px;
     }
 
     .save-button:hover {
-      background: var(--primary-hover);
+      background: #1a4480;
       transform: translateY(-1px);
-      box-shadow: var(--shadow-md);
-    }
-
-    .save-button:active {
-      transform: translateY(0);
     }
 
     .save-button:disabled {
-      background: var(--text-secondary);
+      background: #6c757d;
       cursor: not-allowed;
       opacity: 0.6;
       transform: none;
@@ -506,9 +333,9 @@
 
     /* Messages */
     .save-message {
-      margin-top: 1rem;
-      padding: 0.75rem 1rem;
-      border-radius: var(--border-radius);
+      margin-top: 15px;
+      padding: 12px 20px;
+      border-radius: 6px;
       font-weight: 500;
       text-align: center;
       display: none;
@@ -524,7 +351,7 @@
     .save-message.error {
       background: #f8d7da;
       color: #721c24;
-      border: 1px solid #f1aeb5;
+      border: 1px solid #f5c6cb;
     }
 
     .save-message.info {
@@ -533,281 +360,176 @@
       border: 1px solid #b3d7ff;
     }
 
-    /* Read-only styles */
     .readonly-section {
       opacity: 0.7;
       pointer-events: none;
     }
 
-    .read-only {
-      background-color: var(--light-bg) !important;
-      color: var(--text-secondary) !important;
-      border-color: var(--border-color) !important;
-      cursor: not-allowed !important;
-    }
-
-    /* Accessibility */
-    .sr-only {
-      position: absolute;
-      width: 1px;
-      height: 1px;
-      padding: 0;
-      margin: -1px;
-      overflow: hidden;
-      clip: rect(0, 0, 0, 0);
-      white-space: nowrap;
-      border: 0;
-    }
-
-    /* Focus indicators */
-    button:focus,
-    input:focus,
-    select:focus,
-    .signature-area:focus {
-      outline: 2px solid var(--primary-color);
-      outline-offset: 2px;
-    }
-
-    /* Print styles */
-    @media print {
-      body {
-        padding: 0;
-        background: white;
-      }
-
-      .container {
-        box-shadow: none;
-        border: none;
-      }
-
-      .action-section,
-      .save-button {
-        display: none;
-      }
-    }
-
-    /* =========================================
-       RESPONSIVE DESIGN - MOBILE FIRST
-       ========================================= */
-
-    /* Mobile styles (default) */
+    /* Mobile Responsive */
     @media (max-width: 768px) {
       body {
-        padding: 0.5rem;
-        font-size: 0.875rem;
-      }
-
-      .container {
-        border-radius: 0;
-        box-shadow: none;
-        border: none;
-      }
-
-      .form-header {
-        padding: 1rem;
-      }
-
-      .form-header h1 {
-        font-size: 1.25rem;
-      }
-
-      .form-subtitle {
-        font-size: 0.8125rem;
+        padding: 15px;
       }
 
       .form-content {
-        padding: 1rem;
+        padding: 20px;
       }
 
-      .form-section {
-        padding: 1rem;
-        margin-bottom: 1rem;
-      }
-
-      .section-title {
-        font-size: 1rem;
+      .hod-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
       }
 
       .field-paragraph {
-        flex-direction: column;
-        align-items: stretch;
-        gap: 0.5rem;
+        line-height: 2;
       }
 
-      .inline-input,
-      .inline-select {
+      .inline-input {
+        display: block;
         width: 100%;
+        margin: 5px 0;
         min-width: auto;
-        margin: 0.25rem 0;
       }
 
-      /* HOD Grid - Stack on mobile */
-      .hod-grid {
-        grid-template-columns: 1fr;
-        gap: 1.5rem;
+      .inline-select {
+        display: block;
+        width: 100%;
+        margin: 5px 0;
       }
 
       .action-section {
-        padding: 1rem;
-      }
-
-      .save-button {
-        width: 100%;
-        padding: 1rem;
-        font-size: 0.875rem;
-      }
-
-      /* Mobile-specific signature area */
-      .signature-area {
-        height: 100px;
-      }
-
-      .footer-section {
-        padding: 1rem;
-      }
-
-      .footer-title {
-        font-size: 0.8125rem;
-        margin-bottom: 0.25rem;
+        padding: 20px;
       }
     }
 
-    /* Tablet styles */
-    @media (min-width: 769px) and (max-width: 1024px) {
-      .container {
-        margin: 1rem;
-      }
-
-      .hod-grid {
-        grid-template-columns: 1fr 280px;
-      }
-
-      .inline-input.wide,
-      .inline-input {
-        max-width: 200px;
-      }
-    }
-
-    /* Desktop styles */
-    @media (min-width: 1025px) {
-      body {
-        padding: 2rem;
-      }
-
-      .form-header h1 {
-        font-size: 1.75rem;
-      }
-
-      .form-content {
-        padding: 2rem;
-      }
-
-      .form-section {
-        padding: 2rem;
-      }
-
-      .hod-grid {
-        grid-template-columns: 1fr 300px;
-        gap: 2.5rem;
-      }
-    }
-
-    /* Large desktop styles */
-    @media (min-width: 1400px) {
-      .container {
-        max-width: 72rem;
-      }
-    }
-
-    /* High DPI displays */
-    @media (-webkit-min-device-pixel-ratio: 2),
-    (min-resolution: 192dpi) {
-      .signature-area {
-        border-width: 1px;
-      }
-    }
-
-    /* Dark mode support */
-    @media (prefers-color-scheme: dark) {
-      :root {
-        --light-bg: #1a1a1a;
-        --text-primary: #e9ecef;
-        --text-secondary: #adb5bd;
-        --border-color: #495057;
-      }
-
-      body {
-        background: #121212;
-        color: var(--text-primary);
-      }
-
-      .container,
-      .form-section,
-      .field-input,
-      .inline-input,
-      .inline-select {
-        background: #1e1e1e;
-      }
-
-      .note-section {
-        background: #0d47a1;
-        color: #bbdefb;
-      }
-    }
-
-    /* Motion preferences */
-    @media (prefers-reduced-motion: reduce) {
-
-      *,
-      *::before,
-      *::after {
-        animation-duration: 0.01ms !important;
-        animation-iteration-count: 1 !important;
-        transition-duration: 0.01ms !important;
-      }
-    }
-
-    /* Hidden utility */
     .hidden {
-      display: none !important;
+      display: none;
+    }
+
+    /* Form Status Banner Styles */
+    .form-status-banner {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 16px;
+      border-radius: 6px;
+      margin-bottom: 16px;
+      font-size: 14px;
+      font-weight: 500;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s ease;
+    }
+
+    .form-status-banner.status-info {
+      background: #d1ecf1;
+      color: #0c5460;
+      border: 1px solid #bee5eb;
+    }
+
+    .form-status-banner.status-warning {
+      background: #fff3cd;
+      color: #856404;
+      border: 1px solid #ffeaa7;
+    }
+
+    .form-status-banner.status-success {
+      background: #d4edda;
+      color: #155724;
+      border: 1px solid #c3e6cb;
+    }
+
+    .form-status-banner.status-error {
+      background: #f8d7da;
+      color: #721c24;
+      border: 1px solid #f5c6cb;
+    }
+
+    .status-content {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .status-icon {
+      font-size: 18px;
+    }
+
+    .status-text strong {
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    .close-btn {
+      background: none;
+      border: none;
+      font-size: 18px;
+      cursor: pointer;
+      opacity: 0.7;
+      padding: 4px;
+      width: 24px;
+      height: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      transition: all 0.2s ease;
+    }
+
+    .close-btn:hover {
+      opacity: 1;
+      background: rgba(0, 0, 0, 0.1);
+    }
+
+    /* Read-only form styling */
+    .read-only {
+      background-color: #f8f9fa !important;
+      color: #6c757d !important;
+      border-color: #dee2e6 !important;
+      cursor: not-allowed !important;
+    }
+
+    .form-container.read-only {
+      position: relative;
+    }
+
+    .form-container.read-only::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(248, 249, 250, 0.3);
+      pointer-events: none;
+      z-index: 1;
+      border-radius: inherit;
     }
   </style>
+  <script src="/js/formStatusManager.js"></script>
 
   <!-- Enhanced Navigation System -->
   <link rel="stylesheet" href="../css/navigationStyles.css">
-  <script src="../js/navigationManager.js" defer></script>
-  <script src="../js/formNavigationIntegration.js" defer></script>
-  <script src="/js/formStatusManager.js" defer></script>
+  <script src="../js/navigationManager.js"></script>
+  <script src="../js/formNavigationIntegration.js"></script>
+
 </head>
 
 <body>
   <div class="container">
     <!-- Professional Header -->
-    <header class="form-header">
+    <div class="form-header">
       <h1>Microsoft 365 Account Disposal</h1>
       <div class="form-subtitle">Official Format for Microsoft 365 Account Disposal Confirmation</div>
-    </header>
+    </div>
 
     <!-- Form Content -->
-    <main class="form-content">
-      <!-- Status Banner (Hidden by default) -->
-      <div id="statusBanner" class="form-status-banner hidden" role="alert" aria-live="polite">
-        <div class="status-content">
-          <span class="status-icon" aria-hidden="true"></span>
-          <div class="status-text">
-            <strong id="statusTitle"></strong>
-            <div id="statusMessage"></div>
-          </div>
-        </div>
-        <button class="close-btn" aria-label="Close notification" onclick="hideStatusBanner()">×</button>
-      </div>
+    <div class="form-content">
 
       <!-- Note Section -->
-      <section class="note-section" role="note">
+      <div class="note-section">
         <div class="note-text">
           Confirmation of following format shall be issued by the concerned HOD on
-          <label for="reason" class="sr-only">Reason for disposal</label>
-          <select name="reason" id="reason" class="note-select" required aria-required="true">
+          <select name="reason" id="reason" class="note-select" required>
             <option value="">Select Reason</option>
             <option value="Superannuation">Superannuation</option>
             <option value="Resignation">Resignation</option>
@@ -818,276 +540,197 @@
           of an Employee under his/her Control. In case of Death of employee, help of Corporate IT may be taken for
           transfer of data from Microsoft 365 cloud account.
         </div>
-      </section>
+      </div>
 
       <!-- Basic Information -->
-      <section class="form-section" data-role="employee">
-        <h2 class="section-title">Department Information</h2>
+      <div class="form-section" data-role="employee">
+        <div class="section-title">Department Information</div>
 
         <div class="field-group">
-          <label class="field-label" for="unitName">Unit Name</label>
-          <input type="text" name="unitName" id="unitName" class="field-input" placeholder="Enter unit name" required
-            aria-required="true">
+          <label class="field-label">Unit Name</label>
+          <input type="text" name="unitName" id="unitName" class="field-input">
         </div>
 
         <div class="field-group">
-          <label class="field-label" for="department">Department</label>
-          <input type="text" name="department" id="department" class="field-input" placeholder="Enter department name"
-            required aria-required="true">
+          <label class="field-label">Department</label>
+          <input type="text" name="department" id="department" class="field-input">
         </div>
-      </section>
+      </div>
 
       <!-- Transfer Confirmation Details -->
-      <section class="form-section" data-role="employee">
-        <h2 class="section-title">Data Transfer Confirmation</h2>
+      <div class="form-section" data-role="employee">
+        <div class="section-title">Data Transfer Confirmation</div>
 
         <div class="field-group">
           <div class="field-paragraph">
-            <span>This is to confirm that all relevant official data (files and folders) from Microsoft 365 cloud
-              account ID</span>
-            <input type="text" name="fromId" id="fromId" class="inline-input wide" placeholder="source@company.com"
-              required aria-required="true" aria-label="Source Microsoft 365 account ID">
-            <span>of</span>
-            <select name="empSalutation" id="empSalutation" class="inline-select" required aria-required="true"
-              aria-label="Employee salutation">
+            This is to confirm that all relevant official data (files and folders) from Microsoft 365 cloud account ID
+            <input type="text" name="fromId" id="fromId" class="inline-input wide">
+            of
+            <select name="empSalutation" id="empSalutation" class="inline-select">
               <option value="">Salutation</option>
               <option value="Mr.">Mr.</option>
               <option value="Ms.">Ms.</option>
               <option value="Mrs.">Mrs.</option>
             </select>
-            <input type="text" name="empName" id="empName" class="inline-input" placeholder="Employee Name" required
-              aria-required="true" aria-label="Employee name">
+            <input type="text" name="empName" id="empName" class="inline-input">
           </div>
 
           <div class="field-paragraph">
-            <span>Designation</span>
-            <input type="text" name="designation" id="designation" class="inline-input" placeholder="Designation"
-              required aria-required="true" aria-label="Employee designation">
-            <span>Employee No.</span>
-            <input type="text" name="empNo" id="empNo" class="inline-input short" placeholder="Emp No." required
-              aria-required="true" aria-label="Employee number">
+            Designation
+            <input type="text" name="designation" id="designation" class="inline-input">
+            Employee No.
+            <input type="text" name="empNo" id="empNo" class="inline-input short">
           </div>
 
           <div class="field-paragraph">
-            <span>has been downloaded in local system / transferred from his/her Microsoft 365 account ID</span>
-            <input type="text" name="oldId" id="oldId" class="inline-input wide" placeholder="old@company.com" required
-              aria-required="true" aria-label="Old Microsoft 365 account ID">
-            <span>to account ID</span>
-            <input type="text" name="newId" id="newId" class="inline-input wide" placeholder="new@company.com" required
-              aria-required="true" aria-label="New Microsoft 365 account ID">
+            has been downloaded in local system / transferred from his/her Microsoft 365 account ID
+            <input type="text" name="oldId" id="oldId" class="inline-input wide">
+            to account ID
+            <input type="text" name="newId" id="newId" class="inline-input wide">
           </div>
 
           <div class="field-paragraph">
-            <span>of</span>
-            <select name="toSalutation" id="toSalutation" class="inline-select" required aria-required="true"
-              aria-label="Recipient salutation">
+            of
+            <select name="toSalutation" id="toSalutation" class="inline-select">
               <option value="">Salutation</option>
               <option value="Mr.">Mr.</option>
               <option value="Ms.">Ms.</option>
               <option value="Mrs.">Mrs.</option>
             </select>
-            <input type="text" name="toEmp" id="toEmp" class="inline-input" placeholder="Recipient Name" required
-              aria-required="true" aria-label="Recipient employee name">
+            <input type="text" name="toEmp" id="toEmp" class="inline-input">
           </div>
         </div>
 
         <div class="field-group">
-          <label class="field-label" for="toDesignation">Recipient Designation</label>
-          <input type="text" name="toDesignation" id="toDesignation" class="field-input"
-            placeholder="Enter recipient designation" required aria-required="true">
+          <label class="field-label">Recipient Designation</label>
+          <input type="text" name="toDesignation" id="toDesignation" class="field-input">
         </div>
 
         <div class="field-group">
-          <label class="field-label" for="toEmpNo">Recipient Employee No.</label>
-          <input type="text" name="toEmpNo" id="toEmpNo" class="field-input"
-            placeholder="Enter recipient employee number" required aria-required="true">
+          <label class="field-label">Recipient Employee No.</label>
+          <input type="text" name="toEmpNo" id="toEmpNo" class="field-input">
         </div>
 
         <div class="field-group">
-          <label class="field-label" for="date">Date</label>
-          <input type="date" name="date" id="date" class="field-input" required aria-required="true">
+          <label class="field-label">Date</label>
+          <input type="date" name="date" id="date" class="field-input">
         </div>
 
         <div class="field-group">
-          <label class="field-label" for="disposedId">Microsoft 365 Account ID to be disposed</label>
-          <input type="text" name="disposedId" id="disposedId" class="field-input"
-            placeholder="account-to-dispose@company.com" required aria-required="true">
+          <label class="field-label">Microsoft 365 Account ID to be disposed</label>
+          <input type="text" name="disposedId" id="disposedId" class="field-input">
         </div>
-      </section>
+      </div>
 
       <!-- HOD Approval Section -->
-      <section class="form-section hod-section" data-role="hod">
-        <h2 class="section-title">HOD Approval Section</h2>
+      <div class="form-section hod-section" data-role="hod">
+        <div class="section-title">HOD Approval Section</div>
 
         <div class="hod-grid">
           <div class="hod-details">
             <div class="input-group">
-              <label for="hodName">Name of HOD</label>
-              <input type="text" name="hodName" id="hodName" readonly aria-readonly="true"
-                aria-describedby="hodNameHelp">
-              <small id="hodNameHelp" class="sr-only">Auto-filled from HOD session</small>
+              <label>Name of HOD</label>
+              <input type="text" name="hodName" id="hodName" readonly>
             </div>
             <div class="input-group">
-              <label for="hodEmpNo">Employee No.</label>
-              <input type="text" name="hodEmpNo" id="hodEmpNo" readonly aria-readonly="true"
-                aria-describedby="hodEmpNoHelp">
-              <small id="hodEmpNoHelp" class="sr-only">Auto-filled from HOD session</small>
+              <label>Employee No.</label>
+              <input type="text" name="hodEmpNo" id="hodEmpNo" readonly>
             </div>
             <div class="input-group">
-              <label for="hodEmail">Email</label>
-              <input type="email" name="hodEmail" id="hodEmail" readonly aria-readonly="true"
-                aria-describedby="hodEmailHelp">
-              <small id="hodEmailHelp" class="sr-only">Auto-filled from HOD session</small>
+              <label>Email</label>
+              <input type="email" name="hodEmail" id="hodEmail" readonly>
             </div>
           </div>
 
           <div class="signature-container">
-            <div class="signature-area" id="signatureArea" tabindex="0" role="button" aria-label="Upload HOD signature"
-              aria-describedby="signatureHelp">
+            <div class="signature-area" id="signatureArea">
               <div class="signature-placeholder">Click to Upload HOD Signature</div>
             </div>
-            <div class="signature-note" id="signatureHelp">
-              HOD details are auto-filled from your session
-            </div>
-            <input type="file" id="signatureInput" style="display:none;" accept="image/*" aria-hidden="true">
+            <div class="signature-note">HOD details are auto-filled from your session</div>
+            <input type="file" id="signatureInput" style="display:none;" accept="image/*">
           </div>
         </div>
-      </section>
-    </main>
+      </div>
+
+    </div>
 
     <!-- Footer Section -->
-    <footer class="footer-section">
+    <div class="footer-section">
       <div class="footer-title">HOD, IT Department</div>
       <div class="footer-title">HOD, IT Department, Rishikesh</div>
-    </footer>
+    </div>
 
     <!-- Action Section -->
-    <section class="action-section">
-      <button class="save-button" onclick="saveForm365Disposal()" aria-describedby="saveHelp">
-        Save Form 365 Disposal
-      </button>
-      <div id="saveMessage" class="save-message" role="alert" aria-live="polite"></div>
-      <small id="saveHelp" class="sr-only">
-        Save your form data. You can continue editing later.
-      </small>
-    </section>
+    <div class="action-section">
+      <button class="save-button" onclick="saveForm365Disposal()">Save Form 365 Disposal</button>
+      <div id="saveMessage" class="save-message"></div>
+    </div>
   </div>
 
-  <!-- Production JavaScript -->
   <script>
-    // =========================================
-    // PRODUCTION JAVASCRIPT WITH ERROR HANDLING
-    // =========================================
-
     // Global variables
     let currentUserRole = '';
     let formId = '';
-    let isFormLoading = false;
 
-    // Initialize form when DOM is ready
-    document.addEventListener('DOMContentLoaded', async () => {
-      try {
-        setLoadingState(true);
-        await initializeForm();
-      } catch (error) {
-        console.error('Form initialization failed:', error);
-        showStatusBanner('Error', 'Failed to initialize form. Please refresh the page.', 'error');
-      } finally {
-        setLoadingState(false);
-      }
+    // Initialize form
+    window.addEventListener("DOMContentLoaded", async () => {
+      await initializeForm();
     });
 
-    // Set loading state
-    function setLoadingState(loading) {
-      isFormLoading = loading;
-      const container = document.querySelector('.container');
-      if (loading) {
-        container.classList.add('loading');
-      } else {
-        container.classList.remove('loading');
-      }
-    }
-
-    // Show status banner
-    function showStatusBanner(title, message, type = 'info') {
-      const banner = document.getElementById('statusBanner');
-      const titleEl = document.getElementById('statusTitle');
-      const messageEl = document.getElementById('statusMessage');
-      const iconEl = banner.querySelector('.status-icon');
-
-      titleEl.textContent = title;
-      messageEl.textContent = message;
-
-      // Set icon based on type
-      const icons = {
-        info: 'ℹ️',
-        success: '✅',
-        warning: '⚠️',
-        error: '❌'
-      };
-      iconEl.textContent = icons[type] || icons.info;
-
-      // Set banner class
-      banner.className = `form-status-banner status-${type}`;
-      banner.classList.remove('hidden');
-
-      // Auto-hide success messages
-      if (type === 'success') {
-        setTimeout(hideStatusBanner, 5000);
-      }
-    }
-
-    // Hide status banner
-    function hideStatusBanner() {
-      const banner = document.getElementById('statusBanner');
-      banner.classList.add('hidden');
-    }
-
-    // Check if this is HOD review mode
+    // âœ… NEW: Check if this is HOD review mode
     function isHODReview() {
       const urlParams = new URLSearchParams(window.location.search);
       return urlParams.get('role') === 'hod';
     }
 
-    // Auto-fill HOD details when accessed by HOD
+    // âœ… NEW: Auto-fill HOD details when accessed by HOD
     async function autoFillHODDetailsInForm() {
       if (!isHODReview()) return;
 
       try {
-        console.log('Auto-filling HOD details in Form 365 Disposal...');
-        showStatusBanner('Loading', 'Loading HOD details for form review...', 'info');
+        console.log('ðŸ”„ Auto-filling HOD details in Form 365 Disposal...');
+        showMessage('Loading HOD details for form review...', 'info');
 
-        const response = await fetchWithTimeout('/api/hod/my-details', {
+        const response = await fetch('/api/hod/my-details', {
           credentials: 'include'
         });
 
         if (response.ok) {
           const data = await response.json();
           if (data.success && data.hodDetails) {
+            console.log('âœ… HOD details received for form auto-fill:', data.hodDetails);
+
             const hodDetails = data.hodDetails;
 
-            // Map HOD details to form fields with validation
+            // Map HOD details to form fields using green theme
             const hodFieldMappings = {
-              'hodName': sanitizeInput(hodDetails.name),
-              'hodEmpNo': sanitizeInput(hodDetails.employeeId),
-              'hodEmail': sanitizeInput(hodDetails.email)
+              'hodName': hodDetails.name,
+              'hodEmpNo': hodDetails.employeeId,
+              'hodEmail': hodDetails.email
             };
 
             // Fill all matching fields
             Object.entries(hodFieldMappings).forEach(([fieldId, value]) => {
               const field = document.getElementById(fieldId) || document.querySelector(`[name="${fieldId}"]`);
-              if (field && !field.value && value) {
+              if (field && !field.value) {
                 field.value = value;
+
+                // Style as auto-filled with GREEN theme
                 field.classList.add('auto-filled');
-                field.setAttribute('title', 'Auto-filled from HOD session');
+                field.style.backgroundColor = '#d4edda';
+                field.style.borderColor = '#28a745';
+                field.style.color = '#155724';
+                field.title = 'Auto-filled from HOD session';
                 field.readOnly = true;
+
+                console.log(`âœ… Auto-filled ${fieldId} with: ${value}`);
               }
             });
 
             // Auto-load HOD signature
             await autoFillHODSignatureInForm();
 
-            showStatusBanner('Success', 'HOD details auto-filled successfully!', 'success');
+            showMessage('HOD details auto-filled successfully!', 'success');
 
             // Update signature note
             const signatureNote = document.querySelector('.signature-note');
@@ -1095,19 +738,17 @@
               signatureNote.textContent = `HOD details auto-filled for ${hodDetails.name}`;
             }
           }
-        } else {
-          throw new Error('Failed to load HOD details');
         }
       } catch (error) {
-        console.error('Error auto-filling HOD details:', error);
-        showStatusBanner('Error', 'Failed to auto-fill HOD details', 'error');
+        console.error('âŒ Error auto-filling HOD details:', error);
+        showMessage('Failed to auto-fill HOD details', 'error');
       }
     }
 
-    // Auto-fill HOD signature in form
+    // âœ… NEW: Auto-fill HOD signature in form
     async function autoFillHODSignatureInForm() {
       try {
-        const response = await fetchWithTimeout('/api/hod/get-signature', {
+        const response = await fetch('/api/hod/get-signature', {
           credentials: 'include'
         });
 
@@ -1116,18 +757,19 @@
           if (data.success && data.signatureUrl) {
             const sigArea = document.getElementById('signatureArea');
             if (sigArea) {
-              sigArea.innerHTML = `<img src="${data.signatureUrl}" alt="HOD Signature" style="max-height: 60px; max-width: 100%; border-radius: 4px;">`;
+              sigArea.innerHTML = `<img src="${data.signatureUrl}" alt="HOD Signature" style="max-height: 60px; max-width: 100%; border: 2px solid #28a745; border-radius: 4px;">`;
               sigArea.classList.add('has-signature');
-              sigArea.setAttribute('title', 'HOD signature auto-loaded');
+              sigArea.title = 'HOD signature auto-loaded';
+              console.log('âœ… Auto-filled HOD signature in Form 365 Disposal');
             }
           }
         }
       } catch (error) {
-        console.error('Error loading HOD signature:', error);
+        console.error('âŒ Error loading HOD signature:', error);
       }
     }
 
-    // Initialize form with enhanced error handling
+    // Initialize form with role detection and HOD auto-fill
     async function initializeForm() {
       try {
         // Get form ID from URL
@@ -1137,13 +779,13 @@
         // Get user role from session
         await getUserRole();
 
-        // Auto-fill HOD details if in HOD review mode
+        // âœ… ENHANCED: Auto-fill HOD details if in HOD review mode
         if (isHODReview()) {
-          console.log('Form 365 Disposal opened in HOD review mode - auto-filling HOD details...');
+          console.log('ðŸ“‹ Form 365 Disposal opened in HOD review mode - auto-filling HOD details...');
           setTimeout(autoFillHODDetailsInForm, 1000);
         }
 
-        // Load HOD profile if user is HOD
+        // Load HOD profile if user is HOD (existing functionality)
         if (currentUserRole === 'hod') {
           await loadHODProfile();
           await loadHODSignature();
@@ -1158,70 +800,28 @@
         // Initialize signature handling
         initializeSignatureHandling();
 
-        // Initialize form validation
-        initializeFormValidation();
-
-        // Initialize accessibility features
-        initializeAccessibility();
-
       } catch (error) {
         console.error('Error initializing form:', error);
-        showStatusBanner('Error', 'Error loading form. Please refresh the page.', 'error');
+        showMessage('Error loading form. Please refresh the page.', 'error');
       }
     }
 
-    // Fetch with timeout wrapper
-    async function fetchWithTimeout(url, options = {}, timeout = 10000) {
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), timeout);
-
-      try {
-        const response = await fetch(url, {
-          ...options,
-          signal: controller.signal
-        });
-        clearTimeout(timeoutId);
-        return response;
-      } catch (error) {
-        clearTimeout(timeoutId);
-        if (error.name === 'AbortError') {
-          throw new Error('Request timeout');
-        }
-        throw error;
-      }
-    }
-
-    // Sanitize input to prevent XSS
-    function sanitizeInput(input) {
-      if (typeof input !== 'string') return input;
-
-      const div = document.createElement('div');
-      div.textContent = input;
-      return div.innerHTML;
-    }
-
-    // Get user role from session with caching
+    // Get user role from session
     async function getUserRole() {
-      if (currentUserRole) return currentUserRole;
-
       try {
-        const response = await fetchWithTimeout('/api/auth/check-session', {
+        const response = await fetch('/api/auth/check-session', {
           credentials: 'include'
         });
 
         if (response.ok) {
           const data = await response.json();
-          currentUserRole = data.role || 'employee';
+          currentUserRole = data.role || '';
           console.log('User role:', currentUserRole);
-        } else {
-          currentUserRole = 'employee'; // Default fallback
         }
       } catch (error) {
         console.error('Error getting user role:', error);
         currentUserRole = 'employee'; // Default fallback
       }
-
-      return currentUserRole;
     }
 
     // Load HOD profile and auto-fill fields
@@ -1229,30 +829,32 @@
       try {
         console.log('Loading HOD profile for auto-fill...');
 
-        const response = await fetchWithTimeout('/api/hod/profile', {
+        const response = await fetch('/api/hod/profile', {
           credentials: 'include'
         });
 
         if (response.ok) {
           const data = await response.json();
           if (data.success) {
-            // Auto-fill HOD fields with validation
-            const hodFields = [
-              { id: 'hodName', value: data.hodData.name },
-              { id: 'hodEmpNo', value: data.hodData.employeeId },
-              { id: 'hodEmail', value: data.hodData.email }
-            ];
+            // Auto-fill HOD fields
+            const hodName = document.getElementById('hodName');
+            const hodEmpNo = document.getElementById('hodEmpNo');
+            const hodEmail = document.getElementById('hodEmail');
 
-            hodFields.forEach(field => {
-              const element = document.getElementById(field.id);
-              if (element && field.value) {
-                element.value = sanitizeInput(field.value);
-                element.classList.add('auto-filled');
-                element.setAttribute('title', 'Auto-filled from HOD profile');
-              }
-            });
+            if (hodName) {
+              hodName.value = data.hodData.name;
+              hodName.classList.add('auto-filled');
+            }
+            if (hodEmpNo) {
+              hodEmpNo.value = data.hodData.employeeId;
+              hodEmpNo.classList.add('auto-filled');
+            }
+            if (hodEmail) {
+              hodEmail.value = data.hodData.email;
+              hodEmail.classList.add('auto-filled');
+            }
 
-            console.log('HOD profile auto-filled successfully');
+            console.log('HOD profile auto-filled successfully:', data.hodData);
           }
         }
       } catch (error) {
@@ -1263,7 +865,7 @@
     // Load existing HOD signature
     async function loadHODSignature() {
       try {
-        const response = await fetchWithTimeout('/api/hod/get-signature', {
+        const response = await fetch('/api/hod/get-signature', {
           credentials: 'include'
         });
 
@@ -1272,7 +874,7 @@
           if (data.success && data.signatureUrl) {
             const sigArea = document.getElementById('signatureArea');
             if (sigArea) {
-              sigArea.innerHTML = `<img src="${data.signatureUrl}" alt="HOD Signature" style="max-height: 60px; max-width: 100%; border-radius: 4px;">`;
+              sigArea.innerHTML = `<img src="${data.signatureUrl}" alt="HOD Signature" style="max-height: 60px; max-width: 100%;">`;
               sigArea.classList.add('has-signature');
             }
             console.log('Existing HOD signature loaded');
@@ -1289,17 +891,8 @@
       const signatureInput = document.getElementById('signatureInput');
 
       if (signatureArea && signatureInput) {
-        // Click handler
         signatureArea.addEventListener('click', () => {
           if (currentUserRole === 'hod') {
-            signatureInput.click();
-          }
-        });
-
-        // Keyboard handler for accessibility
-        signatureArea.addEventListener('keydown', (e) => {
-          if ((e.key === 'Enter' || e.key === ' ') && currentUserRole === 'hod') {
-            e.preventDefault();
             signatureInput.click();
           }
         });
@@ -1308,24 +901,10 @@
       }
     }
 
-    // Handle signature file upload with validation
+    // Handle signature file upload
     async function handleSignatureUpload(event) {
       const file = event.target.files[0];
       if (!file) return;
-
-      // Validate file
-      const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif'];
-      const maxSize = 2 * 1024 * 1024; // 2MB
-
-      if (!validTypes.includes(file.type)) {
-        showStatusBanner('Error', 'Please select a valid image file (JPEG, PNG, GIF)', 'error');
-        return;
-      }
-
-      if (file.size > maxSize) {
-        showStatusBanner('Error', 'File size must be less than 2MB', 'error');
-        return;
-      }
 
       try {
         // Preview signature
@@ -1333,7 +912,7 @@
         reader.onload = function (e) {
           const sigArea = document.getElementById('signatureArea');
           if (sigArea) {
-            sigArea.innerHTML = `<img src="${e.target.result}" alt="HOD Signature" style="max-height: 60px; max-width: 100%; border-radius: 4px;">`;
+            sigArea.innerHTML = `<img src="${e.target.result}" alt="HOD Signature" style="max-height: 60px; max-width: 100%;">`;
             sigArea.classList.add('has-signature');
           }
         };
@@ -1343,7 +922,7 @@
         const formData = new FormData();
         formData.append('signature', file);
 
-        const response = await fetchWithTimeout('/api/hod/upload-signature', {
+        const response = await fetch('/api/hod/upload-signature', {
           method: 'POST',
           body: formData,
           credentials: 'include'
@@ -1351,14 +930,14 @@
 
         if (response.ok) {
           console.log('Signature uploaded successfully');
-          showStatusBanner('Success', 'Signature uploaded successfully', 'success');
+          showMessage('Signature uploaded successfully', 'success');
         } else {
           throw new Error('Failed to upload signature');
         }
 
       } catch (error) {
         console.error('Error uploading signature:', error);
-        showStatusBanner('Error', 'Failed to upload signature', 'error');
+        showMessage('Failed to upload signature', 'error');
       }
     }
 
@@ -1381,27 +960,18 @@
       if (currentUserRole === 'hod') {
         document.querySelectorAll('input:not([id^="hod"]), select').forEach(input => {
           input.setAttribute('readonly', true);
-          input.classList.add('read-only');
+          input.style.backgroundColor = '#f8f9fa';
         });
       }
     }
 
-    // Enhanced save function with validation
+    // Enhanced save function with HOD data
     async function saveForm365Disposal() {
-      if (isFormLoading) return;
-
       try {
-        setLoadingState(true);
         showMessage('Saving form...', 'info');
 
-        // Validate form before saving
-        const validation = validateForm();
-        if (!validation.isValid) {
-          showStatusBanner('Validation Error', validation.message, 'error');
-          return;
-        }
-
         const formData = collectFormData();
+
         console.log('Saving Form 365 Disposal data:', formData);
 
         // Determine endpoint based on role
@@ -1410,7 +980,7 @@
           : '/api/employee/save-form365-disposal';
 
         // Save to server
-        const response = await fetchWithTimeout(endpoint, {
+        const response = await fetch(endpoint, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           credentials: 'include',
@@ -1421,14 +991,9 @@
 
         if (response.ok && result.success) {
           // Save to localStorage for dashboard access
-          try {
-            localStorage.setItem('form365Data', JSON.stringify(formData));
-            console.log('Form 365 Disposal saved to localStorage');
-          } catch (storageError) {
-            console.warn('Failed to save to localStorage:', storageError);
-          }
+          localStorage.setItem('form365Data', JSON.stringify(formData));
+          console.log('Form 365 Disposal saved to localStorage');
 
-          showStatusBanner('Success', result.message || 'Form saved successfully!', 'success');
           showMessage(result.message || 'Form saved successfully!', 'success');
         } else {
           throw new Error(result.message || 'Failed to save form');
@@ -1436,58 +1001,8 @@
 
       } catch (error) {
         console.error('Error saving form:', error);
-        const message = error.message === 'Request timeout'
-          ? 'Save operation timed out. Please try again.'
-          : `Failed to save form: ${error.message}`;
-
-        showStatusBanner('Error', message, 'error');
-        showMessage(message, 'error');
-      } finally {
-        setLoadingState(false);
+        showMessage('Failed to save form: ' + error.message, 'error');
       }
-    }
-
-    // Form validation
-    function validateForm() {
-      const requiredFields = [
-        { id: 'reason', name: 'Reason' },
-        { id: 'unitName', name: 'Unit Name' },
-        { id: 'department', name: 'Department' },
-        { id: 'fromId', name: 'Source Account ID' },
-        { id: 'empSalutation', name: 'Employee Salutation' },
-        { id: 'empName', name: 'Employee Name' },
-        { id: 'designation', name: 'Employee Designation' },
-        { id: 'empNo', name: 'Employee Number' },
-        { id: 'oldId', name: 'Old Account ID' },
-        { id: 'newId', name: 'New Account ID' },
-        { id: 'toSalutation', name: 'Recipient Salutation' },
-        { id: 'toEmp', name: 'Recipient Name' },
-        { id: 'toDesignation', name: 'Recipient Designation' },
-        { id: 'toEmpNo', name: 'Recipient Employee Number' },
-        { id: 'date', name: 'Transfer Date' },
-        { id: 'disposedId', name: 'Account to be Disposed' }
-      ];
-
-      for (const field of requiredFields) {
-        const element = document.getElementById(field.id);
-        if (element && element.required && !element.value.trim()) {
-          // Highlight the field
-          element.focus();
-          element.style.borderColor = 'var(--error-color)';
-
-          // Remove highlight after a delay
-          setTimeout(() => {
-            element.style.borderColor = '';
-          }, 3000);
-
-          return {
-            isValid: false,
-            message: `Please fill in the ${field.name} field`
-          };
-        }
-      }
-
-      return { isValid: true };
     }
 
     // Collect all form data including HOD fields
@@ -1495,7 +1010,7 @@
       const getValue = (name) => {
         const el = document.querySelector(`[name="${name}"]`) || document.getElementById(name);
         if (!el) return "";
-        return sanitizeInput(el.value || "");
+        return el.value || "";
       };
 
       const formData = {
@@ -1525,150 +1040,69 @@
         // Metadata
         formId: formId,
         lastUpdated: new Date().toISOString(),
-        userRole: currentUserRole,
-        version: '2.0'
+        userRole: currentUserRole
       };
 
       // Include signature if present
       const sigImg = document.querySelector("#signatureArea img");
-      if (sigImg && sigImg.src) {
-        formData.signatureDataUrl = sigImg.src;
-      }
+      if (sigImg) formData.signatureDataUrl = sigImg.src;
 
       return formData;
     }
 
-    // Load existing form data with error handling
+    // Load existing form data
     async function loadFormData() {
       try {
         let formData = null;
 
         if (formId && (currentUserRole === 'hod' || currentUserRole === 'it')) {
           // Load from server for HOD/IT review
-          const response = await fetchWithTimeout(`/api/hod/form-details?formId=${encodeURIComponent(formId)}`, {
+          const response = await fetch(`/api/hod/form-details?formId=${encodeURIComponent(formId)}`, {
             credentials: 'include'
           });
-
-          if (response.ok) {
-            const data = await response.json();
-            formData = data?.form?.formResponses?.form365Data;
-          }
+          const data = await response.json();
+          // Use 'form365Data' key as per your form mapping
+          formData = data?.form?.formResponses?.form365Data;
         } else {
           // Load from server for employee
-          const response = await fetchWithTimeout('/api/employee/form-data?formName=form365Disposal', {
+          const response = await fetch('/api/employee/form-data?formName=form365Disposal', {
             credentials: 'include'
           });
-
-          if (response.ok) {
-            const data = await response.json();
-            formData = data?.formData;
-          }
+          const data = await response.json();
+          formData = data?.formData;
         }
 
         if (formData) {
-          await populateFormData(formData);
+          // Populate form fields
+          const allFields = [
+            "reason", "unitName", "department", "fromId", "empSalutation", "empName",
+            "designation", "empNo", "oldId", "newId", "toSalutation", "toEmp",
+            "toDesignation", "toEmpNo", "date", "disposedId", "hodName", "hodEmpNo", "hodEmail"
+          ];
+
+          allFields.forEach(name => {
+            const el = document.querySelector(`[name="${name}"]`) || document.getElementById(name);
+            if (el) el.value = formData[name] || "";
+          });
+
+          // Show signature if available
+          if (formData.signatureDataUrl) {
+            const sigArea = document.getElementById("signatureArea");
+            if (sigArea) {
+              sigArea.innerHTML = `<img src="${formData.signatureDataUrl}" alt="HOD Signature" style="max-height: 60px; max-width: 100%;">`;
+              sigArea.classList.add('has-signature');
+            }
+          }
+
           console.log('Form data loaded successfully');
         }
 
       } catch (error) {
         console.error('Error loading form data:', error);
-        // Don't show error for missing form data, as it might be a new form
-        if (!error.message.includes('404')) {
-          showStatusBanner('Warning', 'Could not load previous form data', 'warning');
-        }
       }
     }
 
-    // Populate form with data
-    async function populateFormData(formData) {
-      try {
-        // Populate form fields
-        const allFields = [
-          "reason", "unitName", "department", "fromId", "empSalutation", "empName",
-          "designation", "empNo", "oldId", "newId", "toSalutation", "toEmp",
-          "toDesignation", "toEmpNo", "date", "disposedId", "hodName", "hodEmpNo", "hodEmail"
-        ];
-
-        allFields.forEach(name => {
-          const el = document.querySelector(`[name="${name}"]`) || document.getElementById(name);
-          if (el && formData[name]) {
-            el.value = formData[name];
-          }
-        });
-
-        // Show signature if available
-        if (formData.signatureDataUrl) {
-          const sigArea = document.getElementById("signatureArea");
-          if (sigArea) {
-            sigArea.innerHTML = `<img src="${formData.signatureDataUrl}" alt="HOD Signature" style="max-height: 60px; max-width: 100%; border-radius: 4px;">`;
-            sigArea.classList.add('has-signature');
-          }
-        }
-      } catch (error) {
-        console.error('Error populating form data:', error);
-        showStatusBanner('Warning', 'Some form data could not be loaded', 'warning');
-      }
-    }
-
-    // Initialize form validation
-    function initializeFormValidation() {
-      const form = document.querySelector('.container');
-      const inputs = form.querySelectorAll('input[required], select[required]');
-
-      inputs.forEach(input => {
-        input.addEventListener('blur', validateField);
-        input.addEventListener('input', clearFieldError);
-      });
-    }
-
-    // Validate individual field
-    function validateField(event) {
-      const field = event.target;
-      const value = field.value.trim();
-
-      if (field.required && !value) {
-        field.style.borderColor = 'var(--error-color)';
-        field.setAttribute('aria-invalid', 'true');
-      } else {
-        field.style.borderColor = '';
-        field.removeAttribute('aria-invalid');
-      }
-    }
-
-    // Clear field error styling
-    function clearFieldError(event) {
-      const field = event.target;
-      field.style.borderColor = '';
-      field.removeAttribute('aria-invalid');
-    }
-
-    // Initialize accessibility features
-    function initializeAccessibility() {
-      // Add aria-live region for form status
-      const liveRegion = document.createElement('div');
-      liveRegion.setAttribute('aria-live', 'polite');
-      liveRegion.setAttribute('aria-atomic', 'true');
-      liveRegion.className = 'sr-only';
-      liveRegion.id = 'status-live-region';
-      document.body.appendChild(liveRegion);
-
-      // Add skip link
-      const skipLink = document.createElement('a');
-      skipLink.href = '#main-content';
-      skipLink.className = 'sr-only';
-      skipLink.textContent = 'Skip to main content';
-      skipLink.addEventListener('focus', () => skipLink.classList.remove('sr-only'));
-      skipLink.addEventListener('blur', () => skipLink.classList.add('sr-only'));
-      document.body.insertBefore(skipLink, document.body.firstChild);
-
-      // Add main landmark
-      const main = document.querySelector('.form-content');
-      if (main) {
-        main.id = 'main-content';
-      }
-    }
-
-    // Show status messages (legacy compatibility)
+    // Show status messages
     function showMessage(message, type) {
       const messageEl = document.getElementById('saveMessage');
       if (messageEl) {
@@ -1676,17 +1110,11 @@
         messageEl.className = `save-message ${type}`;
         messageEl.style.display = 'block';
 
-        // Update live region for screen readers
-        const liveRegion = document.getElementById('status-live-region');
-        if (liveRegion) {
-          liveRegion.textContent = message;
-        }
-
         // Auto-hide success messages
         if (type === 'success') {
           setTimeout(() => {
             messageEl.style.display = 'none';
-          }, 5000);
+          }, 3000);
         }
       }
     }
@@ -1696,75 +1124,296 @@
       return saveForm365Disposal();
     }
 
-    // Handle window message events for iframe integration
+    // Initialize navigation for specific form type
+    document.addEventListener('DOMContentLoaded', () => {
+      // Determine form type from URL or page structure
+      const formType = window.location.pathname.includes('disposal') ? 'disposal' :
+        window.location.pathname.includes('efile') ? 'efile' :
+          window.location.pathname.includes('365transfer') ? 'form365transfer' :
+            window.location.pathname.includes('365disposal') ? 'form365disposal' : 'unknown';
+
+      // Initialize navigation for this form
+      FormNavigationIntegration.initializeForForm(formType);
+
+      console.log(`âœ… Navigation system initialized for ${formType} form`);
+    });
+
+    // âœ… FIXED: Enhanced role-based element hiding with proper selectors
+    function initializeRoleBasedUI() {
+
+      // Multiple methods to detect user role
+      function detectUserRole() {
+        // Method 1: From localStorage/sessionStorage
+        let role = localStorage.getItem('userRole') || sessionStorage.getItem('userRole');
+
+        // Method 2: From page title or URL
+        if (!role) {
+          if (window.location.href.includes('hod') || window.location.href.includes('HOD')) {
+            role = 'HOD';
+          } else if (window.location.href.includes('itreview') || window.location.href.includes('IT')) {
+            role = 'IT';
+          }
+        }
+
+        // Method 3: From a meta tag or hidden input
+        const roleElement = document.querySelector('meta[name="user-role"]') ||
+          document.querySelector('input[name="userRole"]');
+        if (!role && roleElement) {
+          role = roleElement.content || roleElement.value;
+        }
+
+        // Method 4: From server-rendered data
+        if (!role && typeof window.userRole !== 'undefined') {
+          role = window.userRole;
+        }
+
+        // Method 5: From authentication/session cookies (if available)
+        if (!role && document.cookie) {
+          const cookieRole = document.cookie
+            .split('; ')
+            .find(row => row.startsWith('userRole='));
+          if (cookieRole) {
+            role = cookieRole.split('=')[1];
+          }
+        }
+
+        return role ? role.toLowerCase() : null;
+      }
+
+      const userRole = detectUserRole();
+
+      if (userRole === 'hod' || userRole === 'it') {
+
+        // Hide back buttons with multiple selectors
+        const elementsToHide = [
+          '.global-back-button',
+          '.back-btn',
+          'button[onclick*="goBack"]',
+          'button[onclick*="history.back"]',
+          'button[onclick*="window.history"]',
+          'a[href*="dashboard"]',
+          'a[href*="back"]',
+          '.navigation-back',
+          '.back-to-dashboard',
+          '[class*="back"]',
+          '[id*="back"]'
+        ];
+
+        elementsToHide.forEach(selector => {
+          try {
+            const elements = document.querySelectorAll(selector);
+            elements.forEach(el => {
+              const elementText = el.textContent.toLowerCase();
+              const isBackButton = elementText.includes('back') ||
+                elementText.includes('dashboard') ||
+                el.onclick?.toString().includes('back') ||
+                el.onclick?.toString().includes('goBack');
+
+              if (isBackButton || selector.includes('back') || selector.includes('dashboard')) {
+                el.style.display = 'none';
+                el.setAttribute('tabindex', '-1');
+                el.setAttribute('aria-hidden', 'true');
+              }
+            });
+          } catch (error) {
+            console.log('Save selector error:', selector, error);
+          }
+        });
+
+        // âœ… FIXED: Hide save buttons using proper selectors (NO MORE :contains)
+        const saveSelectors = [
+          'button[type="submit"]',
+          'input[type="submit"]',
+          '.save-button',
+          '.save-btn',
+          'button[onclick*="save"]',
+          'button[onclick*="submit"]',
+          'button[onclick*="Save"]',
+          '#saveBtn',
+          '#submitBtn',
+          '[value*="Save"]',
+          '[value*="Submit"]',
+          'input[value*="Save"]',
+          '.btn-primary[onclick*="save"]'
+        ];
+
+        saveSelectors.forEach(selector => {
+          try {
+            const elements = document.querySelectorAll(selector);
+            elements.forEach(el => {
+              const elementText = (el.textContent || el.value || el.innerHTML || '').toLowerCase();
+              const isSaveButton = elementText.includes('save') ||
+                elementText.includes('submit') ||
+                el.type === 'submit' ||
+                el.name === 'submit' ||
+                el.id?.includes('save') ||
+                el.className?.includes('save');
+
+              if (isSaveButton) {
+                // âœ… HIDE COMPLETELY (not just disable)
+                el.style.display = 'none !important';
+                el.setAttribute('aria-hidden', 'true');
+                el.setAttribute('tabindex', '-1');
+
+                // Also hide parent container if it only contains the save button
+                const parent = el.parentElement;
+                if (parent && parent.children.length === 1) {
+                  parent.style.display = 'none';
+                }
+
+                // Remove from form submission
+                if (el.form) {
+                  el.remove();
+                }
+              }
+            });
+          } catch (error) {
+            console.log('Save selector error:', selector, error);
+          }
+        });
+
+        // âœ… FIXED: Hide save buttons by text content using safe method
+        const allButtons = document.querySelectorAll('button, input[type="button"], input[type="submit"]');
+        allButtons.forEach(button => {
+          const text = (button.textContent || button.value || '').toLowerCase();
+          if (text.includes('save') || text.includes('submit') || text.includes('update')) {
+            button.style.display = 'none !important';
+            button.setAttribute('aria-hidden', 'true');
+
+            // Hide parent if it's a button container
+            const parent = button.parentElement;
+            if (parent && (parent.className.includes('button') || parent.className.includes('action'))) {
+              parent.style.display = 'none';
+            }
+          }
+        });
+
+        // Add role-based CSS class
+        document.body.classList.add(`role-${userRole}`);
+        document.body.setAttribute('data-user-role', userRole);
+
+        console.log(`ðŸ”’ UI restricted for ${userRole.toUpperCase()} role - Save buttons HIDDEN`);
+
+      } else {
+        console.log(`âœ… Full UI access for role: ${userRole || 'EMPLOYEE'}`);
+      }
+    }
+
+    // Run multiple times to catch all elements
+    document.addEventListener('DOMContentLoaded', initializeRoleBasedUI);
+    window.addEventListener('load', initializeRoleBasedUI);
+
+    // Check again after navigation manager loads
+    setTimeout(initializeRoleBasedUI, 500);
+    setTimeout(initializeRoleBasedUI, 2000);
+    setTimeout(initializeRoleBasedUI, 4000);
+
+    // Set up observer for dynamically added elements
+    if (typeof MutationObserver !== 'undefined') {
+      const observer = new MutationObserver(function (mutations) {
+        let shouldReapply = false;
+
+        mutations.forEach(function (mutation) {
+          if (mutation.addedNodes.length > 0) {
+            mutation.addedNodes.forEach(function (node) {
+              if (node.nodeType === Node.ELEMENT_NODE) {
+                const hasSaveButton = node.querySelector && (
+                  node.querySelector('button[type="submit"]') ||
+                  node.querySelector('.save-button') ||
+                  node.querySelector('input[type="submit"]') ||
+                  (node.textContent && node.textContent.toLowerCase().includes('save'))
+                );
+
+                if (hasSaveButton) {
+                  shouldReapply = true;
+                }
+              }
+            });
+          }
+        });
+
+        if (shouldReapply) {
+          setTimeout(initializeRoleBasedUI, 100);
+        }
+      });
+
+      observer.observe(document.body, {
+        childList: true,
+        subtree: true
+      });
+    }
+
+    // âœ… ADDED: Message listener for iframe data population
     window.addEventListener('message', function (event) {
-      console.log('Message received in iframe:', event.data);
+      console.log('ðŸ“© Message received in iframe:', event.data);
 
       if (event.data && event.data.action === 'populateForm') {
-        console.log('Populating form with data:', event.data.data);
-        populateFormData(event.data.data);
+        console.log('ðŸ”„ Populating form with data:', event.data.data);
+        const data = event.data.data;
 
+        // Loop through all data fields and populate matching elements
+        Object.keys(data).forEach(fieldId => {
+          const element = document.getElementById(fieldId) || document.querySelector(`[name="${fieldId}"]`);
+          if (element) {
+            if (element.tagName === 'INPUT' || element.tagName === 'TEXTAREA' || element.tagName === 'SELECT') {
+              element.value = data[fieldId] || '';
+              console.log(`âœ… Set ${fieldId} = ${data[fieldId]}`);
+            } else if (element.tagName === 'IMG') {
+              element.src = data[fieldId] || '';
+            } else {
+              element.textContent = data[fieldId] || '';
+            }
+          }
+        });
+
+        // If read-only mode, disable all inputs
         if (event.data.isReadOnly) {
-          setFormReadOnly(true);
+          document.querySelectorAll('input, select, textarea, button').forEach(el => {
+            el.disabled = true;
+            el.style.backgroundColor = '#f8f9fa';
+            el.style.cursor = 'not-allowed';
+          });
+          console.log('ðŸ”’ Form set to read-only mode');
         }
       }
 
       if (event.data && event.data.action === 'setMode') {
         if (event.data.isReadOnly) {
-          setFormReadOnly(true);
-        }
-      }
-    });
-
-    // Set form to read-only mode
-    function setFormReadOnly(readonly) {
-      const inputs = document.querySelectorAll('input, select, textarea, button');
-      inputs.forEach(el => {
-        el.disabled = readonly;
-        if (readonly) {
-          el.classList.add('read-only');
-        } else {
-          el.classList.remove('read-only');
-        }
-      });
-
-      if (readonly) {
-        showStatusBanner('Info', 'Form is in read-only mode', 'info');
-      }
-    }
-
-    // Error boundary for unhandled errors
-    window.addEventListener('error', function (event) {
-      console.error('Unhandled error:', event.error);
-      showStatusBanner('Error', 'An unexpected error occurred', 'error');
-    });
-
-    // Unhandled promise rejections
-    window.addEventListener('unhandledrejection', function (event) {
-      console.error('Unhandled promise rejection:', event.reason);
-      showStatusBanner('Error', 'An unexpected error occurred', 'error');
-    });
-
-    // Performance monitoring
-    if ('performance' in window) {
-      window.addEventListener('load', function () {
-        setTimeout(() => {
-          const perfData = performance.getEntriesByType('navigation')[0];
-          console.log('Page load performance:', {
-            loadTime: perfData.loadEventEnd - perfData.fetchStart,
-            domContentLoaded: perfData.domContentLoadedEventEnd - perfData.fetchStart
+          document.querySelectorAll('input, select, textarea, button').forEach(el => {
+            el.disabled = true;
+            el.style.backgroundColor = '#f8f9fa';
           });
-        }, 0);
-      });
-    }
+        }
+      }
+    });
 
-    // Initialize navigation for specific form type
-    document.addEventListener('DOMContentLoaded', () => {
-      const formType = 'form365disposal';
+    // Also check URL parameters for data (fallback method)
+    window.addEventListener('DOMContentLoaded', function () {
+      const urlParams = new URLSearchParams(window.location.search);
+      const mode = urlParams.get('mode');
+      const existingData = urlParams.get('existingData');
 
-      if (typeof FormNavigationIntegration !== 'undefined') {
-        FormNavigationIntegration.initializeForForm(formType);
-        console.log(`Navigation system initialized for ${formType} form`);
+      if (existingData) {
+        try {
+          const data = JSON.parse(decodeURIComponent(existingData));
+          console.log('ðŸ”„ Loading data from URL params:', data);
+
+          Object.keys(data).forEach(fieldId => {
+            const element = document.getElementById(fieldId) || document.querySelector(`[name="${fieldId}"]`);
+            if (element && element.value !== undefined) {
+              element.value = data[fieldId] || '';
+            }
+          });
+        } catch (error) {
+          console.error('âŒ Error parsing URL data:', error);
+        }
+      }
+
+      if (mode === 'approved' || mode === 'rejected') {
+        document.querySelectorAll('input, select, textarea, button').forEach(el => {
+          el.disabled = true;
+          el.style.backgroundColor = '#f8f9fa';
+        });
       }
     });
   </script>

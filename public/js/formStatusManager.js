@@ -4,17 +4,17 @@ class FormStatusManager {
         this.statusHistory = [];
         this.init();
     }
-    
+
     async init() {
         await this.checkFormStatus();
         this.setupEventListeners();
-        
+
         // Check status periodically (only for active forms)
         if (this.shouldAutoCheck()) {
             setInterval(() => this.checkFormStatus(), 30000); // Every 30 seconds
         }
     }
-    
+
     async checkFormStatus() {
         try {
             const response = await fetch('/api/employee/form-status', {
@@ -24,7 +24,7 @@ class FormStatusManager {
                     'X-Form-ID': this.getFormId()
                 }
             });
-            
+
             if (response.ok) {
                 const data = await response.json();
                 this.updateStatus(data.status, data.context);
@@ -33,7 +33,7 @@ class FormStatusManager {
             console.warn('Failed to check form status:', error);
         }
     }
-    
+
     updateStatus(newStatus, context = {}) {
         if (this.currentStatus !== newStatus) {
             this.statusHistory.push({
@@ -42,34 +42,34 @@ class FormStatusManager {
                 timestamp: new Date().toISOString(),
                 context
             });
-            
+
             this.currentStatus = newStatus;
             updateFormBanner(newStatus, context);
             this.notifyStatusChange(newStatus);
         }
     }
-    
+
     notifyStatusChange(status) {
         const event = new CustomEvent('formStatusChange', {
             detail: { status, history: this.statusHistory }
         });
         document.dispatchEvent(event);
     }
-    
+
     shouldAutoCheck() {
         return ['pending', 'approved', 'Submitted to HOD'].includes(this.currentStatus);
     }
-    
+
     getFormId() {
-        return document.querySelector('[data-form-id]')?.dataset.formId || 
-               new URLSearchParams(window.location.search).get('formId');
+        return document.querySelector('[data-form-id]')?.dataset.formId ||
+            new URLSearchParams(window.location.search).get('formId');
     }
-    
+
     setupEventListeners() {
         document.addEventListener('formStatusChange', (e) => {
             console.log('Form status changed:', e.detail);
         });
-        
+
         document.addEventListener('visibilitychange', () => {
             if (!document.hidden && this.shouldAutoCheck()) {
                 this.checkFormStatus();
@@ -77,6 +77,7 @@ class FormStatusManager {
         });
     }
 }
+
 
 // Status messages configuration
 const STATUS_MESSAGES = {
@@ -107,27 +108,28 @@ const STATUS_MESSAGES = {
     }
 };
 
+
 // Banner management functions
 function updateFormBanner(status, context) {
     const banner = document.querySelector('.form-status-banner') || createStatusBanner();
-    
+
     const config = STATUS_MESSAGES[status];
-    
+
     if (config) {
         banner.innerHTML = `
-            <div class="status-content">
-                <span class="status-icon">${config.icon}</span>
-                <div class="status-text">
-                    <strong>${config.title}</strong>
-                    <div>${config.message}</div>
-                </div>
-            </div>
-            <button class="close-btn" onclick="closeBanner()" aria-label="Close banner">×</button>
-        `;
-        
+            <div class="status-content">
+                <span class="status-icon">${config.icon}</span>
+                <div class="status-text">
+                    <strong>${config.title}</strong>
+                    <div>${config.message}</div>
+                </div>
+            </div>
+            <button class="close-btn" onclick="closeBanner()" aria-label="Close banner">×</button>
+        `;
+
         banner.className = `form-status-banner status-${config.type}`;
         banner.style.display = 'flex';
-        
+
         setFormInteractivity(status !== 'pending' && status !== 'approved');
     } else {
         banner.style.display = 'none';
@@ -135,17 +137,19 @@ function updateFormBanner(status, context) {
     }
 }
 
+
 function createStatusBanner() {
     const banner = document.createElement('div');
     banner.className = 'form-status-banner';
     banner.setAttribute('role', 'alert');
     banner.setAttribute('aria-live', 'polite');
-    
+
     const form = document.querySelector('form') || document.querySelector('.form-container') || document.body;
     form.insertBefore(banner, form.firstChild);
-    
+
     return banner;
 }
+
 
 function setFormInteractivity(isReadOnly) {
     const inputs = document.querySelectorAll('input, select, textarea, button[type="submit"]');
@@ -162,12 +166,14 @@ function setFormInteractivity(isReadOnly) {
     });
 }
 
+
 function closeBanner() {
     const banner = document.querySelector('.form-status-banner');
     if (banner) {
         banner.style.display = 'none';
     }
 }
+
 
 // Initialize when DOM is ready
 let formStatusManager;

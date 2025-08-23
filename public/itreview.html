@@ -650,250 +650,271 @@
 
 <body>
   <!-- Header with search bar and logout button -->
-  <div class="header-container">
-    <h2>IT Department - Review No Dues Forms</h2>
-    <div class="header-controls">
-      <!-- Search Bar -->
-      <div class="search-container">
-        <input type="text" id="globalSearch" placeholder="Search by Form ID, Employee ID, Name..." class="search-input">
-        <button onclick="performSearch()" class="search-btn">Search</button>
-        <button onclick="clearSearch()" class="clear-search-btn">Clear</button>
-      </div>
-      <!-- Logout Button -->
-      <button class="logout-btn" onclick="showLogoutConfirmation()">
-        <span>Logout</span>
-      </button>
-    </div>
-  </div>
+    <div class="header-container">
+        <h2>IT Department - Review No Dues Forms</h2>
+        <div class="header-controls">
+            <!-- Search Bar -->
+            <div class="search-container">
+                <input type="text" id="globalSearch" placeholder="Search by Form ID, Employee ID, Name..."
+          class="search-input">
+                <button onclick="performSearch()" class="search-btn">🔍</button>
+                <button onclick="clearSearch()" class="clear-search-btn">✖️</button>
+              </div>
+            <!-- Logout Button -->
+            <button class="logout-btn" onclick="showLogoutConfirmation()">
+                <span>🚪</span>
+                <span>Logout</span>
+              </button>
+          </div>
+      </div>
 
-  <div class="tab-buttons">
-    <!-- Original tabs -->
-    <button onclick="showTab('pending')" id="pendingTab" class="active">Initial Requests</button>
-    <button onclick="showTab('approved')" id="approvedTab">Approved Requests</button>
-    <button onclick="showTab('rejected')" id="rejectedTab">Rejected Requests</button>
 
-    <!-- HOD workflow tab -->
-    <button onclick="showTab('hodApproved')" id="hodApprovedTab">From HOD Review</button>
-    <button onclick="showTab('completed')" id="completedTab">IT Completed</button>
-  </div>
+    <div class="tab-buttons">
+        <!-- Original tabs -->
+        <button onclick="showTab('pending')" id="pendingTab" class="active">Initial Requests</button>
+        <button onclick="showTab('approved')" id="approvedTab">Approved Requests</button>
+        <button onclick="showTab('rejected')" id="rejectedTab">Rejected Requests</button>
 
-  <!-- Logout Confirmation Modal -->
-  <div id="logoutModal" class="logout-modal">
-    <div class="logout-modal-content">
-      <h3 style="color: #dc3545; margin-bottom: 20px;">Confirm Logout</h3>
-      <p style="margin-bottom: 25px; line-height: 1.5;">
-        Are you sure you want to logout from the IT Dashboard?
-      </p>
-      <div class="logout-modal-buttons">
-        <button class="cancel-logout" onclick="hideLogoutConfirmation()">
-          Cancel
-        </button>
-        <button class="confirm-logout" onclick="performLogout()">
-          Yes, Logout
-        </button>
-      </div>
-    </div>
-  </div>
 
-  <!-- Original Pending Tab -->
-  <div id="pending" class="tab active">
-    <div class="workflow-indicator">
-      <strong>Initial Employee Requests</strong> - Fresh applications awaiting IT approval to assign forms
-    </div>
-    <h3>Pending Applications</h3>
-    <table>
-      <thead>
-        <tr>
-          <th>Form ID</th>
-          <th>Employee ID</th>
-          <th>Name</th>
-          <th>Department</th>
-          <th>Type</th>
-          <th>Submitted</th>
-          <th>Order Letter</th>
-          <th>Status</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
-      <tbody id="pendingTableBody">
-        <tr>
-          <td colspan="9" class="loading">Loading pending requests...</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
+        <!-- NEW: HOD workflow tab -->
+        <button onclick="showTab('hodApproved')" id="hodApprovedTab">From HOD Review</button>
+        <button onclick="showTab('completed')" id="completedTab">IT Completed</button>
+      </div>
 
-  <!-- Original Approved Tab -->
-  <div id="approved" class="tab">
-    <div class="workflow-indicator">
-      <strong>Approved for Form Filling</strong> - Employees assigned forms to complete
-    </div>
-    <h3>Approved Applications</h3>
-    <table>
-      <thead>
-        <tr>
-          <th>Form ID</th>
-          <th>Employee ID</th>
-          <th>Name</th>
-          <th>Department</th>
-          <th>Type</th>
-          <th>Submitted</th>
-          <th>Order Letter</th>
-          <th>Remark</th>
-        </tr>
-      </thead>
-      <tbody id="approvedTableBody">
-        <tr>
-          <td colspan="8" class="loading">Loading approved requests...</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
 
-  <!-- Original Rejected Tab -->
-  <div id="rejected" class="tab">
-    <div class="workflow-indicator">
-      <strong>Rejected Applications</strong> - Applications that didn't meet initial requirements
-    </div>
-    <h3>Rejected Applications</h3>
-    <table>
-      <thead>
-        <tr>
-          <th>Form ID</th>
-          <th>Employee ID</th>
-          <th>Name</th>
-          <th>Department</th>
-          <th>Type</th>
-          <th>Submitted</th>
-          <th>Order Letter</th>
-          <th>Remark</th>
-        </tr>
-      </thead>
-      <tbody id="rejectedTableBody">
-        <tr>
-          <td colspan="8" class="loading">Loading rejected requests...</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
+    <!-- Logout Confirmation Modal -->
+    <div id="logoutModal" class="logout-modal">
+        <div class="logout-modal-content">
+            <h3 style="color: #dc3545; margin-bottom: 20px;">🚪 Confirm Logout</h3>
+            <p style="margin-bottom: 25px; line-height: 1.5;">
+                Are you sure you want to logout from the IT Dashboard?
+              </p>
+            <div class="logout-modal-buttons">
+                <button class="cancel-logout" onclick="hideLogoutConfirmation()">
+                    ✖️ Cancel
+                  </button>
+                <button class="confirm-logout" onclick="performLogout()">
+                    🚪 Yes, Logout
+                  </button>
+              </div>
+          </div>
+      </div>
 
-  <!-- HOD Approved Tab -->
-  <div id="hodApproved" class="tab">
-    <div class="workflow-indicator">
-      <strong>Ready for IT Final Review</strong> - Forms completed by employees and approved by HOD
-    </div>
-    <h3>Forms from HOD (Ready for IT Processing)</h3>
-    <table>
-      <thead>
-        <tr>
-          <th>Form ID</th>
-          <th>Employee</th>
-          <th>Department</th>
-          <th>Type</th>
-          <th>HOD Approved</th>
-          <th>Status</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
-      <tbody id="hodApprovedTableBody">
-        <tr>
-          <td colspan="7" class="loading">Loading HOD approved forms...</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
 
-  <!-- IT Completed Tab -->
-  <div id="completed" class="tab">
-    <div class="workflow-indicator">
-      <strong>Process Complete</strong> - Final clearance completed by IT
-    </div>
-    <h3>IT Completed Applications</h3>
-    <table>
-      <thead>
-        <tr>
-          <th>Form ID</th>
-          <th>Employee</th>
-          <th>Department</th>
-          <th>Type</th>
-          <th>Completed Date</th>
-          <th>IT Officer</th>
-          <th>IT Remarks</th>
-        </tr>
-      </thead>
-      <tbody id="completedTableBody">
-        <tr>
-          <td colspan="7" class="loading">Loading completed forms...</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
+    <!-- Original Pending Tab -->
+    <div id="pending" class="tab active">
+        <div class="workflow-indicator">
+            <strong>📋 Initial Employee Requests</strong> - Fresh applications awaiting IT approval to assign forms
+          </div>
+        <h3>Pending Applications</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Form ID</th>
+                    <th>Employee ID</th>
+                    <th>Name</th>
+                    <th>Department</th>
+                    <th>Type</th>
+                    <th>Submitted</th>
+                    <th>Order Letter</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                  </tr>
+              </thead>
+            <tbody id="pendingTableBody">
+                <tr>
+                    <td colspan="9" class="loading">Loading pending requests...</td>
+                  </tr>
+              </tbody>
+          </table>
+      </div>
 
-  <!-- Enhanced Modal for Form Preview & Selection -->
-  <div id="formPreviewDialog" class="modal">
-    <div class="modal-content">
-      <h2>Select Forms to Send to Employee</h2>
-      <p>Preview and select which forms to assign to the employee:</p>
 
-      <div class="iframe-container">
-        <div class="iframe-wrapper">
-          <div class="iframe-header">E-file Transfer Form</div>
-          <iframe id="efilePreview" src="/forms/efile.html"></iframe>
-          <div class="form-checklist">
-            <label><input type="checkbox" id="efileCheck"> Select E-file Form</label>
-          </div>
-        </div>
+    <!-- Original Approved Tab -->
+    <div id="approved" class="tab">
+        <div class="workflow-indicator">
+            <strong>✅ Approved for Form Filling</strong> - Employees assigned forms to complete
+          </div>
+        <h3>Approved Applications</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Form ID</th>
+                    <th>Employee ID</th>
+                    <th>Name</th>
+                    <th>Department</th>
+                    <th>Type</th>
+                    <th>Submitted</th>
+                    <th>Order Letter</th>
+                    <th>Remark</th>
+                  </tr>
+              </thead>
+            <tbody id="approvedTableBody">
+                <tr>
+                    <td colspan="8" class="loading">Loading approved requests...</td>
+                  </tr>
+              </tbody>
+          </table>
+      </div>
 
-        <div class="iframe-wrapper">
-          <div class="iframe-header">Disposal Form</div>
-          <iframe id="disposalPreview" src="/forms/disposalform.html"></iframe>
-          <div class="form-checklist">
-            <label><input type="checkbox" id="disposalCheck"> Select Disposal Form</label>
-          </div>
-        </div>
 
-        <div class="iframe-wrapper">
-          <div class="iframe-header">Form 365</div>
-          <iframe id="form365Preview"></iframe>
-          <div class="form-checklist">
-            <label><input type="checkbox" id="form365Check"> Select Form 365</label>
-          </div>
-        </div>
-      </div>
+    <!-- Original Rejected Tab -->
+    <div id="rejected" class="tab">
+        <div class="workflow-indicator">
+            <strong>❌ Rejected Applications</strong> - Applications that didn't meet initial requirements
+          </div>
+        <h3>Rejected Applications</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Form ID</th>
+                    <th>Employee ID</th>
+                    <th>Name</th>
+                    <th>Department</th>
+                    <th>Type</th>
+                    <th>Submitted</th>
+                    <th>Order Letter</th>
+                    <th>Remark</th>
+                  </tr>
+              </thead>
+            <tbody id="rejectedTableBody">
+                <tr>
+                    <td colspan="8" class="loading">Loading rejected requests...</td>
+                  </tr>
+              </tbody>
+          </table>
+      </div>
 
-      <div class="modal-actions">
-        <button class="cancel-btn" onclick="closeDialog()">Cancel</button>
-        <button id="sendToEmployeeBtn" class="send-btn" onclick="sendFormsToEmployee()" disabled>
-          Send Selected Forms to Employee
-        </button>
-      </div>
-    </div>
-  </div>
+
+    <!-- NEW: HOD Approved Tab -->
+    <div id="hodApproved" class="tab">
+        <div class="workflow-indicator">
+            <strong>🎯 Ready for IT Final Review</strong> - Forms completed by employees and approved by HOD
+          </div>
+        <h3>Forms from HOD (Ready for IT Processing)</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Form ID</th>
+                    <th>Employee</th>
+                    <th>Department</th>
+                    <th>Type</th>
+                    <th>HOD Approved</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                  </tr>
+              </thead>
+            <tbody id="hodApprovedTableBody">
+                <tr>
+                    <td colspan="7" class="loading">Loading HOD approved forms...</td>
+                  </tr>
+              </tbody>
+          </table>
+      </div>
+
+
+    <!-- NEW: IT Completed Tab -->
+    <div id="completed" class="tab">
+        <div class="workflow-indicator">
+            <strong>🏁 Process Complete</strong> - Final clearance completed by IT
+          </div>
+        <h3>IT Completed Applications</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Form ID</th>
+                    <th>Employee</th>
+                    <th>Department</th>
+                    <th>Type</th>
+                    <th>Completed Date</th>
+                    <th>IT Officer</th>
+                    <th>IT Remarks</th>
+                  </tr>
+              </thead>
+            <tbody id="completedTableBody">
+                <tr>
+                    <td colspan="7" class="loading">Loading completed forms...</td>
+                  </tr>
+              </tbody>
+          </table>
+      </div>
+
+
+    <!-- Enhanced Modal for Form Preview & Selection -->
+    <div id="formPreviewDialog" class="modal">
+        <div class="modal-content">
+            <h2>📋 Select Forms to Send to Employee</h2>
+            <p>Preview and select which forms to assign to the employee:</p>
+
+
+            <div class="iframe-container">
+                <div class="iframe-wrapper">
+                    <div class="iframe-header">📧 E-file Transfer Form</div>
+                    <iframe id="efilePreview" src="/forms/efile.html"></iframe>
+                    <div class="form-checklist">
+                        <label><input type="checkbox" id="efileCheck"> ✅ Select E-file Form</label>
+                      </div>
+                  </div>
+
+
+                <div class="iframe-wrapper">
+                    <div class="iframe-header">🗂️ Disposal Form</div>
+                    <iframe id="disposalPreview" src="/forms/disposalform.html"></iframe>
+                    <div class="form-checklist">
+                        <label><input type="checkbox" id="disposalCheck"> ✅ Select Disposal Form</label>
+                      </div>
+                  </div>
+
+
+                <div class="iframe-wrapper">
+                    <div class="iframe-header">📋 Form 365</div>
+                    <iframe id="form365Preview"></iframe>
+                    <div class="form-checklist">
+                        <label><input type="checkbox" id="form365Check"> ✅ Select Form 365</label>
+                      </div>
+                  </div>
+              </div>
+
+
+            <div class="modal-actions">
+                <button class="cancel-btn" onclick="closeDialog()">❌ Cancel</button>
+                <button id="sendToEmployeeBtn" class="send-btn" onclick="sendFormsToEmployee()" disabled>
+                    📤 Send Selected Forms to Employee
+                  </button>
+              </div>
+          </div>
+      </div>
 
 
   <script>
     let currentFormId = '';
     let currentNoDuesType = '';
 
-    // Search functionality
+
+    // FIXED: Simple and direct search functionality
     function performSearch() {
       const searchTerm = document.getElementById('globalSearch').value.toLowerCase().trim();
+
 
       if (!searchTerm) {
         clearSearch();
         return;
       }
 
+
       // Find the currently active tab
       const activeTab = document.querySelector('.tab.active');
       if (!activeTab) return;
 
+
       const tbody = activeTab.querySelector('tbody');
       if (!tbody) return;
+
 
       // Get all table rows in the active tab
       const rows = Array.from(tbody.getElementsByTagName('tr'));
       let visibleCount = 0;
+
 
       // Filter rows based on search term
       rows.forEach(row => {
@@ -908,10 +929,12 @@
           return;
         }
 
+
         const rowText = row.textContent.toLowerCase();
         if (rowText.includes(searchTerm)) {
           row.style.display = '';
           visibleCount++;
+
 
           // Highlight matching text
           highlightTextInRow(row, searchTerm);
@@ -920,14 +943,17 @@
         }
       });
 
+
       // Show "no results" message if no matches
       if (visibleCount === 0) {
         showNoResultsMessage(tbody);
       }
 
+
       // Show results count
       showSearchResults(searchTerm, visibleCount);
     }
+
 
     // Helper function to highlight matching text
     function highlightTextInRow(row, searchTerm) {
@@ -938,6 +964,7 @@
           return;
         }
 
+
         const cellText = cell.textContent.toLowerCase();
         if (cellText.includes(searchTerm)) {
           const regex = new RegExp(`(${searchTerm})`, 'gi');
@@ -946,31 +973,37 @@
       });
     }
 
+
     // Show no results message
     function showNoResultsMessage(tbody) {
       const table = tbody.parentElement;
       const headerRow = table.querySelector('thead tr');
       const colCount = headerRow ? headerRow.children.length : 5;
 
+
       const noResultRow = document.createElement('tr');
       noResultRow.className = 'no-results-row';
-      noResultRow.innerHTML = `<td colspan="${colCount}" class="empty-state">No matching records found for your search</td>`;
+      noResultRow.innerHTML = `<td colspan="${colCount}" class="empty-state">🔍 No matching records found for your search</td>`;
       tbody.appendChild(noResultRow);
     }
 
-    // Clear search function
+
+    // FIXED: Clear search function
     function clearSearch() {
       const searchInput = document.getElementById('globalSearch');
       if (searchInput) {
         searchInput.value = '';
       }
 
+
       // Find the currently active tab
       const activeTab = document.querySelector('.tab.active');
       if (!activeTab) return;
 
+
       const tbody = activeTab.querySelector('tbody');
       if (!tbody) return;
+
 
       // Show all rows
       const rows = Array.from(tbody.getElementsByTagName('tr'));
@@ -978,16 +1011,20 @@
         row.style.display = '';
       });
 
+
       // Remove no results message
       const noResultRows = tbody.querySelectorAll('.no-results-row');
       noResultRows.forEach(row => row.remove());
 
+
       // Remove search highlights
       removeSearchHighlights(tbody);
+
 
       // Hide search results info
       hideSearchResults();
     }
+
 
     // Remove search highlights
     function removeSearchHighlights(tbody) {
@@ -996,6 +1033,7 @@
         highlight.outerHTML = highlight.textContent;
       });
     }
+
 
     // Show search results count
     function showSearchResults(searchTerm, count) {
@@ -1007,9 +1045,11 @@
         document.querySelector('.tab-buttons').appendChild(resultsDiv);
       }
 
-      resultsDiv.innerHTML = `Found ${count} result${count !== 1 ? 's' : ''} for "${searchTerm}"`;
+
+      resultsDiv.innerHTML = `📊 Found ${count} result${count !== 1 ? 's' : ''} for "${searchTerm}"`;
       resultsDiv.style.display = 'block';
     }
+
 
     // Hide search results
     function hideSearchResults() {
@@ -1019,21 +1059,25 @@
       }
     }
 
+
     // Logout functionality
     function showLogoutConfirmation() {
       document.getElementById('logoutModal').style.display = 'flex';
     }
 
+
     function hideLogoutConfirmation() {
       document.getElementById('logoutModal').style.display = 'none';
     }
+
 
     async function performLogout() {
       try {
         // Show loading state
         const confirmBtn = document.querySelector('.confirm-logout');
-        confirmBtn.innerHTML = 'Logging out...';
+        confirmBtn.innerHTML = '🔄 Logging out...';
         confirmBtn.disabled = true;
+
 
         const response = await fetch('/api/auth/logout', {
           method: 'POST',
@@ -1043,12 +1087,15 @@
           }
         });
 
+
         const data = await response.json();
+
 
         if (response.ok && data.success) {
           // Clear any stored session data
           sessionStorage.clear();
           localStorage.removeItem('userSession');
+
 
           // Redirect to login page
           window.location.href = data.redirect || '/login.html';
@@ -1056,23 +1103,28 @@
           throw new Error(data.message || 'Logout failed');
         }
       } catch (error) {
-        alert('Logout failed: ' + error.message + '\nRedirecting to login page...');
+        console.error('Logout error:', error);
+        alert('❌ Logout failed: ' + error.message + '\nRedirecting to login page...');
         window.location.href = '/login.html';
       }
     }
+
 
     // Enhanced tab switching with proper state management
     function showTab(tabId) {
       // Clear search when switching tabs
       clearSearch();
 
+
       // Remove active from all tabs and buttons
       document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
       document.querySelectorAll('.tab-buttons button').forEach(btn => btn.classList.remove('active'));
 
+
       // Add active to selected tab and button
       document.getElementById(tabId).classList.add('active');
       document.getElementById(tabId + 'Tab').classList.add('active');
+
 
       // Refresh data when switching to HOD approved tab
       if (tabId === 'hodApproved') {
@@ -1080,32 +1132,39 @@
       }
     }
 
+
     // Enhanced form preview dialog
     function openFormPreviewDialog(formId, noDuesType) {
       currentFormId = formId;
       currentNoDuesType = noDuesType;
 
+
       const form365Path = noDuesType.toLowerCase() === 'transfer' ? 'form365transfer.html' : 'form365disposal.html';
       document.getElementById('form365Preview').src = `/forms/${form365Path}`;
+
 
       // Reset checkboxes
       ['efileCheck', 'disposalCheck', 'form365Check'].forEach(id => {
         document.getElementById(id).checked = false;
       });
 
+
       updateSendButtonState();
       document.getElementById('formPreviewDialog').style.display = 'flex';
     }
+
 
     function closeDialog() {
       document.getElementById('formPreviewDialog').style.display = 'none';
     }
 
-    // Open IT form review for HOD-approved forms
+
+    // NEW: Open IT form review for HOD-approved forms
     function openITFormReview(formId) {
       const url = `/it-form-review.html?formId=${encodeURIComponent(formId)}`;
       const windowFeatures = 'width=1400,height=900,scrollbars=yes,resizable=yes';
       const reviewWindow = window.open(url, '_blank', windowFeatures);
+
 
       if (!reviewWindow) {
         alert('Please allow popups for this site to open the review window.');
@@ -1122,26 +1181,31 @@
       }
     }
 
+
     // Enhanced checkbox handling with validation
     function updateSendButtonState() {
       const allChecked = [...document.querySelectorAll('#efileCheck, #disposalCheck, #form365Check')]
         .every(cb => cb.checked);
 
+
       const sendBtn = document.getElementById('sendToEmployeeBtn');
       sendBtn.disabled = !allChecked;
 
+
       if (allChecked) {
-        sendBtn.innerHTML = 'Send All Forms to Employee';
+        sendBtn.innerHTML = '📤 Send All Forms to Employee';
       } else {
-        sendBtn.innerHTML = 'Select All Forms to Continue';
+        sendBtn.innerHTML = '📤 Select All Forms to Continue';
       }
     }
+
 
     // Enhanced form sending with better error handling
     async function sendFormsToEmployee() {
       const sendBtn = document.getElementById('sendToEmployeeBtn');
       sendBtn.disabled = true;
-      sendBtn.innerHTML = 'Sending Forms...';
+      sendBtn.innerHTML = '📤 Sending Forms...';
+
 
       try {
         const response = await fetch('/api/itadmin/decision', {
@@ -1158,21 +1222,25 @@
           })
         });
 
+
         const data = await response.json();
 
+
         if (response.ok && data.success) {
-          alert('Forms successfully assigned to employee!');
+          alert('✅ Forms successfully assigned to employee!');
           closeDialog();
           fetchAllData(); // Refresh all data
         } else {
           throw new Error(data.message || 'Failed to assign forms');
         }
       } catch (error) {
-        alert('Error while sending forms: ' + error.message);
+        console.error('Error sending forms:', error);
+        alert('❌ Error while sending forms: ' + error.message);
         sendBtn.disabled = false;
         updateSendButtonState();
       }
     }
+
 
     // Enhanced rejection with better validation
     async function rejectRequest(formId) {
@@ -1181,6 +1249,7 @@
         alert('Please enter a detailed rejection reason (minimum 5 characters).');
         return;
       }
+
 
       try {
         const response = await fetch('/api/itadmin/decision', {
@@ -1197,20 +1266,24 @@
           })
         });
 
+
         const data = await response.json();
 
+
         if (response.ok && data.success) {
-          alert('Request rejected successfully.');
+          alert('✅ Request rejected successfully.');
           fetchAllData();
         } else {
           throw new Error(data.message || 'Failed to reject request');
         }
       } catch (error) {
-        alert('Error while rejecting request: ' + error.message);
+        console.error('Error rejecting request:', error);
+        alert('❌ Error while rejecting request: ' + error.message);
       }
     }
 
-    // Enhanced data fetching with better error handling
+
+    // NEW: Enhanced data fetching with better error handling
     async function fetchAllData() {
       try {
         await Promise.all([
@@ -1218,10 +1291,12 @@
           fetchHODApproved(),
           fetchITCompleted()
         ]);
+        console.log('✅ All data refreshed successfully');
       } catch (error) {
-        // Silent error handling
+        console.error('❌ Error refreshing data:', error);
       }
     }
+
 
     // Enhanced original function with better error handling
     async function fetchReviewData() {
@@ -1229,10 +1304,12 @@
       const approvedBody = document.getElementById('approvedTableBody');
       const rejectedBody = document.getElementById('rejectedTableBody');
 
+
       // Show loading state
       pendingBody.innerHTML = '<tr><td colspan="9" class="loading">Loading pending requests...</td></tr>';
       approvedBody.innerHTML = '<tr><td colspan="8" class="loading">Loading approved requests...</td></tr>';
       rejectedBody.innerHTML = '<tr><td colspan="8" class="loading">Loading rejected requests...</td></tr>';
+
 
       try {
         const response = await fetch('/api/itadmin/review-requests', {
@@ -1240,26 +1317,33 @@
           headers: { 'Accept': 'application/json' }
         });
 
+
         if (!response.ok) {
           throw new Error(`Server error: ${response.status}`);
         }
 
+
         const data = await response.json();
 
+
         if (data.success && Array.isArray(data.requests)) {
+          console.log('📊 Fetched review requests:', data.requests.length);
           populateOriginalTables(data.requests);
         } else {
           throw new Error(data.message || 'Invalid response format');
         }
       } catch (error) {
+        console.error('❌ Error fetching review data:', error);
         populateOriginalTables([]);
       }
     }
 
-    // Enhanced HOD approved data fetching
+
+    // NEW: Enhanced HOD approved data fetching
     async function fetchHODApproved() {
       const tbody = document.getElementById('hodApprovedTableBody');
       tbody.innerHTML = '<tr><td colspan="7" class="loading">Loading HOD approved forms...</td></tr>';
+
 
       try {
         const response = await fetch('/api/itadmin/pending', {
@@ -1267,26 +1351,33 @@
           headers: { 'Accept': 'application/json' }
         });
 
+
         if (!response.ok) {
           throw new Error(`Server error: ${response.status}`);
         }
 
+
         const data = await response.json();
 
+
         if (data.success && Array.isArray(data.list)) {
+          console.log('📊 Fetched HOD approved forms:', data.list.length);
           populateHODApprovedTable(data.list);
         } else {
           throw new Error(data.message || 'Invalid response format');
         }
       } catch (error) {
+        console.error('❌ Error fetching HOD approved data:', error);
         populateHODApprovedTable([]);
       }
     }
 
-    // Enhanced IT completed data fetching
+
+    // NEW: Enhanced IT completed data fetching
     async function fetchITCompleted() {
       const tbody = document.getElementById('completedTableBody');
       tbody.innerHTML = '<tr><td colspan="7" class="loading">Loading completed forms...</td></tr>';
+
 
       try {
         const response = await fetch('/api/itadmin/completed', {
@@ -1294,12 +1385,14 @@
           headers: { 'Accept': 'application/json' }
         });
 
+
         if (!response.ok) {
           // Fallback to review-requests and filter
           const fallbackResponse = await fetch('/api/itadmin/review-requests', {
             credentials: 'include',
             headers: { 'Accept': 'application/json' }
           });
+
 
           if (fallbackResponse.ok) {
             const fallbackData = await fallbackResponse.json();
@@ -1314,17 +1407,22 @@
           throw new Error(`Server error: ${response.status}`);
         }
 
+
         const data = await response.json();
 
+
         if (data.success && Array.isArray(data.list)) {
+          console.log('📊 Fetched IT completed forms:', data.list.length);
           populateCompletedTable(data.list);
         } else {
           throw new Error(data.message || 'Invalid response format');
         }
       } catch (error) {
+        console.error('❌ Error fetching IT completed data:', error);
         populateCompletedTable([]);
       }
     }
+
 
     // Enhanced original table population with better formatting
     function populateOriginalTables(requests) {
@@ -1332,24 +1430,28 @@
       const approvedBody = document.getElementById('approvedTableBody');
       const rejectedBody = document.getElementById('rejectedTableBody');
 
+
       pendingBody.innerHTML = '';
       approvedBody.innerHTML = '';
       rejectedBody.innerHTML = '';
 
+
       if (!requests || requests.length === 0) {
-        pendingBody.innerHTML = '<tr><td colspan="9" class="empty-state">No pending requests</td></tr>';
-        approvedBody.innerHTML = '<tr><td colspan="8" class="empty-state">No approved requests</td></tr>';
-        rejectedBody.innerHTML = '<tr><td colspan="8" class="empty-state">No rejected requests</td></tr>';
+        pendingBody.innerHTML = '<tr><td colspan="9" class="empty-state">📭 No pending requests</td></tr>';
+        approvedBody.innerHTML = '<tr><td colspan="8" class="empty-state">📭 No approved requests</td></tr>';
+        rejectedBody.innerHTML = '<tr><td colspan="8" class="empty-state">📭 No rejected requests</td></tr>';
         return;
       }
+
 
       const pending = requests.filter(req => !req.status || req.status.toLowerCase() === 'pending');
       const approved = requests.filter(req => req.status && req.status.toLowerCase() === 'approved');
       const rejected = requests.filter(req => req.status && req.status.toLowerCase() === 'rejected');
 
+
       // Populate pending requests
       if (pending.length === 0) {
-        pendingBody.innerHTML = '<tr><td colspan="9" class="empty-state">No pending requests</td></tr>';
+        pendingBody.innerHTML = '<tr><td colspan="9" class="empty-state">📭 No pending requests</td></tr>';
       } else {
         pending.forEach(req => {
           const row = createRequestRow(req, 'pending');
@@ -1357,9 +1459,10 @@
         });
       }
 
+
       // Populate approved requests
       if (approved.length === 0) {
-        approvedBody.innerHTML = '<tr><td colspan="8" class="empty-state">No approved requests</td></tr>';
+        approvedBody.innerHTML = '<tr><td colspan="8" class="empty-state">📭 No approved requests</td></tr>';
       } else {
         approved.forEach(req => {
           const row = createRequestRow(req, 'approved');
@@ -1367,9 +1470,10 @@
         });
       }
 
+
       // Populate rejected requests
       if (rejected.length === 0) {
-        rejectedBody.innerHTML = '<tr><td colspan="8" class="empty-state">No rejected requests</td></tr>';
+        rejectedBody.innerHTML = '<tr><td colspan="8" class="empty-state">📭 No rejected requests</td></tr>';
       } else {
         rejected.forEach(req => {
           const row = createRequestRow(req, 'rejected');
@@ -1377,6 +1481,7 @@
         });
       }
     }
+
 
     // Helper function to create request rows
     function createRequestRow(req, type) {
@@ -1387,64 +1492,69 @@
       const department = req.department || '-';
       const noDuesType = req.noDuesType || '-';
       const submissionDate = req.submissionDate ? new Date(req.submissionDate).toLocaleDateString() : '-';
-      const orderLetter = req.orderLetter ? `<a href="/uploads/${req.orderLetter}" target="_blank" style="color: #0077b6;">View</a>` : '-';
+      const orderLetter = req.orderLetter ? `<a href="/uploads/${req.orderLetter}" target="_blank" style="color: #0077b6;">📄 View</a>` : '-';
       const remark = req.remark || '-';
+
 
       if (type === 'pending') {
         row.innerHTML = `
-        <td><strong>${formId}</strong></td>
-        <td>${employeeId}</td>
-        <td>${name}</td>
-        <td>${department}</td>
-        <td><span class="status-badge status-pending">${noDuesType}</span></td>
-        <td>${submissionDate}</td>
-        <td>${orderLetter}</td>
-        <td><span class="status-badge status-pending">Pending</span></td>
-        <td class="actions">
-          <button class="approve-btn" onclick="openFormPreviewDialog('${formId}', '${noDuesType}')" title="Approve and assign forms">
-            Approve
-          </button>
-          <button class="reject-btn" onclick="rejectRequest('${formId}')" title="Reject this request">
-            Reject
-          </button>
-        </td>
-      `;
+          <td><strong>${formId}</strong></td>
+          <td>${employeeId}</td>
+          <td>${name}</td>
+          <td>${department}</td>
+          <td><span class="status-badge status-pending">${noDuesType}</span></td>
+          <td>${submissionDate}</td>
+          <td>${orderLetter}</td>
+          <td><span class="status-badge status-pending">Pending</span></td>
+          <td class="actions">
+            <button class="approve-btn" onclick="openFormPreviewDialog('${formId}', '${noDuesType}')" title="Approve and assign forms">
+              ✅ Approve
+            </button>
+            <button class="reject-btn" onclick="rejectRequest('${formId}')" title="Reject this request">
+              ❌ Reject
+            </button>
+          </td>
+        `;
       } else if (type === 'approved') {
         row.innerHTML = `
-        <td><strong>${formId}</strong></td>
-        <td>${employeeId}</td>
-        <td>${name}</td>
-        <td>${department}</td>
-        <td><span class="status-badge status-approved">${noDuesType}</span></td>
-        <td>${submissionDate}</td>
-        <td>${orderLetter}</td>
-        <td>${remark}</td>
-      `;
+          <td><strong>${formId}</strong></td>
+          <td>${employeeId}</td>
+          <td>${name}</td>
+          <td>${department}</td>
+          <td><span class="status-badge status-approved">${noDuesType}</span></td>
+          <td>${submissionDate}</td>
+          <td>${orderLetter}</td>
+          <td>${remark}</td>
+        `;
       } else if (type === 'rejected') {
         row.innerHTML = `
-        <td><strong>${formId}</strong></td>
-        <td>${employeeId}</td>
-        <td>${name}</td>
-        <td>${department}</td>
-        <td><span class="status-badge status-rejected">${noDuesType}</span></td>
-        <td>${submissionDate}</td>
-        <td>${orderLetter}</td>
-        <td style="color: #dc3545;">${remark}</td>
-      `;
+          <td><strong>${formId}</strong></td>
+          <td>${employeeId}</td>
+          <td>${name}</td>
+          <td>${department}</td>
+          <td><span class="status-badge status-rejected">${noDuesType}</span></td>
+          <td>${submissionDate}</td>
+          <td>${orderLetter}</td>
+          <td style="color: #dc3545;">${remark}</td>
+        `;
       }
+
 
       return row;
     }
 
-    // Enhanced HOD approved table population
+
+    // NEW: Enhanced HOD approved table population
     function populateHODApprovedTable(forms) {
       const tbody = document.getElementById('hodApprovedTableBody');
       tbody.innerHTML = '';
 
+
       if (!forms || forms.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="7" class="empty-state">No forms from HOD ready for IT review</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="7" class="empty-state">📭 No forms from HOD ready for IT review</td></tr>';
         return;
       }
+
 
       forms.forEach(form => {
         const row = document.createElement('tr');
@@ -1452,32 +1562,36 @@
           ? new Date(form.hodApproval.approvedAt).toLocaleDateString()
           : '-';
 
+
         row.innerHTML = `
-        <td><strong>${form.formId}</strong></td>
-        <td>${form.employeeName || form.name || '-'}</td>
-        <td>${form.department || '-'}</td>
-        <td><span class="status-badge status-submitted">${form.noDuesType || '-'}</span></td>
-        <td>${hodApprovedDate}</td>
-        <td><span class="status-badge status-approved">${form.status || 'Ready for IT'}</span></td>
-        <td class="actions">
-          <button class="review-btn" onclick="openITFormReview('${form.formId}')" title="Review and process this form">
-            Review & Process
-          </button>
-        </td>
-      `;
+          <td><strong>${form.formId}</strong></td>
+          <td>${form.employeeName || form.name || '-'}</td>
+          <td>${form.department || '-'}</td>
+          <td><span class="status-badge status-submitted">${form.noDuesType || '-'}</span></td>
+          <td>${hodApprovedDate}</td>
+          <td><span class="status-badge status-approved">${form.status || 'Ready for IT'}</span></td>
+          <td class="actions">
+            <button class="review-btn" onclick="openITFormReview('${form.formId}')" title="Review and process this form">
+              🔍 Review & Process
+            </button>
+          </td>
+        `;
         tbody.appendChild(row);
       });
     }
 
-    // Enhanced completed table population
+
+    // NEW: Enhanced completed table population
     function populateCompletedTable(forms) {
       const tbody = document.getElementById('completedTableBody');
       tbody.innerHTML = '';
 
+
       if (!forms || forms.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="7" class="empty-state">No completed forms</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="7" class="empty-state">📭 No completed forms</td></tr>';
         return;
       }
+
 
       forms.forEach(form => {
         const row = document.createElement('tr');
@@ -1485,30 +1599,35 @@
           ? new Date(form.itProcessing.processedAt).toLocaleDateString()
           : (form.completedDate ? new Date(form.completedDate).toLocaleDateString() : '-');
 
+
         const itOfficer = form.itProcessing && form.itProcessing.officerName
           ? form.itProcessing.officerName
           : (form.itOfficerName || '-');
+
 
         const itRemarks = form.itProcessing && form.itProcessing.remarks
           ? form.itProcessing.remarks
           : (form.itRemarks || form.remark || '-');
 
+
         row.innerHTML = `
-        <td><strong>${form.formId}</strong></td>
-        <td>${form.employeeName || form.name || '-'}</td>
-        <td>${form.department || '-'}</td>
-        <td><span class="status-badge status-approved">${form.noDuesType || '-'}</span></td>
-        <td>${completedDate}</td>
-        <td>${itOfficer}</td>
-        <td style="color: #28a745;">${itRemarks}</td>
-      `;
+          <td><strong>${form.formId}</strong></td>
+          <td>${form.employeeName || form.name || '-'}</td>
+          <td>${form.department || '-'}</td>
+          <td><span class="status-badge status-approved">${form.noDuesType || '-'}</span></td>
+          <td>${completedDate}</td>
+          <td>${itOfficer}</td>
+          <td style="color: #28a745;">${itRemarks}</td>
+        `;
         tbody.appendChild(row);
       });
     }
 
+
     // Add this function to hide back buttons in iframes
     function hideBackButtonsInIframes() {
       const iframes = document.querySelectorAll('iframe');
+
 
       iframes.forEach(iframe => {
         iframe.addEventListener('load', function () {
@@ -1517,23 +1636,29 @@
             const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
             const backButtons = iframeDoc.querySelectorAll('[onclick*="goBack"], [onclick*="window.history.back"], .back-btn, .global-back-button');
 
+
             backButtons.forEach(btn => {
               btn.style.display = 'none';
             });
           } catch (error) {
-            // Silent error handling for cross-origin access
+            console.log('Cannot access iframe content (cross-origin):', error);
           }
         });
       });
     }
 
-    // Enhanced initialization
+
+    // FIXED: Enhanced initialization
     document.addEventListener('DOMContentLoaded', () => {
+      console.log('🚀 IT Dashboard initializing...');
+
+
       // Setup search functionality
       const searchInput = document.getElementById('globalSearch');
       if (searchInput) {
         // Real-time search as user types
         searchInput.addEventListener('input', performSearch);
+
 
         // Also support Enter key
         searchInput.addEventListener('keypress', function (e) {
@@ -1543,11 +1668,13 @@
         });
       }
 
+
       // Setup clear button
       const clearBtn = document.querySelector('.clear-search-btn');
       if (clearBtn) {
         clearBtn.addEventListener('click', clearSearch);
       }
+
 
       // Setup search button
       const searchBtn = document.querySelector('.search-btn');
@@ -1555,10 +1682,12 @@
         searchBtn.addEventListener('click', performSearch);
       }
 
+
       // Setup checkbox event listeners with enhanced validation
       document.querySelectorAll('#efileCheck, #disposalCheck, #form365Check').forEach(checkbox => {
         checkbox.addEventListener('change', updateSendButtonState);
       });
+
 
       // Close logout modal when clicking outside
       document.getElementById('logoutModal').addEventListener('click', (e) => {
@@ -1567,11 +1696,14 @@
         }
       });
 
+
       // Initialize iframe back button hiding
       hideBackButtonsInIframes();
 
+
       // Initial data fetch
       fetchAllData();
+
 
       // Auto-refresh every 30 seconds for HOD approved tab
       setInterval(() => {
@@ -1580,18 +1712,25 @@
           fetchHODApproved();
         }
       }, 30000);
+
+
+      console.log('✅ IT Dashboard loaded with working search functionality');
     });
+
 
     // Global error handler
     window.addEventListener('error', (event) => {
-      // Silent error handling
+      console.error('Global error caught:', event.error);
     });
+
 
     // Handle unhandled promise rejections
     window.addEventListener('unhandledrejection', (event) => {
-      // Silent error handling
+      console.error('Unhandled promise rejection:', event.reason);
       event.preventDefault();
     });
+
+
   </script>
 
 

@@ -256,7 +256,7 @@ class OTPManager {
     }
 
     /**
-     * Create enhanced transporter with retry logic
+     * Create enhanced transporter with retry logic - FIXED: Changed createTransporter to createTransport
      */
     async createTransporter() {
         const transporterConfig = {
@@ -284,7 +284,8 @@ class OTPManager {
             };
         }
 
-        this.transporter = nodemailer.createTransporter(transporterConfig);
+        // FIXED: Changed from createTransporter to createTransport
+        this.transporter = nodemailer.createTransport(transporterConfig);
     }
 
     /**

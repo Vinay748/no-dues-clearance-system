@@ -1,9 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+   
   <meta charset="UTF-8">
-  <title>Form Submitted</title>
-  <style>
+    <title>Form Submitted</title>
+    <style>
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       background-color: #eaf6ff;
@@ -15,6 +17,7 @@
       height: 100vh;
     }
 
+
     .confirmation-box {
       background-color: white;
       padding: 40px;
@@ -25,16 +28,19 @@
       width: 90%;
     }
 
+
     .confirmation-box h2 {
       color: #0078D7;
       margin-bottom: 20px;
     }
+
 
     .confirmation-box p {
       font-size: 16px;
       color: #333;
       margin: 8px 0;
     }
+
 
     .confirmation-box .error {
       color: #dc3545;
@@ -45,6 +51,7 @@
       margin: 10px 0;
     }
 
+
     .confirmation-box .success {
       color: #155724;
       background-color: #d4edda;
@@ -54,10 +61,12 @@
       margin: 15px 0;
     }
 
+
     .confirmation-box .loading {
       color: #0078D7;
       font-style: italic;
     }
+
 
     .btn {
       background-color: #0078D7;
@@ -71,14 +80,17 @@
       transition: background-color 0.3s ease;
     }
 
+
     .btn:hover {
       background-color: #005fa3;
     }
+
 
     .btn:disabled {
       background-color: #6c757d;
       cursor: not-allowed;
     }
+
 
     .detail-row {
       display: flex;
@@ -89,14 +101,17 @@
       border-radius: 4px;
     }
 
+
     .detail-label {
       font-weight: bold;
       color: #495057;
     }
 
+
     .detail-value {
       color: #212529;
     }
+
 
     .form-id-highlight {
       font-size: 18px;
@@ -109,100 +124,120 @@
     }
   </style>
 </head>
-<body>
-  <div class="confirmation-box">
-    <h2>Form Submitted Successfully</h2>
-    <div id="confirmationDetails">
-      <p class="loading">Loading confirmation details...</p>
-    </div>
-    <button class="btn" id="dashboardBtn" onclick="window.location.href='/dashboard.html'">Go to Dashboard</button>
-  </div>
 
+<body>
+    <div class="confirmation-box">
+        <h2>Form Submitted Successfully</h2>
+        <div id="confirmationDetails">
+            <p class="loading">Loading confirmation details...</p>
+          </div>
+        <button class="btn" id="dashboardBtn" onclick="window.location.href='/dashboard.html'">Go to Dashboard</button>
+      </div>
+
+
+   
   <script>
-    // Confirmation loading
+    // Enhanced confirmation loading with better error handling
     async function loadConfirmationDetails() {
       try {
         const response = await fetch('/api/employee/confirmation', {
           credentials: 'include'
         });
 
+
         if (!response.ok) {
           throw new Error(`Server error: ${response.status} ${response.statusText}`);
         }
 
+
         const result = await response.json();
+
 
         if (!result.success || !result.data) {
           throw new Error(result.message || 'Failed to load confirmation details');
         }
 
+
         const data = result.data;
-        
+
         // Format submission date
-        const submissionDate = data.submissionDate ? 
+        const submissionDate = data.submissionDate ?
           new Date(data.submissionDate).toLocaleString() : 'N/A';
+
 
         // Create success display
         document.getElementById('confirmationDetails').innerHTML = `
-          <div class="success">
-            <p><strong>Your application has been submitted successfully</strong></p>
-          </div>
-          
-          <div class="form-id-highlight">
-            Form ID: ${data.formId}
-          </div>
+          <div class="success">
+            <p><strong>✅ Your application has been submitted successfully!</strong></p>
+          </div>
+          
+          <div class="form-id-highlight">
+            Form ID: ${data.formId}
+          </div>
 
-          <div class="detail-row">
-            <span class="detail-label">Name:</span>
-            <span class="detail-value">${data.name || data.employeeName || 'N/A'}</span>
-          </div>
 
-          <div class="detail-row">
-            <span class="detail-label">Employee ID:</span>
-            <span class="detail-value">${data.employeeId}</span>
-          </div>
+          <div class="detail-row">
+            <span class="detail-label">Name:</span>
+            <span class="detail-value">${data.name || data.employeeName || 'N/A'}</span>
+          </div>
 
-          <div class="detail-row">
-            <span class="detail-label">Department:</span>
-            <span class="detail-value">${data.department}</span>
-          </div>
 
-          <div class="detail-row">
-            <span class="detail-label">No Dues Type:</span>
-            <span class="detail-value">${data.noDuesType}</span>
-          </div>
+          <div class="detail-row">
+            <span class="detail-label">Employee ID:</span>
+            <span class="detail-value">${data.employeeId}</span>
+          </div>
 
-          <div class="detail-row">
-            <span class="detail-label">Email:</span>
-            <span class="detail-value">${data.email}</span>
-          </div>
 
-          <div class="detail-row">
-            <span class="detail-label">Submitted At:</span>
-            <span class="detail-value">${submissionDate}</span>
-          </div>
+          <div class="detail-row">
+            <span class="detail-label">Department:</span>
+            <span class="detail-value">${data.department}</span>
+          </div>
 
-          <div class="detail-row">
-            <span class="detail-label">Status:</span>
-            <span class="detail-value" style="color: #28a745; font-weight: bold;">${data.status || 'Pending'}</span>
-          </div>
 
-          <p style="margin-top: 20px; color: #6c757d; font-size: 14px;">
-            <strong>Next Steps:</strong> Your application will be reviewed by the IT department. 
-            You can track the progress from your dashboard.
-          </p>
-        `;
+          <div class="detail-row">
+            <span class="detail-label">No Dues Type:</span>
+            <span class="detail-value">${data.noDuesType}</span>
+          </div>
+
+
+          <div class="detail-row">
+            <span class="detail-label">Email:</span>
+            <span class="detail-value">${data.email}</span>
+          </div>
+
+
+          <div class="detail-row">
+            <span class="detail-label">Submitted At:</span>
+            <span class="detail-value">${submissionDate}</span>
+          </div>
+
+
+          <div class="detail-row">
+            <span class="detail-label">Status:</span>
+            <span class="detail-value" style="color: #28a745; font-weight: bold;">${data.status || 'Pending'}</span>
+          </div>
+
+
+          <p style="margin-top: 20px; color: #6c757d; font-size: 14px;">
+            <strong>Next Steps:</strong> Your application will be reviewed by the IT department. 
+            You can track the progress from your dashboard.
+          </p>
+        `;
+
 
       } catch (error) {
+        console.error('Error loading confirmation:', error);
+
         document.getElementById('confirmationDetails').innerHTML = `
-          <div class="error">
-            <p><strong>Error loading confirmation details</strong></p>
-            <p>${error.message}</p>
-            <p style="font-size: 14px; margin-top: 10px;">
-              Please check your session or contact support if this problem persists.
-            </p>
-          </div>
-        `;
+          <div class="error">
+            <p><strong>❌ Error loading confirmation details</strong></p>
+            <p>${error.message}</p>
+            <p style="font-size: 14px; margin-top: 10px;">
+              Please check your session or contact support if this problem persists.
+            </p>
+          </div>
+        `;
+
 
         // Disable dashboard button on error
         const dashboardBtn = document.getElementById('dashboardBtn');
@@ -210,6 +245,7 @@
         dashboardBtn.onclick = () => window.location.href = '/';
       }
     }
+
 
     // Check session and load confirmation details
     async function initializePage() {
@@ -219,26 +255,33 @@
           credentials: 'include'
         });
 
+
         if (!sessionResponse.ok) {
           throw new Error('Session expired');
         }
 
+
         const sessionData = await sessionResponse.json();
-        
+
         if (sessionData.role !== 'employee') {
           throw new Error('Invalid user role');
         }
 
+
         // Load confirmation details
         await loadConfirmationDetails();
 
+
       } catch (error) {
+        console.error('Session check failed:', error);
+
         document.getElementById('confirmationDetails').innerHTML = `
-          <div class="error">
-            <p><strong>Session Expired</strong></p>
-            <p>Please login again to view confirmation details.</p>
-          </div>
-        `;
+          <div class="error">
+            <p><strong>❌ Session Expired</strong></p>
+            <p>Please login again to view confirmation details.</p>
+          </div>
+        `;
+
 
         const dashboardBtn = document.getElementById('dashboardBtn');
         dashboardBtn.textContent = 'Login Again';
@@ -246,15 +289,18 @@
       }
     }
 
+
     // Initialize page when DOM is loaded
     document.addEventListener('DOMContentLoaded', initializePage);
 
+
     // Add keyboard shortcut to go to dashboard
-    document.addEventListener('keydown', function(event) {
+    document.addEventListener('keydown', function (event) {
       if (event.key === 'Enter' || event.key === 'Escape') {
         window.location.href = '/dashboard.html';
       }
     });
   </script>
 </body>
+
 </html>

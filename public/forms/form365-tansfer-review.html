@@ -1,1213 +1,223 @@
 <!DOCTYPE html>
 <html lang="en">
 
+
 <head>
+       
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Form 365 Transfer Review - HOD Approval System">
-    <meta name="theme-color" content="#28a745">
-    <title>Form 365 Transfer Review - HOD Approval</title>
-
-    <!-- Preload critical resources -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-
-    <!-- Security headers -->
-    <meta http-equiv="X-Content-Type-Options" content="nosniff">
-    <meta http-equiv="X-Frame-Options" content="SAMEORIGIN">
-    <meta http-equiv="X-XSS-Protection" content="1; mode=block">
-
-    <style>
-        /* =========================================
-       PRODUCTION CSS WITH MOBILE-FIRST DESIGN
-       ========================================= */
-
-        /* CSS Reset & Base Styles */
-        *,
-        *::before,
-        *::after {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-
-        :root {
-            --primary-color: #28a745;
-            --primary-hover: #218838;
-            --secondary-color: #6c757d;
-            --danger-color: #dc3545;
-            --warning-color: #ffc107;
-            --info-color: #17a2b8;
-            --light-bg: #f8f9fa;
-            --white: #ffffff;
-            --border-color: #dee2e6;
-            --text-primary: #212529;
-            --text-secondary: #6c757d;
-            --shadow-sm: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
-            --shadow-md: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
-            --border-radius: 0.375rem;
-            --transition: all 0.15s ease-in-out;
-        }
-
+        <title>Form 365 Transfer Review - HOD</title>
+        <style>
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            font-size: 0.875rem;
-            line-height: 1.6;
-            color: var(--text-primary);
-            background: var(--light-bg);
-            padding: 1rem;
-            min-height: 100vh;
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
+            font-family: Arial, sans-serif;
+            max-width: 900px;
+            margin: auto;
+            padding: 20px;
+            background: #f9f9f9;
         }
 
-        /* Loading State */
-        .loading {
-            opacity: 0.7;
-            pointer-events: none;
-        }
 
-        .loading::after {
-            content: '';
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 2rem;
-            height: 2rem;
-            border: 0.125rem solid var(--border-color);
-            border-top: 0.125rem solid var(--primary-color);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            z-index: 9999;
-        }
-
-        @keyframes spin {
-            0% {
-                transform: translate(-50%, -50%) rotate(0deg);
-            }
-
-            100% {
-                transform: translate(-50%, -50%) rotate(360deg);
-            }
-        }
-
-        /* Container */
-        .container {
-            max-width: 56rem;
-            margin: 0 auto;
-            background: var(--white);
-            border-radius: var(--border-radius);
-            box-shadow: var(--shadow-md);
-            overflow: hidden;
-        }
-
-        /* Header */
-        .form-header {
-            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-hover) 100%);
-            color: white;
-            padding: 1.5rem;
+        h2 {
             text-align: center;
+            margin-bottom: 20px;
         }
 
-        .form-header h1 {
-            font-size: 1.5rem;
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-            letter-spacing: -0.025em;
-        }
 
-        .form-subtitle {
-            font-size: 0.875rem;
-            opacity: 0.9;
-            font-weight: 400;
-        }
-
-        /* Form Content */
-        .form-content {
-            padding: 1.5rem;
-        }
-
-        /* Status Banner */
-        .status-banner {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0.75rem 1rem;
-            border-radius: var(--border-radius);
-            margin-bottom: 1rem;
-            font-size: 0.875rem;
-            font-weight: 500;
-            box-shadow: var(--shadow-sm);
-            transition: var(--transition);
-        }
-
-        .status-banner.info {
-            background-color: #cce5ff;
-            color: #004085;
-            border: 1px solid #b3d7ff;
-        }
-
-        .status-banner.success {
-            background-color: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
-        }
-
-        .status-banner.warning {
-            background-color: #fff3cd;
-            color: #856404;
-            border: 1px solid #ffeaa7;
-        }
-
-        .status-banner.error {
-            background-color: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f1aeb5;
-        }
-
-        .status-content {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-        }
-
-        .status-icon {
-            font-size: 1.125rem;
-        }
-
-        .close-btn {
-            background: none;
-            border: none;
-            font-size: 1.125rem;
-            cursor: pointer;
-            opacity: 0.7;
-            padding: 0.25rem;
-            border-radius: 50%;
-            transition: var(--transition);
-            width: 1.5rem;
-            height: 1.5rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .close-btn:hover {
-            opacity: 1;
-            background: rgba(0, 0, 0, 0.1);
-        }
-
-        /* Form Sections */
         .section {
-            background: var(--white);
-            padding: 1.5rem;
-            margin-bottom: 1.5rem;
-            border: 1px solid var(--border-color);
-            border-radius: var(--border-radius);
-            box-shadow: var(--shadow-sm);
+            background: #fff;
+            padding: 15px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
         }
 
-        .section-title {
-            font-size: 1.125rem;
-            font-weight: 600;
-            color: var(--text-primary);
-            margin-bottom: 1rem;
-            padding-bottom: 0.5rem;
-            border-bottom: 2px solid var(--border-color);
-        }
 
-        /* Form Fields */
-        .field-group {
-            margin-bottom: 1rem;
-        }
-
-        .field-label {
+        label {
             display: block;
-            font-size: 0.875rem;
-            font-weight: 600;
-            color: var(--text-primary);
-            margin-bottom: 0.25rem;
+            margin-top: 10px;
+            font-weight: bold;
         }
 
-        .required {
-            color: var(--danger-color);
-        }
 
-        .field-input,
-        .field-textarea {
+        input[type="text"],
+        input[type="date"],
+        input[type="file"],
+        textarea {
             width: 100%;
-            padding: 0.75rem;
-            border: 1px solid var(--border-color);
-            border-radius: var(--border-radius);
-            background: var(--white);
-            color: var(--text-primary);
-            font-size: 0.875rem;
-            font-family: 'Inter', sans-serif;
-            transition: var(--transition);
+            padding: 8px;
+            margin-top: 4px;
+            font-size: 1rem;
         }
 
-        .field-input:focus,
-        .field-textarea:focus {
-            outline: none;
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25);
-        }
 
-        .field-input:read-only {
-            background-color: var(--light-bg);
-            color: var(--text-secondary);
-            cursor: not-allowed;
-        }
-
-        .field-textarea {
-            resize: vertical;
-            min-height: 4rem;
-        }
-
-        /* File Input Styling */
-        .file-input-container {
-            position: relative;
-            display: inline-block;
-            width: 100%;
-        }
-
-        .file-input {
-            position: absolute;
-            opacity: 0;
-            width: 100%;
-            height: 100%;
-            cursor: pointer;
-        }
-
-        .file-input-label {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 0.75rem 1rem;
-            border: 2px dashed var(--border-color);
-            border-radius: var(--border-radius);
-            background: var(--light-bg);
-            color: var(--text-secondary);
-            cursor: pointer;
-            transition: var(--transition);
-            min-height: 3rem;
-        }
-
-        .file-input-label:hover {
-            border-color: var(--primary-color);
-            background: #f8fff8;
-        }
-
-        .file-input:focus+.file-input-label {
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25);
-        }
-
-        /* Signature Preview */
         .signature-preview {
-            margin-top: 0.75rem;
-            border: 2px dashed var(--border-color);
-            border-radius: var(--border-radius);
-            min-height: 4rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: var(--light-bg);
-            color: var(--text-secondary);
-            font-style: italic;
-            transition: var(--transition);
-        }
-
-        .signature-preview.has-image {
-            border-color: var(--primary-color);
-            background: #f8fff8;
-        }
-
-        .signature-preview img {
-            max-height: 3.5rem;
-            max-width: 100%;
-            border-radius: var(--border-radius);
-        }
-
-        /* Buttons */
-        .btn {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            padding: 0.75rem 1.5rem;
-            font-size: 0.875rem;
-            font-weight: 600;
+            margin-top: 10px;
+            border: 1px dashed #aaa;
+            height: 60px;
             text-align: center;
+            line-height: 60px;
+        }
+
+
+        button {
+            display: block;
+            margin: 20px auto;
+            padding: 10px 20px;
+            background: green;
+            color: #fff;
             border: none;
-            border-radius: var(--border-radius);
+            font-size: 1rem;
             cursor: pointer;
-            transition: var(--transition);
-            text-decoration: none;
-            font-family: 'Inter', sans-serif;
-            gap: 0.5rem;
-        }
-
-        .btn-primary {
-            background: var(--primary-color);
-            color: white;
-        }
-
-        .btn-primary:hover {
-            background: var(--primary-hover);
-            transform: translateY(-1px);
-            box-shadow: var(--shadow-md);
-        }
-
-        .btn-primary:active {
-            transform: translateY(0);
-        }
-
-        .btn-primary:disabled {
-            background: var(--secondary-color);
-            cursor: not-allowed;
-            opacity: 0.6;
-            transform: none;
-        }
-
-        .btn-block {
-            width: 100%;
-            margin: 1.5rem 0;
-        }
-
-        /* Status Messages */
-        .status-message {
-            padding: 0.75rem 1rem;
-            border-radius: var(--border-radius);
-            margin-top: 1rem;
-            font-weight: 500;
-            display: none;
-        }
-
-        .status-message.success {
-            background: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
-        }
-
-        .status-message.error {
-            background: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f1aeb5;
-        }
-
-        .status-message.info {
-            background: #cce5ff;
-            color: #004085;
-            border: 1px solid #b3d7ff;
-        }
-
-        /* Accessibility */
-        .sr-only {
-            position: absolute;
-            width: 1px;
-            height: 1px;
-            padding: 0;
-            margin: -1px;
-            overflow: hidden;
-            clip: rect(0, 0, 0, 0);
-            white-space: nowrap;
-            border: 0;
-        }
-
-        /* Focus indicators */
-        button:focus,
-        input:focus,
-        textarea:focus {
-            outline: 2px solid var(--primary-color);
-            outline-offset: 2px;
-        }
-
-        /* Print styles */
-        @media print {
-            body {
-                padding: 0;
-                background: white;
-            }
-
-            .container {
-                box-shadow: none;
-                border: none;
-            }
-
-            .btn,
-            .file-input-container {
-                display: none;
-            }
-        }
-
-        /* =========================================
-       RESPONSIVE DESIGN - MOBILE FIRST
-       ========================================= */
-
-        /* Mobile styles (default) */
-        @media (max-width: 768px) {
-            body {
-                padding: 0.5rem;
-            }
-
-            .container {
-                border-radius: 0;
-                box-shadow: none;
-                border: none;
-            }
-
-            .form-header {
-                padding: 1rem;
-            }
-
-            .form-header h1 {
-                font-size: 1.25rem;
-            }
-
-            .form-subtitle {
-                font-size: 0.8125rem;
-            }
-
-            .form-content {
-                padding: 1rem;
-            }
-
-            .section {
-                padding: 1rem;
-                margin-bottom: 1rem;
-            }
-
-            .section-title {
-                font-size: 1rem;
-            }
-
-            .btn {
-                padding: 1rem 1.5rem;
-                font-size: 0.875rem;
-            }
-        }
-
-        /* Tablet styles */
-        @media (min-width: 769px) and (max-width: 1024px) {
-            .container {
-                margin: 1rem;
-            }
-        }
-
-        /* Desktop styles */
-        @media (min-width: 1025px) {
-            body {
-                padding: 2rem;
-            }
-
-            .form-header h1 {
-                font-size: 1.75rem;
-            }
-
-            .form-content {
-                padding: 2rem;
-            }
-
-            .section {
-                padding: 2rem;
-            }
-        }
-
-        /* High DPI displays */
-        @media (-webkit-min-device-pixel-ratio: 2),
-        (min-resolution: 192dpi) {
-            .signature-preview {
-                border-width: 1px;
-            }
-        }
-
-        /* Dark mode support */
-        @media (prefers-color-scheme: dark) {
-            :root {
-                --light-bg: #1a1a1a;
-                --white: #2d2d2d;
-                --text-primary: #e9ecef;
-                --text-secondary: #adb5bd;
-                --border-color: #495057;
-            }
-
-            body {
-                background: #121212;
-                color: var(--text-primary);
-            }
-
-            .container,
-            .section,
-            .field-input,
-            .field-textarea {
-                background: var(--white);
-                color: var(--text-primary);
-            }
-        }
-
-        /* Motion preferences */
-        @media (prefers-reduced-motion: reduce) {
-
-            *,
-            *::before,
-            *::after {
-                animation-duration: 0.01ms !important;
-                animation-iteration-count: 1 !important;
-                transition-duration: 0.01ms !important;
-            }
-        }
-
-        /* Hidden utility */
-        .hidden {
-            display: none !important;
+            border-radius: 4px;
         }
     </style>
 </head>
 
+
 <body>
-    <div class="container">
-        <!-- Professional Header -->
-        <header class="form-header">
-            <h1>Form 365 Transfer Review</h1>
-            <div class="form-subtitle">HOD Approval & Verification System</div>
-        </header>
+        <h2>Form 365 - Transfer (HOD Review)</h2>
 
-        <!-- Form Content -->
-        <main class="form-content">
-            <!-- Status Banner (Hidden by default) -->
-            <div id="statusBanner" class="status-banner hidden" role="alert" aria-live="polite">
-                <div class="status-content">
-                    <span class="status-icon" aria-hidden="true"></span>
-                    <div class="status-text">
-                        <strong id="statusTitle"></strong>
-                        <div id="statusMessage"></div>
-                    </div>
-                </div>
-                <button class="close-btn" aria-label="Close notification" onclick="hideStatusBanner()">×</button>
-            </div>
 
-            <!-- Employee Information Section -->
-            <section class="section" id="employeeSection">
-                <h2 class="section-title">Employee Transfer Information</h2>
+        <div class="section" id="employeeSection">
+                <label>Name of Employee:</label>
+                <input type="text" id="empName" readonly>
 
-                <div class="field-group">
-                    <label class="field-label" for="empName">Name of Employee</label>
-                    <input type="text" id="empName" class="field-input" readonly aria-readonly="true"
-                        aria-describedby="empNameHelp">
-                    <small id="empNameHelp" class="sr-only">Employee name from submitted form</small>
-                </div>
 
-                <div class="field-group">
-                    <label class="field-label" for="employeeId">Employee ID</label>
-                    <input type="text" id="employeeId" class="field-input" readonly aria-readonly="true"
-                        aria-describedby="employeeIdHelp">
-                    <small id="employeeIdHelp" class="sr-only">Employee identification number</small>
-                </div>
+                <label>Employee ID:</label>
+                <input type="text" id="employeeId" readonly>
 
-                <div class="field-group">
-                    <label class="field-label" for="designation">Designation</label>
-                    <input type="text" id="designation" class="field-input" readonly aria-readonly="true"
-                        aria-describedby="designationHelp">
-                    <small id="designationHelp" class="sr-only">Current employee designation</small>
-                </div>
 
-                <div class="field-group">
-                    <label class="field-label" for="oldDepartment">Current Department</label>
-                    <input type="text" id="oldDepartment" class="field-input" readonly aria-readonly="true"
-                        aria-describedby="oldDeptHelp">
-                    <small id="oldDeptHelp" class="sr-only">Employee's current department</small>
-                </div>
+                <label>Designation:</label>
+                <input type="text" id="designation" readonly>
 
-                <div class="field-group">
-                    <label class="field-label" for="newDepartment">New Department</label>
-                    <input type="text" id="newDepartment" class="field-input" readonly aria-readonly="true"
-                        aria-describedby="newDeptHelp">
-                    <small id="newDeptHelp" class="sr-only">Employee's new department after transfer</small>
-                </div>
 
-                <div class="field-group">
-                    <label class="field-label" for="reason">Reason for Transfer</label>
-                    <textarea id="reason" class="field-textarea" rows="3" readonly aria-readonly="true"
-                        aria-describedby="reasonHelp"></textarea>
-                    <small id="reasonHelp" class="sr-only">Detailed reason for employee transfer</small>
-                </div>
+                <label>Old Department:</label>
+                <input type="text" id="oldDepartment" readonly>
 
-                <div class="field-group">
-                    <label class="field-label" for="transferDate">Effective Transfer Date</label>
-                    <input type="date" id="transferDate" class="field-input" readonly aria-readonly="true"
-                        aria-describedby="transferDateHelp">
-                    <small id="transferDateHelp" class="sr-only">Date when transfer becomes effective</small>
-                </div>
-            </section>
 
-            <!-- HOD Approval Section -->
-            <section class="section" id="hodSection">
-                <h2 class="section-title">HOD Approval Section</h2>
+                <label>New Department:</label>
+                <input type="text" id="newDepartment" readonly>
 
-                <div class="field-group">
-                    <label class="field-label" for="hodName">
-                        Name of HOD <span class="required" aria-label="required">*</span>
-                    </label>
-                    <input type="text" id="hodName" class="field-input" required aria-required="true"
-                        aria-describedby="hodNameHelp" placeholder="Enter your full name">
-                    <small id="hodNameHelp" class="sr-only">Enter the full name of the Head of Department</small>
-                </div>
 
-                <div class="field-group">
-                    <label class="field-label" for="hodEmpNo">
-                        Employee No. <span class="required" aria-label="required">*</span>
-                    </label>
-                    <input type="text" id="hodEmpNo" class="field-input" required aria-required="true"
-                        aria-describedby="hodEmpNoHelp" placeholder="Enter your employee number">
-                    <small id="hodEmpNoHelp" class="sr-only">Enter your official employee identification number</small>
-                </div>
+                <label>Reason for Transfer:</label>
+                <textarea id="reason" rows="3" readonly></textarea>
 
-                <div class="field-group">
-                    <label class="field-label" for="hodEmail">
-                        Email ID <span class="required" aria-label="required">*</span>
-                    </label>
-                    <input type="email" id="hodEmail" class="field-input" required aria-required="true"
-                        aria-describedby="hodEmailHelp" placeholder="Enter your official email address">
-                    <small id="hodEmailHelp" class="sr-only">Enter your official email address for verification</small>
-                </div>
 
-                <div class="field-group">
-                    <label class="field-label" for="signatureUpload">
-                        Digital Signature <span class="required" aria-label="required">*</span>
-                    </label>
-                    <div class="file-input-container">
-                        <input type="file" id="signatureUpload" class="file-input" accept="image/*" required
-                            aria-required="true" aria-describedby="signatureHelp">
-                        <label for="signatureUpload" class="file-input-label">
-                            📁 Choose signature file or drag and drop
-                        </label>
-                    </div>
-                    <small id="signatureHelp" class="sr-only">
-                        Upload a clear image of your signature (JPG, PNG, GIF - max 2MB)
-                    </small>
+                <label>Effective Transfer Date:</label>
+                <input type="date" id="transferDate" readonly>
+            </div>
 
-                    <div id="signaturePreview" class="signature-preview" aria-live="polite">
-                        No signature uploaded
-                    </div>
-                </div>
-            </section>
 
-            <!-- Action Section -->
-            <section class="section">
-                <button type="button" class="btn btn-primary btn-block" onclick="submitHodReview()"
-                    aria-describedby="submitHelp">
-                    ✅ Submit HOD Approval
-                </button>
-                <small id="submitHelp" class="sr-only">
-                    Submit your approval for this transfer request
-                </small>
+        <div class="section" id="hodSection">
+                <h3>HOD Approval Section</h3>
 
-                <div id="statusMsg" class="status-message" role="alert" aria-live="polite"></div>
-            </section>
-        </main>
-    </div>
 
-    <!-- Production JavaScript -->
+                <label>Name of HOD:</label>
+                <input type="text" id="hodName">
+
+
+                <label>Employee No.:</label>
+                <input type="text" id="hodEmpNo">
+
+
+                <label>Email Id:</label>
+                <input type="text" id="hodEmail">
+
+
+                <label>Signature:</label>
+                <input type="file" id="signatureUpload" accept="image/*">
+                <div id="signaturePreview" class="signature-preview">No signature uploaded</div>
+            </div>
+
+
+        <button onclick="submitHodReview()">✅ Submit HOD Approval</button>
+        <p id="statusMsg"></p>
+
+
+       
     <script>
-        // =========================================
-        // PRODUCTION JAVASCRIPT WITH ERROR HANDLING
-        // =========================================
+        const queryParams = new URLSearchParams(window.location.search);
+        const formId = queryParams.get('formId');
 
-        // Global variables
-        let isFormLoading = false;
-        let formId = '';
 
-        // Initialize form when DOM is ready
-        document.addEventListener('DOMContentLoaded', async () => {
-            try {
-                setLoadingState(true);
-                await initializeForm();
-            } catch (error) {
-                console.error('Form initialization failed:', error);
-                showStatusBanner('Error', 'Failed to initialize form. Please refresh the page.', 'error');
-            } finally {
-                setLoadingState(false);
-            }
-        });
-
-        // Set loading state
-        function setLoadingState(loading) {
-            isFormLoading = loading;
-            const container = document.querySelector('.container');
-            const submitBtn = document.querySelector('.btn-primary');
-
-            if (loading) {
-                container.classList.add('loading');
-                if (submitBtn) submitBtn.disabled = true;
-            } else {
-                container.classList.remove('loading');
-                if (submitBtn) submitBtn.disabled = false;
-            }
-        }
-
-        // Show status banner
-        function showStatusBanner(title, message, type = 'info') {
-            const banner = document.getElementById('statusBanner');
-            const titleEl = document.getElementById('statusTitle');
-            const messageEl = document.getElementById('statusMessage');
-            const iconEl = banner.querySelector('.status-icon');
-
-            titleEl.textContent = title;
-            messageEl.textContent = message;
-
-            // Set icon based on type
-            const icons = {
-                info: 'ℹ️',
-                success: '✅',
-                warning: '⚠️',
-                error: '❌'
-            };
-            iconEl.textContent = icons[type] || icons.info;
-
-            // Set banner class
-            banner.className = `status-banner ${type}`;
-            banner.classList.remove('hidden');
-
-            // Auto-hide success messages
-            if (type === 'success') {
-                setTimeout(hideStatusBanner, 5000);
-            }
-        }
-
-        // Hide status banner
-        function hideStatusBanner() {
-            const banner = document.getElementById('statusBanner');
-            banner.classList.add('hidden');
-        }
-
-        // Initialize form
-        async function initializeForm() {
-            const queryParams = new URLSearchParams(window.location.search);
-            formId = queryParams.get('formId');
-
-            if (!formId) {
-                showStatusBanner('Error', 'Missing form ID parameter', 'error');
-                return;
-            }
-
-            await loadForm365TransferData();
-            initializeFileUpload();
-            initializeFormValidation();
-            initializeAccessibility();
-        }
-
-        // Fetch with timeout wrapper
-        async function fetchWithTimeout(url, options = {}, timeout = 10000) {
-            const controller = new AbortController();
-            const timeoutId = setTimeout(() => controller.abort(), timeout);
-
-            try {
-                const response = await fetch(url, {
-                    ...options,
-                    signal: controller.signal
-                });
-                clearTimeout(timeoutId);
-                return response;
-            } catch (error) {
-                clearTimeout(timeoutId);
-                if (error.name === 'AbortError') {
-                    throw new Error('Request timeout');
-                }
-                throw error;
-            }
-        }
-
-        // Sanitize input to prevent XSS
-        function sanitizeInput(input) {
-            if (typeof input !== 'string') return input;
-
-            const div = document.createElement('div');
-            div.textContent = input;
-            return div.innerHTML;
-        }
-
-        // Load form data with enhanced error handling
         async function loadForm365TransferData() {
-            try {
-                showStatusBanner('Loading', 'Loading transfer form data...', 'info');
+            if (!formId) return alert("Missing form ID!");
 
-                const response = await fetchWithTimeout(`/api/hod/form-details?formId=${encodeURIComponent(formId)}`, {
+
+            try {
+                const res = await fetch(`/api/hod/form-details?formId=${formId}`, {
                     credentials: 'include'
                 });
+                const data = await res.json();
 
-                const data = await response.json();
 
-                if (!response.ok || !data.success) {
-                    throw new Error(data.message || 'Failed to load form data');
-                }
+                if (!data.success) return alert("Failed to load form data.");
+                const form = data.form.formResponses?.form365TransferData;
+                if (!form) return alert("Form 365 Transfer data not found.");
 
-                const form = data.form?.formResponses?.form365TransferData;
-                if (!form) {
-                    throw new Error('Form 365 Transfer data not found');
-                }
 
-                // Populate form fields with sanitized data
-                const fieldMappings = {
-                    'empName': form.empName,
-                    'employeeId': form.employeeId,
-                    'designation': form.designation,
-                    'oldDepartment': form.oldDepartment,
-                    'newDepartment': form.newDepartment,
-                    'reason': form.reason,
-                    'transferDate': form.transferDate
-                };
-
-                Object.entries(fieldMappings).forEach(([fieldId, value]) => {
-                    const element = document.getElementById(fieldId);
-                    if (element) {
-                        element.value = sanitizeInput(value) || '';
-                    }
-                });
-
-                showStatusBanner('Success', 'Form data loaded successfully', 'success');
-                console.log('Form data loaded successfully');
-
-            } catch (error) {
-                console.error('Error loading transfer data:', error);
-                const message = error.message === 'Request timeout'
-                    ? 'Loading timed out. Please try again.'
-                    : `Error loading transfer form: ${error.message}`;
-
-                showStatusBanner('Error', message, 'error');
-                showStatusMessage(message, 'error');
+                document.getElementById("empName").value = form.empName || '';
+                document.getElementById("employeeId").value = form.employeeId || '';
+                document.getElementById("designation").value = form.designation || '';
+                document.getElementById("oldDepartment").value = form.oldDepartment || '';
+                document.getElementById("newDepartment").value = form.newDepartment || '';
+                document.getElementById("reason").value = form.reason || '';
+                document.getElementById("transferDate").value = form.transferDate || '';
+            } catch (err) {
+                console.error("❌ Error loading transfer data:", err);
+                alert("Error loading transfer form");
             }
         }
 
-        // Initialize file upload handling
-        function initializeFileUpload() {
-            const fileInput = document.getElementById('signatureUpload');
-            const preview = document.getElementById('signaturePreview');
 
-            if (fileInput && preview) {
-                fileInput.addEventListener('change', handleSignatureUpload);
-
-                // Drag and drop functionality
-                const label = document.querySelector('.file-input-label');
-
-                ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
-                    label.addEventListener(eventName, preventDefaults, false);
-                });
-
-                function preventDefaults(e) {
-                    e.preventDefault();
-                    e.stopPropagation();
-                }
-
-                ['dragenter', 'dragover'].forEach(eventName => {
-                    label.addEventListener(eventName, highlight, false);
-                });
-
-                ['dragleave', 'drop'].forEach(eventName => {
-                    label.addEventListener(eventName, unhighlight, false);
-                });
-
-                function highlight(e) {
-                    label.style.borderColor = 'var(--primary-color)';
-                    label.style.background = '#f8fff8';
-                }
-
-                function unhighlight(e) {
-                    label.style.borderColor = 'var(--border-color)';
-                    label.style.background = 'var(--light-bg)';
-                }
-
-                label.addEventListener('drop', handleDrop, false);
-
-                function handleDrop(e) {
-                    const dt = e.dataTransfer;
-                    const files = dt.files;
-
-                    if (files.length > 0) {
-                        fileInput.files = files;
-                        handleSignatureUpload({ target: { files: files } });
-                    }
-                }
-            }
-        }
-
-        // Handle signature upload with validation
-        function handleSignatureUpload(event) {
+        function previewSignature(event) {
             const file = event.target.files[0];
-            const preview = document.getElementById('signaturePreview');
-
             if (!file) return;
-
-            // Validate file
-            const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif'];
-            const maxSize = 2 * 1024 * 1024; // 2MB
-
-            if (!validTypes.includes(file.type)) {
-                showStatusBanner('Error', 'Please select a valid image file (JPEG, PNG, GIF)', 'error');
-                event.target.value = '';
-                return;
-            }
-
-            if (file.size > maxSize) {
-                showStatusBanner('Error', 'File size must be less than 2MB', 'error');
-                event.target.value = '';
-                return;
-            }
-
-            // Preview signature
             const reader = new FileReader();
             reader.onload = function (e) {
-                preview.innerHTML = `<img src="${e.target.result}" alt="HOD Signature" loading="lazy">`;
-                preview.classList.add('has-image');
-                preview.setAttribute('aria-label', 'Signature uploaded successfully');
-
-                showStatusBanner('Success', 'Signature uploaded successfully', 'success');
+                document.getElementById('signaturePreview').innerHTML =
+                    `<img src="${e.target.result}" alt="Signature" style="max-height: 60px;">`;
             };
-
-            reader.onerror = function () {
-                showStatusBanner('Error', 'Failed to read signature file', 'error');
-                event.target.value = '';
-            };
-
             reader.readAsDataURL(file);
         }
 
-        // Enhanced form validation
-        function validateForm() {
-            const requiredFields = [
-                { id: 'hodName', name: 'HOD Name' },
-                { id: 'hodEmpNo', name: 'Employee Number' },
-                { id: 'hodEmail', name: 'Email ID' },
-                { id: 'signatureUpload', name: 'Signature' }
-            ];
 
-            for (const field of requiredFields) {
-                const element = document.getElementById(field.id);
-
-                if (!element) continue;
-
-                let value;
-                if (field.id === 'signatureUpload') {
-                    value = element.files && element.files.length > 0;
-                } else {
-                    value = element.value.trim();
-                }
-
-                if (!value) {
-                    // Highlight the field
-                    element.focus();
-                    element.style.borderColor = 'var(--danger-color)';
-
-                    // Remove highlight after a delay
-                    setTimeout(() => {
-                        element.style.borderColor = '';
-                    }, 3000);
-
-                    return {
-                        isValid: false,
-                        message: `Please ${field.id === 'signatureUpload' ? 'upload' : 'enter'} ${field.name}`
-                    };
-                }
-            }
-
-            // Validate email format
-            const email = document.getElementById('hodEmail').value.trim();
-            if (email && !isValidEmail(email)) {
-                document.getElementById('hodEmail').focus();
-                return {
-                    isValid: false,
-                    message: 'Please enter a valid email address'
-                };
-            }
-
-            return { isValid: true };
-        }
-
-        // Email validation helper
-        function isValidEmail(email) {
-            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            return emailRegex.test(email);
-        }
-
-        // Submit HOD review with comprehensive error handling
         async function submitHodReview() {
-            if (isFormLoading) return;
+            const hodName = document.getElementById("hodName").value.trim();
+            const hodEmpNo = document.getElementById("hodEmpNo").value.trim();
+            const hodEmail = document.getElementById("hodEmail").value.trim();
+            const signatureFile = document.getElementById("signatureUpload").files[0];
 
-            try {
-                setLoadingState(true);
-                showStatusMessage('Validating form...', 'info');
 
-                // Validate form
-                const validation = validateForm();
-                if (!validation.isValid) {
-                    showStatusBanner('Validation Error', validation.message, 'error');
-                    showStatusMessage(validation.message, 'error');
-                    return;
-                }
-
-                showStatusMessage('Submitting HOD approval...', 'info');
-
-                // Prepare form data
-                const formData = new FormData();
-                formData.append('formId', formId);
-                formData.append('formType', 'form365Transfer');
-                formData.append('hodName', sanitizeInput(document.getElementById('hodName').value.trim()));
-                formData.append('hodEmpNo', sanitizeInput(document.getElementById('hodEmpNo').value.trim()));
-                formData.append('hodEmail', sanitizeInput(document.getElementById('hodEmail').value.trim()));
-                formData.append('signature', document.getElementById('signatureUpload').files[0]);
-
-                // Submit form
-                const response = await fetchWithTimeout('/api/hod/submit-form', {
-                    method: 'POST',
-                    credentials: 'include',
-                    body: formData
-                });
-
-                const result = await response.json();
-
-                if (response.ok && result.success) {
-                    showStatusBanner('Success', result.message || 'HOD approval submitted successfully!', 'success');
-                    showStatusMessage(result.message || 'Approval submitted successfully!', 'success');
-
-                    // Disable form after successful submission
-                    setTimeout(() => {
-                        document.querySelectorAll('input, button').forEach(el => {
-                            if (!el.classList.contains('close-btn')) {
-                                el.disabled = true;
-                            }
-                        });
-                    }, 2000);
-
-                } else {
-                    throw new Error(result.message || 'Failed to submit approval');
-                }
-
-            } catch (error) {
-                console.error('Error submitting HOD review:', error);
-                const message = error.message === 'Request timeout'
-                    ? 'Submission timed out. Please try again.'
-                    : `Failed to submit approval: ${error.message}`;
-
-                showStatusBanner('Error', message, 'error');
-                showStatusMessage(message, 'error');
-            } finally {
-                setLoadingState(false);
+            if (!hodName || !hodEmpNo || !hodEmail || !signatureFile) {
+                return alert("Please complete all HOD fields and upload signature.");
             }
-        }
 
-        // Initialize form validation
-        function initializeFormValidation() {
-            const inputs = document.querySelectorAll('input[required]');
 
-            inputs.forEach(input => {
-                input.addEventListener('blur', validateField);
-                input.addEventListener('input', clearFieldError);
+            const formData = new FormData();
+            formData.append('formId', formId);
+            formData.append('formType', 'form365Transfer');
+            formData.append('hodName', hodName);
+            formData.append('hodEmpNo', hodEmpNo);
+            formData.append('hodEmail', hodEmail);
+            formData.append('signature', signatureFile);
+
+
+            const res = await fetch('/api/hod/submit-form', {
+                method: 'POST',
+                credentials: 'include',
+                body: formData
             });
+
+
+            const result = await res.json();
+            document.getElementById("statusMsg").textContent = result.message || "Submitted.";
         }
 
-        // Validate individual field
-        function validateField(event) {
-            const field = event.target;
-            let isValid = true;
 
-            if (field.type === 'email') {
-                isValid = field.value.trim() === '' || isValidEmail(field.value.trim());
-            } else if (field.type === 'file') {
-                isValid = field.files && field.files.length > 0;
-            } else {
-                isValid = field.value.trim() !== '';
-            }
-
-            if (!isValid) {
-                field.style.borderColor = 'var(--danger-color)';
-                field.setAttribute('aria-invalid', 'true');
-            } else {
-                field.style.borderColor = '';
-                field.removeAttribute('aria-invalid');
-            }
-        }
-
-        // Clear field error styling
-        function clearFieldError(event) {
-            const field = event.target;
-            field.style.borderColor = '';
-            field.removeAttribute('aria-invalid');
-        }
-
-        // Initialize accessibility features
-        function initializeAccessibility() {
-            // Add aria-live region for form status
-            const liveRegion = document.createElement('div');
-            liveRegion.setAttribute('aria-live', 'polite');
-            liveRegion.setAttribute('aria-atomic', 'true');
-            liveRegion.className = 'sr-only';
-            liveRegion.id = 'status-live-region';
-            document.body.appendChild(liveRegion);
-
-            // Add skip link
-            const skipLink = document.createElement('a');
-            skipLink.href = '#main-content';
-            skipLink.className = 'sr-only';
-            skipLink.textContent = 'Skip to main content';
-            skipLink.addEventListener('focus', () => skipLink.classList.remove('sr-only'));
-            skipLink.addEventListener('blur', () => skipLink.classList.add('sr-only'));
-            document.body.insertBefore(skipLink, document.body.firstChild);
-
-            // Add main landmark
-            const main = document.querySelector('.form-content');
-            if (main) {
-                main.id = 'main-content';
-            }
-        }
-
-        // Show status messages
-        function showStatusMessage(message, type) {
-            const messageEl = document.getElementById('statusMsg');
-            if (messageEl) {
-                messageEl.textContent = message;
-                messageEl.className = `status-message ${type}`;
-                messageEl.style.display = 'block';
-
-                // Update live region for screen readers
-                const liveRegion = document.getElementById('status-live-region');
-                if (liveRegion) {
-                    liveRegion.textContent = message;
-                }
-
-                // Auto-hide success messages
-                if (type === 'success') {
-                    setTimeout(() => {
-                        messageEl.style.display = 'none';
-                    }, 5000);
-                }
-            }
-        }
-
-        // Error boundary for unhandled errors
-        window.addEventListener('error', function (event) {
-            console.error('Unhandled error:', event.error);
-            showStatusBanner('Error', 'An unexpected error occurred', 'error');
-        });
-
-        // Unhandled promise rejections
-        window.addEventListener('unhandledrejection', function (event) {
-            console.error('Unhandled promise rejection:', event.reason);
-            showStatusBanner('Error', 'An unexpected error occurred', 'error');
-        });
-
-        // Performance monitoring
-        if ('performance' in window) {
-            window.addEventListener('load', function () {
-                setTimeout(() => {
-                    const perfData = performance.getEntriesByType('navigation')[0];
-                    console.log('Page load performance:', {
-                        loadTime: perfData.loadEventEnd - perfData.fetchStart,
-                        domContentLoaded: perfData.domContentLoadedEventEnd - perfData.fetchStart
-                    });
-                }, 0);
-            });
-        }
+        document.getElementById("signatureUpload").addEventListener("change", previewSignature);
+        window.onload = loadForm365TransferData;
     </script>
 </body>
+
 
 </html>

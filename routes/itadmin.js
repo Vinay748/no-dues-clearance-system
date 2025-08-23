@@ -1,453 +1,118 @@
 const express = require('express');
 const fs = require('fs');
 const path = require('path');
-const helmet = require('helmet');
-const rateLimit = require('express-rate-limit');
-const compression = require('compression');
-const Joi = require('joi');
-const { promisify } = require('util');
-const { generateFormCertificates } = require('../utils/pdfGenerator');
-const NotificationManager = require('../utils/notificationManager');
-const { roleAuth } = require('../middlewares/sessionAuth');
-
 const router = express.Router();
 
-// =========================================
-// PRODUCTION SECURITY MIDDLEWARE
-// =========================================
 
-// Security headers
-router.use(helmet({
-  contentSecurityPolicy: {
-    directives: {
-      defaultSrc: ["'self'"],
-      styleSrc: ["'self'", "'unsafe-inline'"],
-      scriptSrc: ["'self'"],
-      imgSrc: ["'self'", "data:", "blob:"],
-      uploadRestrictions: true
-    }
-  },
-  hsts: {
-    maxAge: 31536000,
-    includeSubDomains: true,
-    preload: true
-  }
-}));
+// Import PDF generation utility
+const { generateFormCertificates } = require('../utils/pdfGenerator');
 
-// Compression for better performance
-router.use(compression());
 
-// Rate limiting for different IT operations
-const itRateLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 200, // Higher limit for IT operations
-  message: { success: false, message: 'Too many requests. Please try again later.', code: 'RATE_LIMITED' },
-  standardHeaders: true,
-  legacyHeaders: false,
-  handler: (req, res) => {
-    logger.warn(`IT rate limit exceeded`, {
-      ip: req.ip,
-      path: req.path,
-      userId: req.session?.user?.id
-    });
-    res.status(429).json({
-      success: false,
-      message: 'Too many requests. Please try again later.',
-      code: 'RATE_LIMITED',
-      retryAfter: Math.ceil(res.getHeader('Retry-After'))
-    });
-  }
-});
+// Import NotificationManager for real-time notifications
+const NotificationManager = require('../utils/notificationManager');
 
-// Stricter rate limiting for processing operations
-const processingRateLimiter = rateLimit({
-  windowMs: 5 * 60 * 1000, // 5 minutes
-  max: 20, // 20 processing operations per 5 minutes
-  message: { success: false, message: 'Too many processing requests. Please try again later.', code: 'PROCESSING_RATE_LIMITED' }
-});
 
-// Apply rate limiting
-router.use(itRateLimiter);
-router.use('/final-process', processingRateLimiter);
-router.use('/decision', processingRateLimiter);
+const { roleAuth } = require('../middlewares/sessionAuth');
+const pendingFormsPath = path.join(__dirname, '../data/pending_forms.json');
+const certificatesPath = path.join(__dirname, '../data/certificates.json');
 
-// =========================================
-// PRODUCTION LOGGING & MONITORING
-// =========================================
-
-const logger = {
-  info: (message, meta = {}) => console.log(`[INFO] ${new Date().toISOString()} - ${message}`, JSON.stringify(meta)),
-  warn: (message, meta = {}) => console.warn(`[WARN] ${new Date().toISOString()} - ${message}`, JSON.stringify(meta)),
-  error: (message, error, meta = {}) => console.error(`[ERROR] ${new Date().toISOString()} - ${message}`, error?.stack || error, JSON.stringify(meta)),
-  audit: (action, userId, meta = {}) => console.log(`[AUDIT] ${new Date().toISOString()} - ${action} - User: ${userId}`, JSON.stringify(meta))
-};
-
-// Audit middleware for sensitive IT operations
-const auditMiddleware = (action) => (req, res, next) => {
-  const userId = req.session?.user?.id || 'anonymous';
-  const ip = req.ip || req.connection?.remoteAddress;
-  
-  logger.audit(action, userId, {
-    ip,
-    userAgent: req.get('User-Agent'),
-    path: req.path,
-    method: req.method,
-    sessionId: req.session?.id,
-    itAdmin: req.session?.user?.name
-  });
-  
-  next();
-};
-
-// =========================================
-// PRODUCTION DATA VALIDATION
-// =========================================
-
-const schemas = {
-  formDecision: Joi.object({
-    formId: Joi.string().pattern(/^F\d+_[A-Z0-9]{6}$/).required(),
-    status: Joi.string().valid('approved', 'rejected', 'complete').required(),
-    remark: Joi.string().max(1000).optional().allow('')
-  }),
-  
-  finalProcess: Joi.object({
-    formId: Joi.string().pattern(/^F\d+_[A-Z0-9]{6}$/).required(),
-    formResponses: Joi.alternatives().try(
-      Joi.string().max(500000), // JSON string - 500KB limit
-      Joi.object().max(100) // Direct object
-    ).optional(),
-    action: Joi.string().valid('complete', 'reject').required(),
-    remarks: Joi.string().max(1000).optional().allow('')
-  }),
-  
-  bulkNotification: Joi.object({
-    title: Joi.string().min(1).max(100).required(),
-    message: Joi.string().min(1).max(1000).required(),
-    employeeIds: Joi.array().items(Joi.string().min(1).max(50)).max(100).optional(),
-    priority: Joi.string().valid('low', 'medium', 'high').default('medium')
-  })
-};
-
-// Validation middleware
-const validateRequest = (schema) => (req, res, next) => {
-  const { error, value } = schema.validate(req.body, { abortEarly: false, stripUnknown: true });
-  
-  if (error) {
-    logger.warn('IT request validation failed', {
-      errors: error.details.map(d => ({ field: d.path.join('.'), message: d.message })),
-      userId: req.session?.user?.id,
-      ip: req.ip
-    });
-    
-    return res.status(400).json({
-      success: false,
-      message: 'Validation failed',
-      errors: error.details.map(d => ({ field: d.path.join('.'), message: d.message })),
-      code: 'VALIDATION_ERROR'
-    });
-  }
-  
-  req.body = value;
-  next();
-};
-
-// =========================================
-// PRODUCTION ERROR HANDLING
-// =========================================
-
-// Async error wrapper
-const asyncHandler = (fn) => (req, res, next) => {
-  Promise.resolve(fn(req, res, next)).catch(next);
-};
-
-// Enhanced error responses
-const createErrorResponse = (message, code = 'INTERNAL_ERROR', statusCode = 500, details = null) => ({
-  success: false,
-  message,
-  code,
-  timestamp: new Date().toISOString(),
-  ...(process.env.NODE_ENV === 'development' && details && { details })
-});
-
-// =========================================
-// PRODUCTION DATA ACCESS LAYER
-// =========================================
-
-class DataAccessLayer {
-  static async safeReadJSON(filePath, defaultValue = []) {
-    try {
-      const readFile = promisify(fs.readFile);
-      const data = await readFile(filePath, 'utf8');
-      const parsed = JSON.parse(data);
-      return Array.isArray(parsed) ? parsed : defaultValue;
-    } catch (error) {
-      logger.error(`Failed to read JSON file: ${filePath}`, error);
-      return defaultValue;
-    }
-  }
-
-  static async safeWriteJSON(filePath, data) {
-    try {
-      // Create backup before writing
-      if (fs.existsSync(filePath)) {
-        const backupPath = `${filePath}.backup.${Date.now()}`;
-        fs.copyFileSync(filePath, backupPath);
-        
-        // Keep only last 10 backups
-        const dir = path.dirname(filePath);
-        const basename = path.basename(filePath);
-        const backupFiles = fs.readdirSync(dir)
-          .filter(f => f.startsWith(`${basename}.backup.`))
-          .sort()
-          .reverse();
-        
-        if (backupFiles.length > 10) {
-          backupFiles.slice(10).forEach(f => {
-            fs.unlinkSync(path.join(dir, f));
-          });
-        }
-      }
-      
-      const writeFile = promisify(fs.writeFile);
-      await writeFile(filePath, JSON.stringify(data, null, 2), 'utf8');
-      return true;
-    } catch (error) {
-      logger.error(`Failed to write JSON file: ${filePath}`, error);
-      throw new Error('Database write operation failed');
-    }
-  }
-
-  static validateITAccess(userId, operation) {
-    if (!userId) {
-      throw new Error('IT user ID is required for access validation');
-    }
-    
-    logger.audit('IT_ACCESS_CHECK', userId, { operation });
-  }
-}
-
-// =========================================
-// PRODUCTION CONSTANTS & CONFIG
-// =========================================
-
-const CONFIG = {
-  FILES: {
-    PENDING_FORMS: path.join(__dirname, '../data/pending_forms.json'),
-    CERTIFICATES: path.join(__dirname, '../data/certificates.json')
-  },
-  STATUS: {
-    PENDING: 'pending',
-    SUBMITTED_TO_IT: 'Submitted to IT',
-    IT_COMPLETED: 'IT Completed',
-    REJECTED: 'rejected',
-    APPROVED: 'approved'
-  },
-  LIMITS: {
-    MAX_FORM_SIZE: 500000, // 500KB
-    MAX_NOTIFICATION_RECIPIENTS: 100,
-    CERTIFICATE_RETENTION_DAYS: 1095 // 3 years
-  }
-};
 
 // All routes below are protected for IT Admin only
 router.use(roleAuth('it'));
 
-// =========================================
-// PRODUCTION HELPER FUNCTIONS
-// =========================================
 
-class ITHelpers {
-  static getLatestFormForEmployee(allForms, employeeId, allowedStatuses = []) {
-    let forms = allForms.filter(f => f && f.employeeId === employeeId);
-    if (allowedStatuses.length) {
-      forms = forms.filter(f => allowedStatuses.includes(f.status));
-    }
-    return forms.sort((a, b) => new Date(b.submissionDate || b.lastUpdated) - new Date(a.submissionDate || a.lastUpdated))[0] || null;
-  }
-
-  static async storeCertificates(formId, certificates, employeeId) {
-    try {
-      const certificatesData = await DataAccessLayer.safeReadJSON(CONFIG.FILES.CERTIFICATES);
-
-      for (const cert of certificates) {
-        certificatesData.push({
-          id: `${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
-          formId,
-          employeeId,
-          formType: cert.formType,
-          filename: cert.filename,
-          filepath: cert.filepath,
-          generatedAt: cert.generatedAt,
-          status: 'available',
-          version: '1.0'
-        });
-      }
-
-      await DataAccessLayer.safeWriteJSON(CONFIG.FILES.CERTIFICATES, certificatesData);
-      logger.info('Certificate records stored successfully', {
-        formId,
-        employeeId,
-        certificateCount: certificates.length
-      });
-
-    } catch (error) {
-      logger.error('Error storing certificates', error, { formId, employeeId });
-      throw error;
-    }
-  }
-
-  static validateFormForProcessing(form, action) {
-    if (!form) {
-      throw new Error('Form not found');
-    }
-
-    if (action === 'complete' && form.status !== CONFIG.STATUS.SUBMITTED_TO_IT) {
-      throw new Error(`Form is not in correct status for completion. Current status: ${form.status}`);
-    }
-
-    if (action === 'reject' && !['pending', 'Submitted to IT'].includes(form.status)) {
-      throw new Error(`Form is not in correct status for rejection. Current status: ${form.status}`);
-    }
-  }
-
-  static sanitizeFormForResponse(form) {
-    // Remove sensitive internal data before sending to client
-    const sanitized = { ...form };
-    delete sanitized.internalNotes;
-    delete sanitized.systemMetadata;
-    delete sanitized.auditLog;
-    return sanitized;
-  }
-
-  static createITActionData(sessionUser, action, remarks, req) {
-    return {
-      processedBy: sessionUser?.name || 'IT Admin',
-      processedAt: new Date().toISOString(),
-      action,
-      remarks: remarks || '',
-      ipAddress: req.ip,
-      userAgent: req.get('User-Agent'),
-      sessionId: req.session?.id,
-      itDetails: {
-        userId: sessionUser?.id,
-        name: sessionUser?.name,
-        email: sessionUser?.email,
-        department: sessionUser?.department || 'IT'
-      }
-    };
+// Helper function to safely load JSON files
+function loadJSONFile(filePath) {
+  try {
+    const data = fs.readFileSync(filePath, 'utf8');
+    return JSON.parse(data);
+  } catch (err) {
+    console.error(`Error loading ${filePath}:`, err);
+    return [];
   }
 }
 
-// =========================================
-// PRODUCTION API ENDPOINTS
-// =========================================
 
-// Enhanced review requests endpoint with pagination
-router.get('/review-requests',
-  asyncHandler(async (req, res) => {
-    const { page = 1, limit = 50, status, department } = req.query;
-    
-    DataAccessLayer.validateITAccess(req.session.user.id, 'VIEW_REVIEW_REQUESTS');
-    
-    let requests = await DataAccessLayer.safeReadJSON(CONFIG.FILES.PENDING_FORMS);
-    
-    // Apply filters
-    if (status) {
-      requests = requests.filter(r => r.status === status);
-    }
-    
-    if (department) {
-      requests = requests.filter(r => r.department === department);
-    }
-    
-    // Sort by submission date (oldest first for priority)
-    requests.sort((a, b) => new Date(a.submissionDate || a.lastUpdated) - new Date(b.submissionDate || b.lastUpdated));
-    
-    // Apply pagination
-    const startIndex = (page - 1) * limit;
-    const endIndex = startIndex + parseInt(limit);
-    const paginatedRequests = requests.slice(startIndex, endIndex);
-    
-    // Sanitize data
-    const sanitizedRequests = paginatedRequests.map(r => ITHelpers.sanitizeFormForResponse(r));
-    
-    logger.info('IT review requests accessed', {
-      userId: req.session.user.id,
-      totalRequests: requests.length,
-      pageRequested: page,
-      filters: { status, department }
-    });
-    
-    res.json({
-      success: true,
-      requests: sanitizedRequests,
-      pagination: {
-        total: requests.length,
-        page: parseInt(page),
-        limit: parseInt(limit),
-        totalPages: Math.ceil(requests.length / limit),
-        hasNextPage: endIndex < requests.length,
-        hasPrevPage: page > 1
-      }
-    });
-  })
-);
+// Helper function to safely save JSON files
+function saveJSONFile(filePath, data) {
+  try {
+    fs.writeFileSync(filePath, JSON.stringify(data, null, 2), 'utf8');
+    return true;
+  } catch (err) {
+    console.error(`Error saving ${filePath}:`, err);
+    return false;
+  }
+}
 
-// Enhanced pending forms endpoint
-router.get('/pending',
-  asyncHandler(async (req, res) => {
-    DataAccessLayer.validateITAccess(req.session.user.id, 'VIEW_PENDING_FORMS');
-    
-    const requests = await DataAccessLayer.safeReadJSON(CONFIG.FILES.PENDING_FORMS);
-    const pendingForIT = requests.filter(form => form.status === CONFIG.STATUS.SUBMITTED_TO_IT);
-    
-    // Sort by submission date (oldest first for priority)
-    pendingForIT.sort((a, b) => new Date(a.submissionDate || a.lastUpdated) - new Date(b.submissionDate || b.lastUpdated));
-    
-    const sanitizedForms = pendingForIT.map(f => ITHelpers.sanitizeFormForResponse(f));
-    
-    logger.info('IT pending forms accessed', {
-      userId: req.session.user.id,
-      pendingCount: pendingForIT.length
-    });
-    
-    res.json({
-      success: true,
-      list: sanitizedForms,
-      summary: {
-        totalPending: pendingForIT.length,
-        oldestPending: pendingForIT.length > 0 ? pendingForIT[0].submissionDate : null,
-        avgProcessingTime: '2-3 business days'
-      }
-    });
-  })
-);
 
-// Enhanced form details endpoint with security checks
-router.get('/form-details/:formId',
-  asyncHandler(async (req, res) => {
-    const { formId } = req.params;
-    
-    if (!formId || !/^F\d+_[A-Z0-9]{6}$/.test(formId)) {
-      return res.status(400).json(createErrorResponse('Invalid form ID format', 'INVALID_FORM_ID', 400));
+// Helper to get latest form for employee (consistency with employee.js)
+function getLatestFormForEmployee(allForms, employeeId, allowedStatuses = []) {
+  let forms = allForms.filter(f => f && f.employeeId === employeeId);
+  if (allowedStatuses.length) {
+    forms = forms.filter(f => allowedStatuses.includes(f.status));
+  }
+  return forms.sort((a, b) => new Date(b.submissionDate || b.lastUpdated) - new Date(a.submissionDate || a.lastUpdated))[0] || null;
+}
+
+
+// GET: Fetch All Review Requests
+router.get('/review-requests', (req, res) => {
+  try {
+    const requests = loadJSONFile(pendingFormsPath);
+    if (!Array.isArray(requests)) {
+      return res.status(500).json({ success: false, message: 'Corrupted data format.' });
     }
-    
-    DataAccessLayer.validateITAccess(req.session.user.id, 'VIEW_FORM_DETAILS');
-    
-    const requests = await DataAccessLayer.safeReadJSON(CONFIG.FILES.PENDING_FORMS);
+    res.json({ success: true, requests });
+  } catch (err) {
+    console.error('❌ Error reading review requests:', err);
+    res.status(500).json({ success: false, message: 'Failed to load requests.' });
+  }
+});
+
+
+// GET: Fetch Forms Ready for IT Review (from HOD)
+router.get('/pending', (req, res) => {
+  try {
+    const requests = loadJSONFile(pendingFormsPath);
+    if (!Array.isArray(requests)) {
+      return res.status(500).json({ success: false, message: 'Corrupted data format.' });
+    }
+
+
+    // Filter forms that HOD has approved and sent to IT
+    const pendingForIT = requests.filter(form => form.status === 'Submitted to IT');
+
+
+    console.log(`📋 IT Dashboard: Found ${pendingForIT.length} forms pending IT review`);
+    res.json({ success: true, list: pendingForIT });
+  } catch (err) {
+    console.error('❌ Error reading IT pending forms:', err);
+    res.status(500).json({ success: false, message: 'Failed to load pending forms.' });
+  }
+});
+
+
+// GET: Get Complete Form Details for IT Review
+router.get('/form-details/:formId', (req, res) => {
+  const { formId } = req.params;
+
+
+  if (!formId) {
+    return res.status(400).json({ success: false, message: 'Missing formId' });
+  }
+
+
+  try {
+    const requests = loadJSONFile(pendingFormsPath);
     const form = requests.find(f => f.formId === formId);
 
+
     if (!form) {
-      return res.status(404).json(createErrorResponse('Form not found', 'FORM_NOT_FOUND', 404));
+      return res.status(404).json({ success: false, message: 'Form not found' });
     }
 
-    logger.info('IT form details accessed', {
-      formId,
-      userId: req.session.user.id,
-      employeeId: form.employeeId,
-      status: form.status
-    });
 
+    // Return complete form data (employee + HOD sections)
     res.json({
       success: true,
       forms: form.formResponses || {},
@@ -460,73 +125,62 @@ router.get('/form-details/:formId',
       hodApproval: form.hodApproval || null,
       submittedDate: form.submittedDate,
       submissionDate: form.submissionDate,
-      status: form.status,
-      metadata: {
-        version: form.version || '1.0',
-        lastUpdated: form.lastUpdated,
-        accessedAt: new Date().toISOString()
-      }
+      status: form.status
     });
-  })
-);
+  } catch (err) {
+    console.error('❌ Error loading IT form details:', err);
+    res.status(500).json({ success: false, message: 'Error fetching form details' });
+  }
+});
 
-// Enhanced final processing with comprehensive validation and security
-router.post('/final-process',
-  validateRequest(schemas.finalProcess),
-  auditMiddleware('IT_FINAL_PROCESS'),
-  asyncHandler(async (req, res) => {
+
+// ENHANCED: IT Final Processing with PDF Generation and Notifications
+router.post('/final-process', async (req, res) => {
+  try {
     let { formId, formResponses, action, remarks } = req.body;
-    const sessionUser = req.session.user;
-    
-    DataAccessLayer.validateITAccess(sessionUser.id, 'FINAL_PROCESS_FORM');
 
-    // Parse formResponses if it's a string
-    if (typeof formResponses === 'string') {
-      try {
-        formResponses = JSON.parse(formResponses);
-      } catch (error) {
-        return res.status(400).json(createErrorResponse(
-          'Invalid JSON format in formResponses',
-          'INVALID_JSON',
-          400
-        ));
-      }
+
+    if (!formId || !action) {
+      return res.status(400).json({ success: false, message: 'Missing formId or action' });
     }
 
-    const requests = await DataAccessLayer.safeReadJSON(CONFIG.FILES.PENDING_FORMS);
+
+    // Handle JSON string case
+    if (typeof formResponses === 'string') {
+      formResponses = JSON.parse(formResponses);
+    }
+
+
+    const requests = loadJSONFile(pendingFormsPath);
     const formIndex = requests.findIndex(f => f.formId === formId);
 
+
     if (formIndex === -1) {
-      return res.status(404).json(createErrorResponse('Form not found', 'FORM_NOT_FOUND', 404));
+      return res.status(404).json({ success: false, message: 'Form not found' });
     }
+
 
     const form = requests[formIndex];
+    const sessionUser = req.session.user;
 
-    try {
-      ITHelpers.validateFormForProcessing(form, action);
-    } catch (validationError) {
-      return res.status(400).json(createErrorResponse(
-        validationError.message,
-        'FORM_VALIDATION_ERROR',
-        400
-      ));
-    }
 
     if (action === 'complete') {
-      logger.info('Processing IT completion with PDF generation', {
-        formId,
-        userId: sessionUser.id
-      });
+      // Enhanced form completion with PDF generation
+      console.log('🔄 Processing IT completion with PDF generation...');
+
 
       // Merge HOD data with form responses for PDF generation
       const enrichedFormResponses = {};
+
 
       if (formResponses) {
         for (const [formType, formData] of Object.entries(formResponses)) {
           enrichedFormResponses[formType] = {
             ...formData,
+            // Add HOD details from the main form record
             hodApprovalDate: form.hodApproval?.approvedAt,
             hodApprovedBy: form.hodApproval?.approvedBy,
+            // Add employee details
             employeeName: form.employeeName || form.name,
             employeeId: form.employeeId,
             department: form.department,
@@ -534,15 +188,19 @@ router.post('/final-process',
           };
         }
 
+
         // Validate IT sections are filled
         const requiredForms = ['disposalForm', 'efileForm'];
         const form365Key = formResponses.form365Trans ? 'form365Trans' : 'form365Disp';
         requiredForms.push(form365Key);
 
+
         for (const formKey of requiredForms) {
           const formData = formResponses[formKey];
           if (!formData) continue;
 
+
+          // Check if IT sections are filled (look for IT-specific fields)
           const hasITData = Object.keys(formData).some(key =>
             key.toLowerCase().includes('it') ||
             key.includes('itSignature') ||
@@ -550,35 +208,37 @@ router.post('/final-process',
             key.includes('itApproval')
           );
 
-          logger.info(`IT sections validation`, {
-            formKey,
-            hasITData,
-            formId
-          });
+
+          console.log(`IT sections in ${formKey}:`, hasITData);
         }
 
+
+        // Update form with complete data (employee + HOD + IT)
         form.formResponses = formResponses;
 
-        // Generate PDF Certificates with error handling
+
+        // Generate PDF Certificates
         try {
-          logger.info('Generating PDF certificates', { formId });
+          console.log('📜 Generating PDF certificates...');
           const pdfCertificates = await generateFormCertificates(formId, enrichedFormResponses);
 
-          await ITHelpers.storeCertificates(formId, pdfCertificates, form.employeeId);
 
-          logger.info('PDF certificates generated successfully', {
-            formId,
-            certificateCount: pdfCertificates.length
-          });
+          // Store certificates in database
+          await storeCertificates(formId, pdfCertificates, form.employeeId);
 
+
+          console.log(`✅ Generated ${pdfCertificates.length} PDF certificates`);
+
+
+          // Add certificate info to form record
           form.certificates = pdfCertificates.map(cert => ({
             formType: cert.formType,
             filename: cert.filename,
-            generatedAt: cert.generatedAt,
-            status: 'available'
+            generatedAt: cert.generatedAt
           }));
 
-          // Send certificate ready notification
+
+          // Send certificate ready notification to employee
           try {
             NotificationManager.notifyCertificatesReady(
               form.employeeId,
@@ -591,51 +251,74 @@ router.post('/final-process',
               }
             );
           } catch (notificationError) {
-            logger.warn('Failed to send certificate notification', notificationError, { formId });
+            console.warn('Failed to send certificate notification:', notificationError);
           }
 
+
         } catch (pdfError) {
-          logger.error('PDF generation failed', pdfError, { formId });
-          return res.status(500).json(createErrorResponse(
-            'Certificate generation failed. Please try again.',
-            'PDF_GENERATION_ERROR',
-            500
-          ));
+          console.error('❌ PDF generation failed:', pdfError.message);
+          // Don't fail the entire process if PDF generation fails
+          // Just log the error and continue
         }
       }
 
-      form.status = CONFIG.STATUS.IT_COMPLETED;
-      form.itProcessing = ITHelpers.createITActionData(sessionUser, 'completed', remarks, req);
-      form.lastUpdated = new Date().toISOString();
-      form.version = (parseFloat(form.version || '1.0') + 0.1).toFixed(1);
 
-      logger.audit('FORM_COMPLETED', sessionUser.id, {
-        formId,
-        employeeId: form.employeeId,
-        certificatesGenerated: form.certificates?.length || 0
+      form.status = 'IT Completed';
+      form.itProcessing = {
+        processedBy: sessionUser?.name || 'IT Admin',
+        processedAt: new Date().toISOString(),
+        action: 'completed',
+        remarks: remarks || ''
+      };
+
+
+      console.log(`✅ Form ${formId} completed by IT with certificate generation`);
+
+
+      // Save updated data
+      if (!saveJSONFile(pendingFormsPath, requests)) {
+        return res.status(500).json({ success: false, message: 'Failed to save form data' });
+      }
+
+
+      res.json({
+        success: true,
+        message: 'Form completed successfully and certificates generated',
+        certificates: form.certificates || []
       });
+
 
     } else if (action === 'reject') {
       if (!remarks || remarks.trim() === '') {
-        return res.status(400).json(createErrorResponse(
-          'Remarks are required for rejection',
-          'MISSING_REMARKS',
-          400
-        ));
+        return res.status(400).json({
+          success: false,
+          message: 'Remarks are required for rejection'
+        });
       }
 
-      form.status = CONFIG.STATUS.REJECTED;
+
+      // ENHANCED: Proper rejection handling for employee dashboard sync
+      form.status = 'rejected';
       form.rejectionReason = remarks;
       form.rejectedAt = new Date().toISOString();
       form.rejectedBy = sessionUser?.name || 'IT Admin';
       form.rejectionStage = 'IT Review';
+
+
+      // Clear assigned forms and responses for dashboard cleanup
       form.assignedForms = [];
       form.formResponses = {};
-      form.itProcessing = ITHelpers.createITActionData(sessionUser, 'rejected', remarks, req);
-      form.lastUpdated = new Date().toISOString();
-      form.version = (parseFloat(form.version || '1.0') + 0.1).toFixed(1);
 
-      // Send rejection notification
+
+      form.itProcessing = {
+        processedBy: sessionUser?.name || 'IT Admin',
+        processedAt: new Date().toISOString(),
+        action: 'rejected',
+        remarks: remarks
+      };
+
+
+      // Send IT rejection notification to employee
       try {
         NotificationManager.notifyFormRejection(
           form.employeeId,
@@ -649,73 +332,114 @@ router.post('/final-process',
           }
         );
       } catch (notificationError) {
-        logger.warn('Failed to send rejection notification', notificationError, { formId });
+        console.warn('Failed to send rejection notification:', notificationError);
       }
 
-      logger.audit('FORM_REJECTED', sessionUser.id, {
-        formId,
-        employeeId: form.employeeId,
-        reason: remarks
+
+      console.log(`❌ Form ${formId} rejected by IT: ${remarks}`);
+
+
+      // Save updated data
+      if (!saveJSONFile(pendingFormsPath, requests)) {
+        return res.status(500).json({ success: false, message: 'Failed to save form data' });
+      }
+
+
+      res.json({
+        success: true,
+        message: 'Form rejected and returned to employee'
+      });
+
+
+    } else {
+      return res.status(400).json({ success: false, message: 'Invalid action' });
+    }
+
+
+  } catch (err) {
+    console.error('❌ Error in IT final processing:', err);
+    res.status(500).json({
+      success: false,
+      message: 'Error during IT processing: ' + err.message
+    });
+  }
+});
+
+
+// Helper function to store certificates in JSON database
+async function storeCertificates(formId, certificates, employeeId) {
+  try {
+    // Load existing certificates
+    let certificatesData = loadJSONFile(certificatesPath);
+
+
+    // Store certificate info
+    for (const cert of certificates) {
+      certificatesData.push({
+        id: Date.now() + Math.random().toString(36).substr(2, 9),
+        formId: formId,
+        employeeId: employeeId,
+        formType: cert.formType,
+        filename: cert.filename,
+        filepath: cert.filepath,
+        generatedAt: cert.generatedAt,
+        status: 'available'
       });
     }
 
-    // Save updated data
-    requests[formIndex] = form;
-    await DataAccessLayer.safeWriteJSON(CONFIG.FILES.PENDING_FORMS, requests);
 
-    const responseMessage = action === 'complete' 
-      ? 'Form completed successfully and certificates generated'
-      : 'Form rejected and returned to employee';
+    // Save certificates data
+    if (!saveJSONFile(certificatesPath, certificatesData)) {
+      throw new Error('Failed to save certificate records');
+    }
 
-    res.json({
-      success: true,
-      message: responseMessage,
-      formId,
-      status: form.status,
-      processedAt: form.itProcessing.processedAt,
-      certificates: form.certificates || [],
-      version: form.version
-    });
-  })
-);
 
-// Enhanced decision endpoint with validation
-router.post('/decision',
-  validateRequest(schemas.formDecision),
-  auditMiddleware('IT_DECISION'),
-  asyncHandler(async (req, res) => {
-    const { formId, status, remark } = req.body;
-    const sessionUser = req.session.user;
-    
-    DataAccessLayer.validateITAccess(sessionUser.id, 'MAKE_DECISION');
+    console.log('✅ Certificate records stored successfully');
 
-    const requests = await DataAccessLayer.safeReadJSON(CONFIG.FILES.PENDING_FORMS);
+
+  } catch (error) {
+    console.error('❌ Error storing certificates:', error);
+    throw error;
+  }
+}
+
+
+// ENHANCED: Approve or Reject with Notification Support
+router.post('/decision', (req, res) => {
+  const { formId, status, remark } = req.body;
+
+
+  if (!formId || !status) {
+    return res.status(400).json({ success: false, message: 'Missing form ID or status' });
+  }
+
+
+  try {
+    const requests = loadJSONFile(pendingFormsPath);
     const index = requests.findIndex(r => r.formId === formId);
 
+
     if (index === -1) {
-      return res.status(404).json(createErrorResponse('Form not found', 'FORM_NOT_FOUND', 404));
+      return res.status(404).json({ success: false, message: 'Form ID not found.' });
     }
+
 
     const form = requests[index];
     const decision = status.toLowerCase();
+    const sessionUser = req.session.user;
 
-    // Validate form status
-    if (form.status !== CONFIG.STATUS.PENDING) {
-      return res.status(400).json(createErrorResponse(
-        `Form is not in pending status. Current status: ${form.status}`,
-        'INVALID_FORM_STATUS',
-        400
-      ));
-    }
 
+    // Update form decision and remark
     form.status = decision;
     form.remark = remark || '';
     form.lastUpdated = new Date().toISOString();
-    form.version = (parseFloat(form.version || '1.0') + 0.1).toFixed(1);
 
-    if (decision === CONFIG.STATUS.APPROVED) {
+
+    if (decision === 'approved') {
       const noDuesType = form.noDuesType?.toLowerCase();
 
+
+      // Assign structured forms based on the no dues type
       form.assignedForms = [
         { title: 'E-File', path: '/forms/efile.html' },
         { title: 'Disposal Form', path: '/forms/disposalform.html' },
@@ -727,15 +451,17 @@ router.post('/decision',
         }
       ];
 
-      // Send approval notification
+
+      // Notify employee about assigned forms
       try {
-        NotificationManager.getInstance().sendMultiChannelNotification({
+        const notificationManager = NotificationManager.getInstance();
+        notificationManager.sendMultiChannelNotification({
           type: 'forms_assigned',
           employeeId: form.employeeId,
           formId: formId,
           timestamp: new Date().toISOString(),
           priority: 'medium',
-          title: 'Forms Assigned',
+          title: '📋 Forms Assigned',
           message: `Your application ${formId} has been approved. Complete the assigned forms to proceed.`,
           details: {
             assignedForms: form.assignedForms,
@@ -744,23 +470,21 @@ router.post('/decision',
           }
         });
       } catch (notificationError) {
-        logger.warn('Failed to send approval notification', notificationError, { formId });
+        console.warn('Failed to send form assignment notification:', notificationError);
       }
-
-      logger.audit('FORM_APPROVED', sessionUser.id, {
-        formId,
-        employeeId: form.employeeId,
-        assignedFormsCount: form.assignedForms.length
-      });
-
-    } else if (decision === CONFIG.STATUS.REJECTED) {
-      form.status = CONFIG.STATUS.REJECTED;
+    } else if (decision === 'rejected') {
+      // ENHANCED: Proper rejection handling
+      form.status = 'rejected';
       form.rejectionReason = remark || 'No reason provided';
       form.rejectedAt = new Date().toISOString();
       form.rejectedBy = sessionUser?.name || 'IT Admin';
       form.rejectionStage = 'Initial IT Review';
+
+
+      // Clear assigned forms for dashboard cleanup
       delete form.assignedForms;
       form.formResponses = {};
+
 
       try {
         NotificationManager.notifyFormRejection(
@@ -775,140 +499,119 @@ router.post('/decision',
           }
         );
       } catch (notificationError) {
-        logger.warn('Failed to send rejection notification', notificationError, { formId });
+        console.warn('Failed to send rejection notification:', notificationError);
       }
-
-      logger.audit('FORM_REJECTED_INITIAL', sessionUser.id, {
-        formId,
-        employeeId: form.employeeId,
-        reason: remark || 'No reason provided'
-      });
     }
 
-    requests[index] = form;
-    await DataAccessLayer.safeWriteJSON(CONFIG.FILES.PENDING_FORMS, requests);
 
-    res.json({
-      success: true,
-      message: `Form ${decision} successfully`,
-      formId,
-      status: form.status,
-      processedAt: form.lastUpdated,
-      version: form.version
-    });
-  })
-);
+    if (!saveJSONFile(pendingFormsPath, requests)) {
+      return res.status(500).json({ success: false, message: 'Failed to save form data' });
+    }
 
-// Enhanced statistics endpoint with comprehensive metrics
-router.get('/stats',
-  asyncHandler(async (req, res) => {
-    DataAccessLayer.validateITAccess(req.session.user.id, 'VIEW_STATISTICS');
-    
-    const requests = await DataAccessLayer.safeReadJSON(CONFIG.FILES.PENDING_FORMS);
-    
+
+    console.log(`✅ Form ID ${formId} marked as ${decision}`);
+    res.json({ success: true });
+
+
+  } catch (err) {
+    console.error('❌ Error processing decision:', err);
+    res.status(500).json({ success: false, message: 'Failed to process request.' });
+  }
+});
+
+
+// GET: IT Dashboard Statistics (Enhanced)
+router.get('/stats', (req, res) => {
+  try {
+    const requests = loadJSONFile(pendingFormsPath);
+
+
+    // Enhanced statistics including certificates and notifications
     let certificatesCount = 0;
     let notificationStats = {
       connectedEmployees: 0,
       totalNotificationsSent: 0
     };
 
+
     try {
-      const certificates = await DataAccessLayer.safeReadJSON(CONFIG.FILES.CERTIFICATES);
+      const certificates = loadJSONFile(certificatesPath);
       certificatesCount = certificates.length;
     } catch (certError) {
-      logger.warn('Could not read certificates for stats', certError);
+      console.warn('Could not read certificates for stats:', certError.message);
     }
+
 
     // Get notification system statistics
     try {
       const notificationManager = NotificationManager.getInstance();
       notificationStats.connectedEmployees = notificationManager.getConnectedClientsCount();
 
+
+      // Get recent notification count (last 24 hours)
       const recentNotifications = notificationManager.getNotificationHistory('', 1000)
         .filter(n => new Date(n.timestamp) > new Date(Date.now() - 24 * 60 * 60 * 1000));
       notificationStats.totalNotificationsSent = recentNotifications.length;
     } catch (notificationError) {
-      logger.warn('Could not get notification stats', notificationError);
+      console.warn('Could not get notification stats:', notificationError.message);
     }
+
 
     const stats = {
       total: requests.length,
-      pendingIT: requests.filter(f => f.status === CONFIG.STATUS.SUBMITTED_TO_IT).length,
-      completedByIT: requests.filter(f => f.status === CONFIG.STATUS.IT_COMPLETED).length,
-      rejectedByIT: requests.filter(f => f.status === CONFIG.STATUS.REJECTED).length,
-      pendingInitialReview: requests.filter(f => f.status === CONFIG.STATUS.PENDING).length,
+      pendingIT: requests.filter(f => f.status === 'Submitted to IT').length,
+      completedByIT: requests.filter(f => f.status === 'IT Completed').length,
+      rejectedByIT: requests.filter(f => f.status === 'Rejected by IT' || f.status === 'rejected').length,
+      pendingInitialReview: requests.filter(f => f.status === 'pending').length,
       certificatesGenerated: certificatesCount,
-      notifications: notificationStats,
-      systemHealth: {
-        uptime: process.uptime(),
-        memoryUsage: process.memoryUsage(),
-        timestamp: new Date().toISOString()
-      }
+      notifications: notificationStats
     };
 
-    logger.info('IT statistics accessed', {
-      userId: req.session.user.id,
-      statsRequested: Object.keys(stats).join(', ')
-    });
 
     res.json({ success: true, stats });
-  })
-);
+  } catch (err) {
+    console.error('❌ Error getting IT stats:', err);
+    res.status(500).json({ success: false, message: 'Error fetching statistics' });
+  }
+});
 
-// Enhanced completed forms endpoint
-router.get('/completed',
-  asyncHandler(async (req, res) => {
-    const { page = 1, limit = 50 } = req.query;
-    
-    DataAccessLayer.validateITAccess(req.session.user.id, 'VIEW_COMPLETED_FORMS');
-    
-    const requests = await DataAccessLayer.safeReadJSON(CONFIG.FILES.PENDING_FORMS);
-    const completedForms = requests.filter(form => form.status === CONFIG.STATUS.IT_COMPLETED);
-    
-    // Sort by completion date (newest first)
-    completedForms.sort((a, b) => new Date(b.itProcessing?.processedAt || b.lastUpdated) - new Date(a.itProcessing?.processedAt || a.lastUpdated));
-    
-    // Apply pagination
-    const startIndex = (page - 1) * limit;
-    const endIndex = startIndex + parseInt(limit);
-    const paginatedForms = completedForms.slice(startIndex, endIndex);
-    
-    const sanitizedForms = paginatedForms.map(f => ITHelpers.sanitizeFormForResponse(f));
-    
-    logger.info('IT completed forms accessed', {
-      userId: req.session.user.id,
-      completedCount: completedForms.length,
-      pageRequested: page
-    });
-    
-    res.json({
-      success: true,
-      list: sanitizedForms,
-      pagination: {
-        total: completedForms.length,
-        page: parseInt(page),
-        limit: parseInt(limit),
-        totalPages: Math.ceil(completedForms.length / limit),
-        hasNextPage: endIndex < completedForms.length,
-        hasPrevPage: page > 1
-      },
-      summary: {
-        totalCompleted: completedForms.length,
-        certificatesGenerated: completedForms.reduce((sum, f) => sum + (f.certificates?.length || 0), 0)
-      }
-    });
-  })
-);
 
-// Enhanced bulk notification endpoint
-router.post('/send-notification',
-  validateRequest(schemas.bulkNotification),
-  auditMiddleware('BULK_NOTIFICATION'),
-  asyncHandler(async (req, res) => {
-    const { title, message, employeeIds, priority } = req.body;
+// GET: Completed forms with certificates (for IT completed tab)
+router.get('/completed', (req, res) => {
+  try {
+    const requests = loadJSONFile(pendingFormsPath);
+    if (!Array.isArray(requests)) {
+      return res.status(500).json({ success: false, message: 'Corrupted data format.' });
+    }
+
+
+    // Filter forms that are completed by IT
+    const completedForms = requests.filter(form => form.status === 'IT Completed');
+
+
+    console.log(`📋 IT Completed: Found ${completedForms.length} completed forms`);
+    res.json({ success: true, list: completedForms });
+  } catch (err) {
+    console.error('❌ Error reading IT completed forms:', err);
+    res.status(500).json({ success: false, message: 'Failed to load completed forms.' });
+  }
+});
+
+
+// Send bulk notification to employees
+router.post('/send-notification', (req, res) => {
+  try {
+    const { title, message, employeeIds, priority = 'medium' } = req.body;
     const sessionUser = req.session.user;
-    
-    DataAccessLayer.validateITAccess(sessionUser.id, 'SEND_NOTIFICATIONS');
+
+
+    if (!title || !message) {
+      return res.status(400).json({
+        success: false,
+        message: 'Title and message are required'
+      });
+    }
+
 
     const notificationData = {
       type: 'it_announcement',
@@ -918,160 +621,77 @@ router.post('/send-notification',
       message: message,
       details: {
         sentBy: sessionUser?.name || 'IT Admin',
-        itDepartment: sessionUser?.department || 'IT',
-        sessionId: req.session?.id
+        itDepartment: sessionUser?.department || 'IT'
       }
     };
+
 
     let sentCount = 0;
 
-    try {
-      if (employeeIds && Array.isArray(employeeIds)) {
-        // Send to specific employees
-        for (const employeeId of employeeIds) {
-          NotificationManager.getInstance().sendMultiChannelNotification({
-            ...notificationData,
-            employeeId: employeeId
-          });
-          sentCount++;
-        }
-      } else {
-        // Broadcast to all connected employees
-        sentCount = NotificationManager.getInstance().broadcastNotification(notificationData);
-      }
 
-      logger.audit('BULK_NOTIFICATION_SENT', sessionUser.id, {
-        title,
-        recipientCount: sentCount,
-        targetedEmployees: employeeIds ? employeeIds.length : 'broadcast',
-        priority
+    if (employeeIds && Array.isArray(employeeIds)) {
+      // Send to specific employees
+      employeeIds.forEach(employeeId => {
+        NotificationManager.getInstance().sendMultiChannelNotification({
+          ...notificationData,
+          employeeId: employeeId
+        });
+        sentCount++;
       });
-
-      res.json({
-        success: true,
-        message: `Notification sent to ${sentCount} employee(s)`,
-        sentCount: sentCount,
-        timestamp: new Date().toISOString()
-      });
-
-    } catch (error) {
-      logger.error('Bulk notification failed', error, {
-        userId: sessionUser.id,
-        title,
-        recipientCount: employeeIds?.length || 'broadcast'
-      });
-      
-      res.status(500).json(createErrorResponse('Failed to send notification', 'NOTIFICATION_ERROR', 500));
+    } else {
+      // Broadcast to all connected employees
+      sentCount = NotificationManager.getInstance().broadcastNotification(notificationData);
     }
-  })
-);
 
-// Enhanced notification statistics endpoint
-router.get('/notification-stats',
-  asyncHandler(async (req, res) => {
-    DataAccessLayer.validateITAccess(req.session.user.id, 'VIEW_NOTIFICATION_STATS');
-    
-    try {
-      const notificationManager = NotificationManager.getInstance();
 
-      const stats = {
-        connectedEmployees: notificationManager.getConnectedClientsCount(),
-        queuedNotifications: notificationManager.notificationQueue?.length || 0,
-        recentNotifications: notificationManager.getNotificationHistory('', 50).slice(0, 10),
-        systemStatus: {
-          webSocketActive: true,
-          lastCleanup: new Date().toISOString(),
-          serverUptime: process.uptime()
-        },
-        performance: {
-          memoryUsage: process.memoryUsage(),
-          cpuUsage: process.cpuUsage()
-        }
-      };
+    res.json({
+      success: true,
+      message: `Notification sent to ${sentCount} employee(s)`,
+      sentCount: sentCount
+    });
 
-      res.json({
-        success: true,
-        stats: stats,
-        timestamp: new Date().toISOString()
-      });
 
-    } catch (error) {
-      logger.error('Failed to get notification stats', error, {
-        userId: req.session.user.id
-      });
-      
-      res.status(500).json(createErrorResponse('Failed to get notification statistics', 'NOTIFICATION_STATS_ERROR', 500));
-    }
-  })
-);
+  } catch (error) {
+    console.error('Error sending bulk notification:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to send notification'
+    });
+  }
+});
 
-// Health check endpoint
-router.get('/health',
-  asyncHandler(async (req, res) => {
-    const healthData = {
-      status: 'healthy',
-      timestamp: new Date().toISOString(),
-      uptime: process.uptime(),
-      memory: process.memoryUsage(),
-      version: '2.0.0',
-      services: {
-        database: 'operational',
-        fileSystem: 'operational',
-        notifications: 'operational',
-        pdfGeneration: 'operational'
+
+// Get notification statistics for IT dashboard
+router.get('/notification-stats', (req, res) => {
+  try {
+    const notificationManager = NotificationManager.getInstance();
+
+
+    const stats = {
+      connectedEmployees: notificationManager.getConnectedClientsCount(),
+      queuedNotifications: notificationManager.notificationQueue?.length || 0,
+      recentNotifications: notificationManager.getNotificationHistory('', 50).slice(0, 10),
+      systemStatus: {
+        webSocketActive: true,
+        lastCleanup: new Date().toISOString()
       }
     };
 
-    // Check critical services
-    try {
-      await DataAccessLayer.safeReadJSON(CONFIG.FILES.PENDING_FORMS);
-      await DataAccessLayer.safeReadJSON(CONFIG.FILES.CERTIFICATES);
-    } catch (error) {
-      healthData.services.database = 'degraded';
-      healthData.warnings = ['Database access issues detected'];
-    }
 
-    try {
-      const notificationManager = NotificationManager.getInstance();
-      healthData.services.notifications = notificationManager ? 'operational' : 'degraded';
-    } catch (error) {
-      healthData.services.notifications = 'degraded';
-    }
+    res.json({
+      success: true,
+      stats: stats
+    });
 
-    res.json(healthData);
-  })
-);
 
-// =========================================
-// PRODUCTION ERROR HANDLING MIDDLEWARE
-// =========================================
-
-// Global error handler for IT routes
-router.use((error, req, res, next) => {
-  logger.error('IT route error', error, {
-    path: req.path,
-    method: req.method,
-    userId: req.session?.user?.id,
-    ip: req.ip,
-    userAgent: req.get('User-Agent')
-  });
-
-  if (error.code === 'ENOENT') {
-    return res.status(404).json(createErrorResponse('Required file not found', 'FILE_NOT_FOUND', 404));
-  }
-
-  if (error.name === 'SyntaxError' && error.message.includes('JSON')) {
-    return res.status(400).json(createErrorResponse('Invalid JSON format', 'INVALID_JSON', 400));
-  }
-
-  if (!res.headersSent) {
-    res.status(500).json(createErrorResponse(
-      process.env.NODE_ENV === 'production' ? 'Internal server error' : error.message,
-      'INTERNAL_ERROR',
-      500,
-      process.env.NODE_ENV === 'development' ? error.stack : null
-    ));
+  } catch (error) {
+    console.error('Error getting notification stats:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to get notification statistics'
+    });
   }
 });
+
 
 module.exports = router;

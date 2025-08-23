@@ -1,15 +1,19 @@
+now this
 <!DOCTYPE html>
 <html>
 
+
 <head>
+   
   <meta charset="UTF-8">
-  <title>IT Final Review</title>
-  <style>
+    <title>IT Final Review</title>
+    <style>
     body {
       font-family: Arial, sans-serif;
       margin: 20px;
       background: #f8f9fa;
     }
+
 
     .header {
       background: #007bff;
@@ -19,6 +23,7 @@
       margin-bottom: 20px;
     }
 
+
     .workflow-indicator {
       background: #e8f4f8;
       padding: 15px;
@@ -26,6 +31,7 @@
       margin-bottom: 20px;
       border-radius: 4px;
     }
+
 
     iframe {
       width: 100%;
@@ -36,11 +42,13 @@
       box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     }
 
+
     .form-section {
       margin: 30px 0;
       padding: 0;
       background: none;
     }
+
 
     .form-section h3 {
       margin-top: 0;
@@ -50,6 +58,7 @@
       font-size: 1.2rem;
     }
 
+
     .approval-section {
       background: #fff9e6;
       padding: 20px;
@@ -58,10 +67,12 @@
       border: 1px solid #ffc107;
     }
 
+
     .approval-section h3 {
       color: #856404;
       margin-top: 0;
     }
+
 
     .it-fields {
       display: grid;
@@ -69,6 +80,7 @@
       gap: 15px;
       margin: 15px 0;
     }
+
 
     .it-fields input,
     .it-fields select {
@@ -78,12 +90,14 @@
       font-size: 14px;
     }
 
+
     .it-fields label {
       font-weight: bold;
       color: #495057;
       margin-bottom: 5px;
       display: block;
     }
+
 
     .signature-upload {
       margin: 20px 0;
@@ -93,9 +107,11 @@
       text-align: center;
     }
 
+
     .signature-upload input[type="file"] {
       margin: 10px 0;
     }
+
 
     .signature-preview {
       margin-top: 10px;
@@ -105,6 +121,7 @@
       display: none;
     }
 
+
     .action-buttons {
       display: flex;
       gap: 15px;
@@ -112,6 +129,7 @@
       margin: 30px 0;
       padding: 0;
     }
+
 
     .btn {
       padding: 12px 24px;
@@ -123,37 +141,45 @@
       transition: all 0.3s ease;
     }
 
+
     .btn:disabled {
       opacity: 0.6;
       cursor: not-allowed;
     }
+
 
     .btn-complete {
       background: #28a745;
       color: white;
     }
 
+
     .btn-complete:hover:not(:disabled) {
       background: #218838;
     }
+
 
     .btn-reject {
       background: #dc3545;
       color: white;
     }
 
+
     .btn-reject:hover:not(:disabled) {
       background: #c82333;
     }
+
 
     .btn-cancel {
       background: #6c757d;
       color: white;
     }
 
+
     .btn-cancel:hover:not(:disabled) {
       background: #5a6268;
     }
+
 
     .status-message {
       margin: 10px 0;
@@ -163,24 +189,29 @@
       text-align: center;
     }
 
+
     .status-loading {
       background: #d4edda;
       color: #155724;
     }
+
 
     .status-error {
       background: #f8d7da;
       color: #721c24;
     }
 
+
     .status-success {
       background: #d1ecf1;
       color: #0c5460;
     }
 
+
     .remarks-section {
       margin: 20px 0;
     }
+
 
     .remarks-section textarea {
       width: 100%;
@@ -192,20 +223,25 @@
       resize: vertical;
     }
 
+
     .employee-info {
       padding: 15px 0;
       margin: 15px 0;
     }
 
+
     .employee-info h4 {
       color: #007bff;
     }
+
 
     .hod-signature-frame {
       border: 3px solid #28a745 !important;
       background: #f8fff9 !important;
     }
 
+
+    /* HOD Info Display */
     .hod-info {
       background: #d4edda;
       border: 1px solid #28a745;
@@ -214,124 +250,156 @@
       margin: 15px 0;
     }
 
+
     .hod-info h4 {
       color: #155724;
       margin-bottom: 10px;
     }
 
-    .text-muted {
-      color: #6c757d;
-      font-size: 0.9rem;
+
+    .debug-info {
+      background: #f8d7da;
+      border: 1px solid #dc3545;
+      border-radius: 8px;
+      padding: 15px;
+      margin: 15px 0;
+      font-family: monospace;
+      font-size: 12px;
     }
   </style>
 </head>
 
+
 <body>
-  <div class="header">
-    <h1>IT Final Review & Processing</h1>
-    <p>Form ID: <span id="formIdLbl"></span> | Status: Final IT Review</p>
-  </div>
+    <div class="header">
+        <h1>🔧 IT Final Review & Processing</h1>
+        <p>Form ID: <span id="formIdLbl"></span> | Status: Final IT Review</p>
+      </div>
 
-  <div class="workflow-indicator">
-    <strong>Final Stage:</strong> Review forms with all employee and HOD details filled in their original positions,
-    then add IT approval.
-  </div>
 
-  <div id="statusMessage" class="status-message" style="display: none;"></div>
+    <div class="workflow-indicator">
+        <strong>📋 Final Stage:</strong> Review forms with all employee and HOD details filled in their original
+    positions,
+        then add IT approval.
+      </div>
 
-  <!-- Employee Info Section -->
-  <div class="form-section">
-    <h3>Employee Information</h3>
-    <div id="employeeInfo" class="employee-info">Loading employee details...</div>
-  </div>
 
-  <!-- HOD Approval Info Section -->
-  <div class="form-section">
-    <h3>HOD Approval Details</h3>
-    <div id="hodInfo" class="hod-info">Loading HOD approval details...</div>
-  </div>
+    <div id="statusMessage" class="status-message" style="display: none;"></div>
 
-  <!-- Forms with Embedded Employee + HOD Details -->
-  <div class="form-section">
-    <h3>Disposal Form (Employee & HOD Completed)</h3>
-    <iframe id="disposalFrame" src="" data-form-key="disposalForm"></iframe>
-  </div>
 
-  <div class="form-section">
-    <h3>E-file Form (Employee & HOD Completed)</h3>
-    <iframe id="efileFrame" src="" data-form-key="efileForm"></iframe>
-  </div>
+    <!-- Debug Info Section -->
+    <div class="debug-info" id="debugInfo" style="display: none;">
+        <strong>Debug Information:</strong>
+        <div id="debugContent"></div>
+      </div>
 
-  <div class="form-section">
-    <h3>Form 365 (Employee & HOD Completed)</h3>
-    <iframe id="form365Frame" src="" data-form-key="form365"></iframe>
-  </div>
 
-  <!-- IT Approval Section -->
-  <div class="approval-section">
-    <h3>IT Final Approval</h3>
-    <div class="it-fields">
-      <div>
-        <label for="itOfficerName">IT Officer Name *</label>
-        <input type="text" id="itOfficerName" required placeholder="Enter your name">
-      </div>
-      <div>
-        <label for="itOfficerId">IT Officer ID *</label>
-        <input type="text" id="itOfficerId" required placeholder="Enter your employee ID">
-      </div>
-      <div>
-        <label for="itEmail">IT Email *</label>
-        <input type="email" id="itEmail" required placeholder="Enter your email">
-      </div>
-      <div>
-        <label for="itDecision">Decision *</label>
-        <select id="itDecision" required>
-          <option value="">Select Decision</option>
-          <option value="approved">Approve & Complete</option>
-          <option value="rejected">Reject & Return</option>
-        </select>
-      </div>
-    </div>
+    <!-- Employee Info Section -->
+    <div class="form-section">
+        <h3>👤 Employee Information</h3>
+        <div id="employeeInfo" class="employee-info">Loading employee details...</div>
+      </div>
 
-    <div class="signature-upload">
-      <label for="itSignatureFile"><strong>IT Officer Signature *</strong></label>
-      <br>
-      <input type="file" id="itSignatureFile" accept="image/*" required>
-      <div class="text-muted">Upload your digital signature (PNG, JPG, GIF)</div>
-      <img id="itSignaturePreview" class="signature-preview" alt="IT Signature Preview">
-    </div>
 
-    <div class="remarks-section">
-      <label for="itRemarks"><strong>IT Remarks</strong></label>
-      <textarea id="itRemarks" placeholder="Add any additional remarks or instructions..."></textarea>
-    </div>
-  </div>
+    <!-- HOD Approval Info Section -->
+    <div class="form-section">
+        <h3>✅ HOD Approval Details</h3>
+        <div id="hodInfo" class="hod-info">Loading HOD approval details...</div>
+      </div>
 
-  <!-- Action Buttons -->
-  <div class="action-buttons">
-    <button id="completeBtn" class="btn btn-complete" disabled>
-      Complete Clearance
-    </button>
-    <button id="rejectBtn" class="btn btn-reject" disabled>
-      Reject & Return
-    </button>
-    <button id="cancelBtn" class="btn btn-cancel" onclick="window.close()">
-      Cancel
-    </button>
-  </div>
 
+    <!-- Forms with Embedded Employee + HOD Details -->
+    <div class="form-section">
+        <h3>📄 Disposal Form (Employee & HOD Completed)</h3>
+        <iframe id="disposalFrame" src="" data-form-key="disposalForm"></iframe>
+      </div>
+
+
+    <div class="form-section">
+        <h3>📧 E-file Form (Employee & HOD Completed)</h3>
+        <iframe id="efileFrame" src="" data-form-key="efileForm"></iframe>
+      </div>
+
+
+    <div class="form-section">
+        <h3>🔄 Form 365 (Employee & HOD Completed)</h3>
+        <iframe id="form365Frame" src="" data-form-key="form365"></iframe>
+      </div>
+
+
+    <!-- IT Approval Section -->
+    <div class="approval-section">
+        <h3>🔧 IT Final Approval</h3>
+        <div class="it-fields">
+            <div>
+                <label for="itOfficerName">IT Officer Name *</label>
+                <input type="text" id="itOfficerName" required placeholder="Enter your name">
+              </div>
+            <div>
+                <label for="itOfficerId">IT Officer ID *</label>
+                <input type="text" id="itOfficerId" required placeholder="Enter your employee ID">
+              </div>
+            <div>
+                <label for="itEmail">IT Email *</label>
+                <input type="email" id="itEmail" required placeholder="Enter your email">
+              </div>
+            <div>
+                <label for="itDecision">Decision *</label>
+                <select id="itDecision" required>
+                    <option value="">Select Decision</option>
+                    <option value="approved">✅ Approve & Complete</option>
+                    <option value="rejected">❌ Reject & Return</option>
+                  </select>
+              </div>
+          </div>
+
+
+        <div class="signature-upload">
+            <label for="itSignatureFile"><strong>IT Officer Signature *</strong></label>
+            <br>
+            <input type="file" id="itSignatureFile" accept="image/*" required>
+            <div class="text-muted">Upload your digital signature (PNG, JPG, GIF)</div>
+            <img id="itSignaturePreview" class="signature-preview" alt="IT Signature Preview">
+          </div>
+
+
+        <div class="remarks-section">
+            <label for="itRemarks"><strong>IT Remarks</strong></label>
+            <textarea id="itRemarks" placeholder="Add any additional remarks or instructions..."></textarea>
+          </div>
+      </div>
+
+
+    <!-- Action Buttons -->
+    <div class="action-buttons">
+        <button id="completeBtn" class="btn btn-complete" disabled>
+            ✅ Complete Clearance
+          </button>
+        <button id="rejectBtn" class="btn btn-reject" disabled>
+            ❌ Reject & Return
+          </button>
+        <button id="cancelBtn" class="btn btn-cancel" onclick="window.close()">
+            🚫 Cancel
+          </button>
+      </div>
+
+
+   
   <script>
     const qs = new URLSearchParams(location.search);
     const formId = qs.get('formId');
     const $ = s => document.getElementById(s);
 
+
     // Initialize
     $('formIdLbl').textContent = formId || 'Unknown';
+
 
     let formData = null;
     let itSignatureData = null;
     let hodSignatureUrl = null;
     let hodApprovalData = null;
+
 
     // Show status messages
     function showStatus(message, type = 'loading') {
@@ -341,25 +409,42 @@
       statusEl.style.display = 'block';
     }
 
+
     function hideStatus() {
       $('statusMessage').style.display = 'none';
     }
 
-    // HOD signature injection
+
+    // Debug function
+    function showDebugInfo(info) {
+      $('debugInfo').style.display = 'block';
+      $('debugContent').innerHTML = `<pre>${JSON.stringify(info, null, 2)}</pre>`;
+    }
+
+
+    // ✅ FIXED: Enhanced HOD signature injection with better logging
     function injectHODSignature(iframe, signatureUrl) {
       if (!signatureUrl) {
+        console.log('❌ No HOD signature URL available');
         return false;
       }
+
+
+      console.log('🔍 Attempting to inject HOD signature:', signatureUrl.substring(0, 50) + '...');
+
 
       try {
         const doc = iframe.contentDocument || iframe.contentWindow.document;
         if (!doc) {
+          console.log('❌ Cannot access iframe document');
           return false;
         }
 
+
+        // Multiple signature selectors with more thorough search
         const signatureSelectors = [
           '#hodSignatureArea',
-          '#hodSignature', 
+          '#hodSignature',
           '#signatureArea',
           '[id*="hod"][id*="signature"]',
           '[id*="signature"][id*="area"]',
@@ -372,13 +457,23 @@
           '*[id*="hodSignatureArea"]'
         ];
 
+
         let signatureInjected = false;
+        let elementsFound = 0;
+
 
         signatureSelectors.forEach(selector => {
           const elements = doc.querySelectorAll(selector);
-          
-          elements.forEach((element) => {
+          if (elements.length > 0) {
+            console.log(`🔍 Found ${elements.length} elements for selector: ${selector}`);
+            elementsFound += elements.length;
+          }
+
+          elements.forEach((element, index) => {
+            console.log(`🎯 Processing element ${index + 1} for selector: ${selector}`, element.tagName, element.id);
+
             if (element.tagName === 'IMG') {
+              // Direct image element
               element.src = signatureUrl;
               element.style.display = 'block';
               element.style.maxHeight = '80px';
@@ -389,282 +484,343 @@
               element.style.background = '#f8fff9';
               element.alt = 'HOD Digital Signature';
               signatureInjected = true;
+              console.log('✅ HOD signature injected into IMG element');
             } else {
+              // Container element
               element.innerHTML = `
-                <div style="text-align: center; padding: 10px; border: 2px solid #28a745; border-radius: 8px; background: #f8fff9;">
-                  <img src="${signatureUrl}" 
-                       alt="HOD Digital Signature" 
-                       style="max-height: 80px; max-width: 200px; display: block; margin: 0 auto; 
-                              border: 2px solid #28a745; border-radius: 6px; padding: 5px; 
-                              background: white;">
-                  <div style="background: #d4edda; color: #155724; padding: 8px 12px; border-radius: 4px; 
-                              margin-top: 10px; font-weight: bold; font-size: 14px;">
-                    HOD Digital Signature Applied
-                  </div>
-                </div>
-              `;
+                <div style="text-align: center; padding: 10px; border: 2px solid #28a745; border-radius: 8px; background: #f8fff9;">
+                  <img src="${signatureUrl}" 
+                       alt="HOD Digital Signature" 
+                       style="max-height: 80px; max-width: 200px; display: block; margin: 0 auto; 
+                              border: 2px solid #28a745; border-radius: 6px; padding: 5px; 
+                              background: white;">
+                  <div style="background: #d4edda; color: #155724; padding: 8px 12px; border-radius: 4px; 
+                              margin-top: 10px; font-weight: bold; font-size: 14px;">
+                    ✅ HOD Digital Signature Applied
+                  </div>
+                </div>
+              `;
               element.classList.add('has-signature');
               signatureInjected = true;
+              console.log('✅ HOD signature injected into container element');
             }
           });
         });
 
+
+        console.log(`🔍 Total elements found: ${elementsFound}, Signature injected: ${signatureInjected}`);
+
+
+        // If no specific containers found, try to find ANY element with text containing "signature"
         if (!signatureInjected) {
+          console.log('⚠️ No specific containers found, trying fallback method...');
+
           const allElements = doc.querySelectorAll('div, span, p');
           allElements.forEach(element => {
             const text = element.textContent.toLowerCase();
-            if ((text.includes('signature') && text.includes('hod')) || 
-                (text.includes('upload') && text.includes('signature')) ||
-                text.includes('click to upload hod signature')) {
-              
+            if ((text.includes('signature') && text.includes('hod')) ||
+              (text.includes('upload') && text.includes('signature')) ||
+              text.includes('click to upload hod signature')) {
+
               element.innerHTML = `
-                <div style="text-align: center; padding: 15px; border: 3px solid #28a745; border-radius: 8px; background: #f8fff9;">
-                  <img src="${signatureUrl}" 
-                       alt="HOD Digital Signature" 
-                       style="max-height: 80px; max-width: 200px; display: block; margin: 0 auto; 
-                              border: 2px solid #28a745; border-radius: 6px; padding: 8px; 
-                              background: white;">
-                  <div style="background: #d4edda; color: #155724; padding: 8px 12px; border-radius: 4px; 
-                              margin-top: 10px; font-weight: bold;">
-                    HOD Digital Signature Applied
-                  </div>
-                </div>
-              `;
+                <div style="text-align: center; padding: 15px; border: 3px solid #28a745; border-radius: 8px; background: #f8fff9;">
+                  <img src="${signatureUrl}" 
+                       alt="HOD Digital Signature" 
+                       style="max-height: 80px; max-width: 200px; display: block; margin: 0 auto; 
+                              border: 2px solid #28a745; border-radius: 6px; padding: 8px; 
+                              background: white;">
+                  <div style="background: #d4edda; color: #155724; padding: 8px 12px; border-radius: 4px; 
+                              margin-top: 10px; font-weight: bold;">
+                    ✅ HOD Digital Signature Applied
+                  </div>
+                </div>
+              `;
               signatureInjected = true;
+              console.log('✅ HOD signature injected using fallback method');
             }
           });
         }
 
-        if (!signatureInjected) {
+
+        if (signatureInjected) {
+          iframe.classList.add('hod-signature-frame');
+          console.log('✅ HOD signature injection completed successfully');
+        } else {
+          console.log('❌ HOD signature injection failed - no suitable containers found');
+
+          // Last resort: create a new signature area at the end of the document
           const body = doc.body;
           if (body) {
             const signatureDiv = doc.createElement('div');
             signatureDiv.innerHTML = `
-              <div style="text-align: center; padding: 20px; border: 3px solid #28a745; border-radius: 8px; 
-                          background: #f8fff9; margin: 20px 0;">
-                <h3 style="color: #155724; margin-bottom: 15px;">HOD Digital Signature</h3>
-                <img src="${signatureUrl}" 
-                     alt="HOD Digital Signature" 
-                     style="max-height: 80px; max-width: 200px; display: block; margin: 0 auto; 
-                            border: 2px solid #28a745; border-radius: 6px; padding: 8px; 
-                            background: white;">
-                <div style="background: #d4edda; color: #155724; padding: 8px 12px; border-radius: 4px; 
-                            margin-top: 10px; font-weight: bold;">
-                  HOD Digital Signature Applied
-                </div>
-              </div>
-            `;
+              <div style="text-align: center; padding: 20px; border: 3px solid #28a745; border-radius: 8px; 
+                          background: #f8fff9; margin: 20px 0;">
+                <h3 style="color: #155724; margin-bottom: 15px;">HOD Digital Signature</h3>
+                <img src="${signatureUrl}" 
+                     alt="HOD Digital Signature" 
+                     style="max-height: 80px; max-width: 200px; display: block; margin: 0 auto; 
+                            border: 2px solid #28a745; border-radius: 6px; padding: 8px; 
+                            background: white;">
+                <div style="background: #d4edda; color: #155724; padding: 8px 12px; border-radius: 4px; 
+                            margin-top: 10px; font-weight: bold;">
+                  ✅ HOD Digital Signature Applied
+                </div>
+              </div>
+            `;
             body.appendChild(signatureDiv);
             signatureInjected = true;
+            console.log('✅ HOD signature injected using last resort method');
           }
         }
 
-        if (signatureInjected) {
-          iframe.classList.add('hod-signature-frame');
-        }
 
         return signatureInjected;
 
+
       } catch (error) {
+        console.log('❌ HOD signature injection failed:', error.message);
         return false;
       }
     }
 
-    // Enhanced table styling
+
+    // ✅ FIXED: Enhanced table styling with more aggressive CSS
     function enhanceTableVisibility(iframe) {
       try {
         const doc = iframe.contentDocument || iframe.contentWindow.document;
         if (!doc) return;
 
+
         const style = doc.createElement('style');
         style.id = 'itReviewTableStyles';
         style.textContent = `
-          table, table.table, .table-container table {
-            width: 100% !important;
-            border-collapse: collapse !important;
-            margin: 20px 0 !important;
-            border: 3px solid #007bff !important;
-            background: white !important;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1) !important;
-          }
-          
-          th, td, table th, table td {
-            border: 2px solid #007bff !important;
-            padding: 15px 10px !important;
-            text-align: left !important;
-            vertical-align: top !important;
-            background: white !important;
-          }
-          
-          th, table th {
-            background: linear-gradient(135deg, #007bff 0%, #0056b3 100%) !important;
-            color: white !important;
-            font-weight: bold !important;
-            text-align: center !important;
-            font-size: 16px !important;
-          }
-          
-          td, table td {
-            background: #f8f9fa !important;
-            font-size: 14px !important;
-          }
-          
-          tr:nth-child(even) td {
-            background: #e9ecef !important;
-          }
-          
-          tr:hover td {
-            background: #fff3cd !important;
-          }
-          
-          table input, table select, table textarea {
-            width: 95% !important;
-            padding: 10px !important;
-            border: 2px solid #ced4da !important;
-            border-radius: 6px !important;
-            background: white !important;
-            font-size: 14px !important;
-            box-shadow: inset 0 1px 3px rgba(0,0,0,0.1) !important;
-          }
-          
-          table input:disabled, table select:disabled, table textarea:disabled {
-            background: #e9ecef !important;
-            border-color: #6c757d !important;
-            color: #495057 !important;
-            font-weight: bold !important;
-          }
-          
-          table input:focus, table select:focus, table textarea:focus {
-            border-color: #007bff !important;
-            box-shadow: 0 0 0 3px rgba(0,123,255,0.25) !important;
-          }
-          
-          table input[id*="hod" i], table select[id*="hod" i], table textarea[id*="hod" i] {
-            background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%) !important;
-            border-color: #28a745 !important;
-            color: #155724 !important;
-            font-weight: bold !important;
-          }
-          
-          .table-responsive, .table-container {
-            overflow-x: auto !important;
-            margin: 20px 0 !important;
-          }
-        `;
+          /* AGGRESSIVE table styling - highest specificity */
+          table, table.table, .table-container table {
+            width: 100% !important;
+            border-collapse: collapse !important;
+            margin: 20px 0 !important;
+            border: 3px solid #007bff !important;
+            background: white !important;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1) !important;
+          }
+          
+          th, td, table th, table td {
+            border: 2px solid #007bff !important;
+            padding: 15px 10px !important;
+            text-align: left !important;
+            vertical-align: top !important;
+            background: white !important;
+          }
+          
+          th, table th {
+            background: linear-gradient(135deg, #007bff 0%, #0056b3 100%) !important;
+            color: white !important;
+            font-weight: bold !important;
+            text-align: center !important;
+            font-size: 16px !important;
+          }
+          
+          td, table td {
+            background: #f8f9fa !important;
+            font-size: 14px !important;
+          }
+          
+          tr:nth-child(even) td {
+            background: #e9ecef !important;
+          }
+          
+          tr:hover td {
+            background: #fff3cd !important;
+          }
+          
+          /* Enhanced input visibility */
+          table input, table select, table textarea {
+            width: 95% !important;
+            padding: 10px !important;
+            border: 2px solid #ced4da !important;
+            border-radius: 6px !important;
+            background: white !important;
+            font-size: 14px !important;
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.1) !important;
+          }
+          
+          table input:disabled, table select:disabled, table textarea:disabled {
+            background: #e9ecef !important;
+            border-color: #6c757d !important;
+            color: #495057 !important;
+            font-weight: bold !important;
+          }
+          
+          table input:focus, table select:focus, table textarea:focus {
+            border-color: #007bff !important;
+            box-shadow: 0 0 0 3px rgba(0,123,255,0.25) !important;
+          }
+          
+          /* Special styling for HOD fields */
+          table input[id*="hod" i], table select[id*="hod" i], table textarea[id*="hod" i] {
+            background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%) !important;
+            border-color: #28a745 !important;
+            color: #155724 !important;
+            font-weight: bold !important;
+          }
+          
+          /* Make sure tables are visible */
+          .table-responsive, .table-container {
+            overflow-x: auto !important;
+            margin: 20px 0 !important;
+          }
+        `;
+
 
         const target = doc.head || doc.body;
         if (target && !doc.querySelector('#itReviewTableStyles')) {
           target.appendChild(style);
-          
+          console.log('✅ Enhanced table styles injected');
+
+          // Force table visibility
           setTimeout(() => {
             const tables = doc.querySelectorAll('table');
-            tables.forEach((table) => {
+            tables.forEach((table, index) => {
               table.style.display = 'table';
               table.style.visibility = 'visible';
+              console.log(`✅ Table ${index + 1} visibility forced`);
             });
           }, 500);
         }
 
+
       } catch (error) {
-        // Silent error handling
+        console.log('⚠️ Table styling failed:', error.message);
       }
     }
 
-    // Enhanced API blocking
+
+    // ✅ Enhanced API blocking
     function disableIframeAPICall(iframe) {
       try {
         const iframeWindow = iframe.contentWindow;
         const iframeDoc = iframe.contentDocument || iframeWindow.document;
 
+
+        // Direct function override
         if (iframeWindow && typeof iframeWindow.loadFormData === 'function') {
           iframeWindow.loadFormData = function () {
+            console.log('🚫 Direct override: API call blocked');
             return Promise.resolve();
           };
         }
 
+
+        // Script injection
         if (iframeDoc && !iframeDoc.querySelector('#itReviewBlocker')) {
           const script = iframeDoc.createElement('script');
           script.id = 'itReviewBlocker';
           const timestamp = Date.now();
 
+
           script.textContent = `
-            (function() {
-              if (typeof window.loadFormData === 'function') {
-                window.loadFormData = function() {
-                  return Promise.resolve();
-                };
-              }
-              
-              if (!window.__itFetchBlocked_${timestamp}) {
-                const origFetch = window.fetch;
-                window.fetch = function(url, options) {
-                  if (typeof url === 'string' && (
-                      url.includes('/api/employee/form-data') || 
-                      url.includes('/api/hod/form-details')
-                  )) {
-                    return Promise.reject(new Error('API blocked by IT review'));
-                  }
-                  return origFetch.apply(this, arguments);
-                };
-                window.__itFetchBlocked_${timestamp} = true;
-              }
-              
-              window.userRole = 'it';
-            })();
-          `;
+            (function() {
+              console.log('🔧 IT Review: API blocking script');
+              
+              if (typeof window.loadFormData === 'function') {
+                window.loadFormData = function() {
+                  console.log('🚫 loadFormData blocked');
+                  return Promise.resolve();
+                };
+              }
+              
+              if (!window.__itFetchBlocked_${timestamp}) {
+                const origFetch = window.fetch;
+                window.fetch = function(url, options) {
+                  if (typeof url === 'string' && (
+                      url.includes('/api/employee/form-data') || 
+                      url.includes('/api/hod/form-details')
+                  )) {
+                    console.log('🚫 Fetch blocked:', url);
+                    return Promise.reject(new Error('API blocked by IT review'));
+                  }
+                  return origFetch.apply(this, arguments);
+                };
+                window.__itFetchBlocked_${timestamp} = true;
+              }
+              
+              window.userRole = 'it';
+            })();
+          `;
+
 
           const target = iframeDoc.head || iframeDoc.body || iframeDoc.documentElement;
           if (target) {
             target.appendChild(script);
+            console.log('✅ API blocking script injected');
           }
         }
 
+
         return true;
       } catch (error) {
+        console.log('⚠️ API blocking failed silently');
         return false;
       }
     }
 
-    // Form data loading
+
+    // ✅ FIXED: Enhanced form data loading with proper HOD signature extraction
     async function loadFormData() {
       try {
         showStatus('Loading forms with complete employee and HOD details...', 'loading');
+
 
         const response = await fetch(`/api/itadmin/form-details/${formId}`, {
           credentials: 'include'
         });
 
+
         if (!response.ok) {
           throw new Error(`Server responded with ${response.status}`);
         }
 
+
         const data = await response.json();
+
 
         if (!data.success) {
           throw new Error(data.message || 'Failed to load form data');
         }
 
-        formData = data;
 
-        // Extract HOD signature
+        formData = data;
+        console.log('✅ Complete form data loaded:', data);
+
+
+        // Show debug info temporarily
+        showDebugInfo(data);
+
+
+        // ✅ FIXED: Extract HOD signature from the CORRECT location
         if (data.hodApproval) {
           hodApprovalData = data.hodApproval;
-          
+          console.log('📋 HOD Approval Data:', hodApprovalData);
+
+          // Check for signature in hodApproval object
           const possibleSignatureFields = [
-            'signature', 
-            'hodSignature', 
+            'signature',
+            'hodSignature',
             'signatureDataUrl',
             'signatureUrl',
             'digitalSignature'
           ];
-          
+
           possibleSignatureFields.forEach(field => {
             if (hodApprovalData[field] && !hodSignatureUrl) {
               hodSignatureUrl = hodApprovalData[field];
+              console.log(`✅ HOD signature found in hodApproval.${field}:`, hodSignatureUrl.substring(0, 50) + '...');
             }
           });
         }
 
+
+        // Also check in forms as fallback
         if (!hodSignatureUrl && data.forms) {
           Object.values(data.forms).forEach(form => {
             if (form) {
@@ -673,60 +829,73 @@
                 'signatureDataUrl',
                 'signature'
               ];
-              
+
               possibleSignatureFields.forEach(field => {
                 if (form[field] && !hodSignatureUrl) {
                   hodSignatureUrl = form[field];
+                  console.log(`✅ HOD signature found in forms.${field}`);
                 }
               });
             }
           });
         }
 
+
+        console.log('🔍 Final HOD Signature URL:', hodSignatureUrl ? 'Available (' + hodSignatureUrl.length + ' chars)' : 'Not found');
+
+
+        // Display information and setup forms
         displayEmployeeInfo(data.employee);
         displayHODInfo(data.hodApproval);
         setupCompleteFormsView(data.forms, data.noDuesType);
 
+
         hideStatus();
 
+
       } catch (error) {
+        console.error('Error loading form data:', error);
         showStatus(`Failed to load form data: ${error.message}`, 'error');
       }
     }
 
+
     // Display employee information
     function displayEmployeeInfo(employee) {
       $('employeeInfo').innerHTML = `
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; 
-                    background: #f8f9fa; padding: 15px; border-radius: 8px; border: 1px solid #dee2e6;">
-          <div><strong>Name:</strong> ${employee.name}</div>
-          <div><strong>Employee ID:</strong> ${employee.employeeId}</div>
-          <div><strong>Department:</strong> ${employee.department}</div>
-        </div>
-      `;
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; 
+                    background: #f8f9fa; padding: 15px; border-radius: 8px; border: 1px solid #dee2e6;">
+          <div><strong>Name:</strong> ${employee.name}</div>
+          <div><strong>Employee ID:</strong> ${employee.employeeId}</div>
+          <div><strong>Department:</strong> ${employee.department}</div>
+        </div>
+      `;
     }
 
-    // Display HOD approval information
+
+    // ✅ Display HOD approval information
     function displayHODInfo(hodApproval) {
       if (!hodApproval) {
-        $('hodInfo').innerHTML = '<p>No HOD approval data available</p>';
+        $('hodInfo').innerHTML = '<p>❌ No HOD approval data available</p>';
         return;
       }
 
+
       $('hodInfo').innerHTML = `
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
-          <div><strong>Approved By:</strong> ${hodApproval.approvedBy || 'N/A'}</div>
-          <div><strong>HOD Employee ID:</strong> ${hodApproval.approverEmployeeId || 'N/A'}</div>
-          <div><strong>HOD Email:</strong> ${hodApproval.approverEmail || 'N/A'}</div>
-          <div><strong>Department:</strong> ${hodApproval.approverDepartment || 'N/A'}</div>
-          <div><strong>Approval Date:</strong> ${hodApproval.approvalDate ? new Date(hodApproval.approvalDate).toLocaleString() : 'N/A'}</div>
-          <div><strong>Signature:</strong> ${hodSignatureUrl ? 'Available (' + hodSignatureUrl.length + ' chars)' : 'Not found'}</div>
-        </div>
-        ${hodApproval.remarks ? `<div style="margin-top: 10px;"><strong>HOD Remarks:</strong> ${hodApproval.remarks}</div>` : ''}
-      `;
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
+          <div><strong>Approved By:</strong> ${hodApproval.approvedBy || 'N/A'}</div>
+          <div><strong>HOD Employee ID:</strong> ${hodApproval.approverEmployeeId || 'N/A'}</div>
+          <div><strong>HOD Email:</strong> ${hodApproval.approverEmail || 'N/A'}</div>
+          <div><strong>Department:</strong> ${hodApproval.approverDepartment || 'N/A'}</div>
+          <div><strong>Approval Date:</strong> ${hodApproval.approvalDate ? new Date(hodApproval.approvalDate).toLocaleString() : 'N/A'}</div>
+          <div><strong>Signature:</strong> ${hodSignatureUrl ? '✅ Available (' + hodSignatureUrl.length + ' chars)' : '❌ Not found'}</div>
+        </div>
+        ${hodApproval.remarks ? `<div style="margin-top: 10px;"><strong>HOD Remarks:</strong> ${hodApproval.remarks}</div>` : ''}
+      `;
     }
 
-    // Enhanced form setup
+
+    // ✅ Enhanced form setup with better timing
     function setupCompleteFormsView(forms, noDuesType) {
       const framesToLoad = [
         {
@@ -746,24 +915,36 @@
         }
       ];
 
+
       framesToLoad.forEach((frameInfo, index) => {
         const frame = $(frameInfo.frameId);
+
 
         frame.src = `${frameInfo.url}?role=it&formId=${encodeURIComponent(formId)}&skipLoad=true&itReview=true&hasSignature=${hodSignatureUrl ? 'true' : 'false'}&timestamp=${Date.now()}`;
         frame.dataset.formKey = frameInfo.key;
 
+
         frame.onload = () => {
-          const delay = 1200 + (index * 500);
+          console.log(`✅ Loading form view for IT review: ${frameInfo.key}`);
+
+
+          const delay = 1200 + (index * 500); // Longer delays
           setTimeout(() => {
             disableIframeAPICall(frame);
             enhanceTableVisibility(frame);
 
+
             setTimeout(() => {
               populateFormWithAllData(frame, forms[frameInfo.key]);
-              
+
+              // Inject HOD signature with even longer delay
               setTimeout(() => {
                 if (hodSignatureUrl) {
-                  injectHODSignature(frame, hodSignatureUrl);
+                  console.log(`🔍 Attempting to inject HOD signature into ${frameInfo.key}...`);
+                  const success = injectHODSignature(frame, hodSignatureUrl);
+                  console.log(`${success ? '✅' : '❌'} HOD signature injection result for ${frameInfo.key}: ${success}`);
+                } else {
+                  console.log(`⚠️ No HOD signature URL available for ${frameInfo.key}`);
                 }
               }, 1000);
             }, 800);
@@ -772,21 +953,31 @@
       });
     }
 
-    // Enhanced form population with HOD data integration
+
+    // ✅ Enhanced form population with HOD data integration
     function populateFormWithAllData(iframe, formData) {
       if (!formData) {
+        console.log('No form data available for population');
         return;
       }
+
 
       try {
         const doc = iframe.contentDocument || iframe.contentWindow.document;
         if (!doc) {
+          console.log('Cannot access iframe document');
           return;
         }
 
+
+        console.log('🔄 Populating form with data:', Object.keys(formData));
+
+
+        // Combine form data with HOD approval data
         const allData = { ...formData };
-        
+
         if (hodApprovalData) {
+          // Add HOD data with appropriate field names
           allData.hodName = hodApprovalData.approvedBy;
           allData.hodEmployeeId = hodApprovalData.approverEmployeeId;
           allData.hodEmail = hodApprovalData.approverEmail;
@@ -796,20 +987,27 @@
           allData.hodRemarks = hodApprovalData.remarks;
           allData.hodSignature = hodSignatureUrl;
           allData.hodSignatureArea = hodSignatureUrl;
+
+          console.log('📝 Added HOD data to form population');
         }
+
 
         // Populate ALL form fields
         Object.entries(allData).forEach(([fieldId, value]) => {
           if (!value) return;
 
+
           const element = doc.getElementById(fieldId);
           if (!element) return;
 
+
           const tagName = element.tagName.toLowerCase();
+
 
           if (tagName === 'input' || tagName === 'select' || tagName === 'textarea') {
             element.value = value;
             element.disabled = true;
+
 
             if (fieldId.toLowerCase().includes('hod')) {
               element.style.backgroundColor = '#d4edda';
@@ -822,6 +1020,7 @@
               element.src = value;
               element.style.display = 'block';
 
+
               if (fieldId.toLowerCase().includes('hod') && fieldId.toLowerCase().includes('signature')) {
                 element.style.border = '3px solid #28a745';
                 element.style.borderRadius = '8px';
@@ -829,10 +1028,12 @@
                 element.style.backgroundColor = '#f8fff9';
                 element.style.maxHeight = '80px';
                 element.style.maxWidth = '200px';
+                console.log('✅ HOD signature image populated:', fieldId);
               }
             }
           } else {
             element.textContent = value;
+
 
             if (fieldId.toLowerCase().includes('hod')) {
               element.style.backgroundColor = '#d4edda';
@@ -845,15 +1046,21 @@
           }
         });
 
+
+        console.log('✅ Form population completed');
+
+
       } catch (error) {
-        // Silent error handling
+        console.log('Form population had issues but continuing:', error.message);
       }
     }
+
 
     // Handle IT signature upload
     $('itSignatureFile').onchange = function (event) {
       const file = event.target.files[0];
       if (!file) return;
+
 
       const reader = new FileReader();
       reader.onload = function (e) {
@@ -866,6 +1073,7 @@
       reader.readAsDataURL(file);
     };
 
+
     // Update button states based on form completion
     function updateButtonStates() {
       const name = $('itOfficerName').value.trim();
@@ -874,11 +1082,14 @@
       const decision = $('itDecision').value;
       const hasSignature = !!itSignatureData;
 
+
       const isFormComplete = name && id && email && decision && hasSignature;
+
 
       $('completeBtn').disabled = !isFormComplete || decision !== 'approved';
       $('rejectBtn').disabled = !isFormComplete || decision !== 'rejected';
     }
+
 
     // Attach event listeners for form validation
     ['itOfficerName', 'itOfficerId', 'itEmail', 'itDecision'].forEach(fieldId => {
@@ -886,20 +1097,25 @@
       $(fieldId).addEventListener('change', updateButtonStates);
     });
 
+
     // Complete clearance
     $('completeBtn').onclick = async function () {
       if (this.disabled) return;
+
 
       if (!confirm('Are you sure you want to complete this clearance? This action cannot be undone.')) {
         return;
       }
 
+
       await processITDecision('complete');
     };
+
 
     // Reject clearance
     $('rejectBtn').onclick = async function () {
       if (this.disabled) return;
+
 
       const remarks = $('itRemarks').value.trim();
       if (!remarks) {
@@ -908,25 +1124,31 @@
         return;
       }
 
+
       if (!confirm('Are you sure you want to reject this clearance? It will be returned to the employee.')) {
         return;
       }
 
+
       await processITDecision('reject');
     };
+
 
     // Process IT decision
     async function processITDecision(action) {
       try {
         showStatus(`${action === 'complete' ? 'Completing' : 'Rejecting'} clearance...`, 'loading');
 
+
         const allFormData = {};
         const iframes = document.querySelectorAll('iframe[data-form-key]');
+
 
         for (const iframe of iframes) {
           const key = iframe.dataset.formKey;
           const doc = iframe.contentDocument || iframe.contentWindow.document;
           const data = {};
+
 
           if (doc) {
             doc.querySelectorAll('[id]').forEach(el => {
@@ -940,6 +1162,7 @@
             });
           }
 
+
           // Add IT approval data
           data.itOfficerName = $('itOfficerName').value;
           data.itOfficerId = $('itOfficerId').value;
@@ -949,8 +1172,10 @@
           data.itRemarks = $('itRemarks').value;
           data.itProcessedDate = new Date().toISOString();
 
+
           allFormData[key] = data;
         }
+
 
         const payload = {
           formId,
@@ -959,6 +1184,10 @@
           remarks: $('itRemarks').value
         };
 
+
+        console.log('Submitting IT decision:', payload);
+
+
         const response = await fetch('/api/itadmin/final-process', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -966,35 +1195,45 @@
           body: JSON.stringify(payload)
         });
 
+
         const result = await response.json();
+        console.log('IT processing result:', result);
+
 
         if (response.ok && result.success) {
           showStatus(
             action === 'complete'
-              ? 'Clearance completed successfully!'
-              : 'Clearance rejected and returned',
+              ? '✅ Clearance completed successfully!'
+              : '❌ Clearance rejected and returned',
             'success'
           );
 
+
           $('completeBtn').disabled = true;
           $('rejectBtn').disabled = true;
+
 
           setTimeout(() => {
             window.close();
           }, 3000);
 
+
         } else {
           throw new Error(result.message || 'Processing failed');
         }
 
+
       } catch (error) {
-        showStatus(`Error: ${error.message}`, 'error');
+        console.error('IT processing error:', error);
+        showStatus(`❌ Error: ${error.message}`, 'error');
       }
     }
+
 
     // Initialize on page load
     window.addEventListener('DOMContentLoaded', loadFormData);
   </script>
 </body>
+
 
 </html>

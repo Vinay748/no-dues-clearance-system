@@ -47,7 +47,7 @@ class NavigationManager {
             screenWidth: width,
             screenHeight: window.innerHeight
         };
-        
+
         // Update CSS classes for device-specific styling - ONLY if body exists
         if (document.body) {
             document.body.classList.toggle('mobile-device', this.deviceInfo.isMobile);
@@ -156,7 +156,7 @@ class NavigationManager {
                     const hasUnsavedData = await this.checkUnsavedData();
                     if (hasUnsavedData) {
                         const userChoice = await this.showUnsavedDataDialog();
-                        
+
                         // The dialog now handles navigation internally
                         if (userChoice === 'cancel') {
                             resolve('cancelled');
@@ -168,7 +168,7 @@ class NavigationManager {
                         }
                     }
                 }
-                
+
                 // Direct navigation (no unsaved data or force mode)
                 const destination = customDestination || this.determineBackDestination();
                 await this.navigateTo(destination);
@@ -260,35 +260,35 @@ class NavigationManager {
                             try {
                                 // Show loading state
                                 this.showNavigationLoading();
-                                
+
                                 // Save the current page
                                 await this.saveCurrentPage();
-                                
+
                                 // Clear unsaved data flags after successful save
                                 await this.clearUnsavedData();
-                                
+
                                 // Remove modal
                                 modal.remove();
-                                
+
                                 // Hide loading
                                 const loader = document.getElementById('navigationLoader');
                                 if (loader) loader.remove();
-                                
+
                                 // Navigate with force (skip unsaved check)
                                 const destination = this.determineBackDestination();
                                 await this.navigateTo(destination);
-                                
+
                                 resolve('saved');
                             } catch (error) {
                                 console.error('Save failed:', error);
-                                
+
                                 // Hide loading
                                 const loader = document.getElementById('navigationLoader');
                                 if (loader) loader.remove();
-                                
+
                                 // Show error message
                                 this.showErrorMessage('Failed to save changes. Please try again.');
-                                
+
                                 // Keep modal open for retry
                                 resolve('save-failed');
                             }
@@ -301,23 +301,23 @@ class NavigationManager {
                             try {
                                 // Clear all unsaved data
                                 await this.clearUnsavedData();
-                                
+
                                 // Remove modal
                                 modal.remove();
-                                
+
                                 // Navigate immediately (no save needed)
                                 const destination = this.determineBackDestination();
                                 await this.navigateTo(destination);
-                                
+
                                 resolve('discarded');
                             } catch (error) {
                                 console.error('Discard failed:', error);
-                                
+
                                 // Even if discard fails, proceed with navigation
                                 modal.remove();
                                 const destination = this.determineBackDestination();
                                 await this.navigateTo(destination);
-                                
+
                                 resolve('discarded');
                             }
                         }
@@ -341,7 +341,7 @@ class NavigationManager {
             try {
                 // Clear localStorage entries containing form data
                 Object.keys(localStorage).forEach(key => {
-                    if (key.toLowerCase().includes('formdata') || 
+                    if (key.toLowerCase().includes('formdata') ||
                         key.toLowerCase().includes('form-data') ||
                         key.toLowerCase().includes('unsaved')) {
                         localStorage.removeItem(key);
@@ -350,7 +350,7 @@ class NavigationManager {
 
                 // Clear sessionStorage entries
                 Object.keys(sessionStorage).forEach(key => {
-                    if (key.toLowerCase().includes('formdata') || 
+                    if (key.toLowerCase().includes('formdata') ||
                         key.toLowerCase().includes('form-data') ||
                         key.toLowerCase().includes('unsaved')) {
                         sessionStorage.removeItem(key);
@@ -407,9 +407,9 @@ class NavigationManager {
             font-size: ${this.deviceInfo.isMobile ? '14px' : '16px'};
         `;
         errorDiv.textContent = message;
-        
+
         document.body.appendChild(errorDiv);
-        
+
         // Auto-remove after 5 seconds
         setTimeout(() => {
             if (errorDiv.parentNode) {
@@ -425,8 +425,8 @@ class NavigationManager {
             const value = element.value?.trim();
             if (value && value !== element.defaultValue) {
                 const label = this.getElementLabel(element);
-                const truncatedValue = this.deviceInfo.isMobile && value.length > 30 
-                    ? value.substring(0, 27) + '...' 
+                const truncatedValue = this.deviceInfo.isMobile && value.length > 30
+                    ? value.substring(0, 27) + '...'
                     : value;
                 preview.push(`<div class="preview-item"><strong>${label}:</strong> ${truncatedValue}</div>`);
             }
@@ -439,13 +439,13 @@ class NavigationManager {
     createModal({ title, content, buttons = [], customClass = '' }) {
         const modal = document.createElement('div');
         modal.className = `navigation-modal ${customClass}`;
-        
+
         const buttonsHtml = buttons.map(btn => `
       <button class="modal-btn ${btn.class}" data-action="${btn.text}">
         ${btn.text}
       </button>
     `).join('');
-        
+
         modal.innerHTML = `
       <div class="modal-content">
         <h3>${title}</h3>
@@ -455,12 +455,12 @@ class NavigationManager {
         </div>
       </div>
     `;
-        
+
         buttons.forEach((btn, index) => {
             const buttonEl = modal.querySelectorAll('.modal-btn')[index];
             if (buttonEl) {
                 buttonEl.addEventListener('click', btn.action);
-                
+
                 // Add mobile touch feedback
                 if (this.deviceInfo.isTouchDevice) {
                     buttonEl.addEventListener('touchstart', () => {
@@ -472,16 +472,16 @@ class NavigationManager {
                 }
             }
         });
-        
+
         modal.addEventListener('click', (e) => {
             if (e.target === modal) modal.remove();
         });
-        
+
         // Add swipe to close on mobile
         if (this.deviceInfo.isMobile) {
             this.addSwipeToClose(modal);
         }
-        
+
         if (document.body) {
             document.body.appendChild(modal);
         }
@@ -505,7 +505,7 @@ class NavigationManager {
             if (!isDragging) return;
             currentY = e.touches[0].clientY;
             const deltaY = currentY - startY;
-            
+
             if (deltaY > 0) {
                 modalContent.style.transform = `translateY(${deltaY}px)`;
             }
@@ -514,7 +514,7 @@ class NavigationManager {
         modalContent.addEventListener('touchend', () => {
             if (!isDragging) return;
             isDragging = false;
-            
+
             const deltaY = currentY - startY;
             if (deltaY > 100) {
                 modal.remove();
@@ -540,21 +540,21 @@ class NavigationManager {
 
     async navigateTo(destination, options = {}) {
         const { showLoading = true, transition = 'fade' } = options;
-        
+
         if (showLoading) {
             this.showNavigationLoading();
         }
-        
+
         if (transition === 'fade' && document.body) {
             document.body.style.opacity = this.deviceInfo.isMobile ? '0.8' : '0.7';
             document.body.style.transition = 'opacity 0.2s ease';
         }
-        
+
         // Add mobile-specific navigation state
         if (this.deviceInfo.isMobile && history.pushState) {
             history.pushState({ fromMobileNav: true }, '', window.location.href);
         }
-        
+
         setTimeout(() => {
             window.location.href = destination;
         }, this.deviceInfo.isMobile ? 150 : 100);
@@ -564,7 +564,7 @@ class NavigationManager {
         document.addEventListener('keydown', (event) => {
             // Disable keyboard shortcuts on mobile for better UX
             if (this.deviceInfo.isMobile) return;
-            
+
             if (event.altKey && event.key.toLowerCase() === 'b') {
                 event.preventDefault();
                 this.goBack();
@@ -613,7 +613,7 @@ class NavigationManager {
         if (document.body) {
             document.body.appendChild(backButton);
         }
-        
+
         // Add mobile-specific event handlers
         if (this.deviceInfo.isTouchDevice) {
             // Wait a bit for the button to be added to DOM
@@ -632,23 +632,23 @@ class NavigationManager {
 
         backBtn.addEventListener('touchstart', (e) => {
             touchStartTime = Date.now();
-            touchStartPos = { 
-                x: e.touches[0].clientX, 
-                y: e.touches.clientY 
+            touchStartPos = {
+                x: e.touches[0].clientX,
+                y: e.touches.clientY
             };
             backBtn.classList.add('touch-active');
         });
 
         backBtn.addEventListener('touchmove', (e) => {
-            const currentPos = { 
-                x: e.touches.clientX, 
-                y: e.touches.clientY 
+            const currentPos = {
+                x: e.touches.clientX,
+                y: e.touches.clientY
             };
             const distance = Math.sqrt(
-                Math.pow(currentPos.x - touchStartPos.x, 2) + 
+                Math.pow(currentPos.x - touchStartPos.x, 2) +
                 Math.pow(currentPos.y - touchStartPos.y, 2)
             );
-            
+
             // If moved more than 10px, cancel the touch
             if (distance > 10) {
                 backBtn.classList.remove('touch-active');
@@ -659,11 +659,11 @@ class NavigationManager {
             e.preventDefault();
             const touchEndTime = Date.now();
             const touchDuration = touchEndTime - touchStartTime;
-            
+
             setTimeout(() => {
                 backBtn.classList.remove('touch-active');
             }, 150);
-            
+
             // Only trigger if it was a quick tap (< 500ms) and didn't move much
             if (touchDuration < 500) {
                 window.navigationManager.goBack();
@@ -680,7 +680,7 @@ class NavigationManager {
         if (backButton && this.currentContext) {
             const destination = this.determineBackDestination();
             const pageName = destination.split('/').pop().replace('.html', '');
-            
+
             // Shorten text on mobile
             if (this.deviceInfo.isMobile) {
                 backButton.textContent = this.deviceInfo.screenWidth < 400 ? 'Back' : `Back to ${this.capitalizeFirst(pageName)}`;
@@ -715,18 +715,18 @@ class NavigationManager {
         // Remove any existing loader
         const existingLoader = document.getElementById('navigationLoader');
         if (existingLoader) existingLoader.remove();
-        
+
         const loader = document.createElement('div');
         loader.id = 'navigationLoader';
         loader.innerHTML = `
             <div class="loading-spinner"></div>
             <div>${this.deviceInfo.isMobile ? 'Loading...' : 'Navigating...'}</div>
         `;
-        
+
         if (document.body) {
             document.body.appendChild(loader);
         }
-        
+
         // Auto-remove after 10 seconds (in case of network issues)
         setTimeout(() => {
             if (loader && loader.parentNode) {
