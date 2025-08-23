@@ -1,0 +1,11 @@
+{
+  "EMP1001": {
+    "otp": "894150",
+    "email": "vs23cs92@thdcihet.ac.in",
+    "createdAt": "2025-08-22T19:36:35.189Z",
+    "expiresAt": "2025-08-22T19:41:35.189Z",
+    "attempts": 0,
+    "maxAttempts": 3,
+    "used": true
+  }
+}

@@ -1,0 +1,1402 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Email Account Disposal Review - HOD Approval System">
+  <meta name="theme-color" content="#dc3545">
+  <title>Email Account Disposal Review - HOD Approval</title>
+  
+  <!-- Preload critical resources -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Security headers -->
+  <meta http-equiv="X-Content-Type-Options" content="nosniff">
+  <meta http-equiv="X-Frame-Options" content="SAMEORIGIN">
+  <meta http-equiv="X-XSS-Protection" content="1; mode=block">
+
+  <style>
+    /* =========================================
+       PRODUCTION CSS WITH MOBILE-FIRST DESIGN
+       ========================================= */
+    
+    /* CSS Reset & Base Styles */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --primary-color: #dc3545;
+      --primary-hover: #c82333;
+      --secondary-color: #6c757d;
+      --success-color: #28a745;
+      --warning-color: #ffc107;
+      --info-color: #17a2b8;
+      --light-bg: #f8f9fa;
+      --white: #ffffff;
+      --border-color: #dee2e6;
+      --text-primary: #212529;
+      --text-secondary: #6c757d;
+      --shadow-sm: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+      --shadow-md: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+      --border-radius: 0.375rem;
+      --transition: all 0.15s ease-in-out;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      font-size: 0.875rem;
+      line-height: 1.6;
+      color: var(--text-primary);
+      background: var(--light-bg);
+      padding: 1rem;
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    /* Loading State */
+    .loading {
+      opacity: 0.7;
+      pointer-events: none;
+    }
+
+    .loading::after {
+      content: '';
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 2rem;
+      height: 2rem;
+      border: 0.125rem solid var(--border-color);
+      border-top: 0.125rem solid var(--primary-color);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      z-index: 9999;
+    }
+
+    @keyframes spin {
+      0% { transform: translate(-50%, -50%) rotate(0deg); }
+      100% { transform: translate(-50%, -50%) rotate(360deg); }
+    }
+
+    /* Container */
+    .container {
+      max-width: 56rem;
+      margin: 0 auto;
+      background: var(--white);
+      border-radius: var(--border-radius);
+      box-shadow: var(--shadow-md);
+      overflow: hidden;
+    }
+
+    /* Header */
+    .form-header {
+      background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-hover) 100%);
+      color: white;
+      padding: 1.5rem;
+      text-align: center;
+    }
+
+    .form-header h1 {
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      letter-spacing: -0.025em;
+    }
+
+    .form-subtitle {
+      font-size: 0.875rem;
+      opacity: 0.9;
+      font-weight: 400;
+    }
+
+    /* Form Content */
+    .form-content {
+      padding: 1.5rem;
+    }
+
+    /* Status Banner */
+    .status-banner {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.75rem 1rem;
+      border-radius: var(--border-radius);
+      margin-bottom: 1rem;
+      font-size: 0.875rem;
+      font-weight: 500;
+      box-shadow: var(--shadow-sm);
+      transition: var(--transition);
+    }
+
+    .status-banner.info {
+      background-color: #cce5ff;
+      color: #004085;
+      border: 1px solid #b3d7ff;
+    }
+
+    .status-banner.success {
+      background-color: #d4edda;
+      color: #155724;
+      border: 1px solid #c3e6cb;
+    }
+
+    .status-banner.warning {
+      background-color: #fff3cd;
+      color: #856404;
+      border: 1px solid #ffeaa7;
+    }
+
+    .status-banner.error {
+      background-color: #f8d7da;
+      color: #721c24;
+      border: 1px solid #f1aeb5;
+    }
+
+    .status-content {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .status-icon {
+      font-size: 1.125rem;
+    }
+
+    .close-btn {
+      background: none;
+      border: none;
+      font-size: 1.125rem;
+      cursor: pointer;
+      opacity: 0.7;
+      padding: 0.25rem;
+      border-radius: 50%;
+      transition: var(--transition);
+      width: 1.5rem;
+      height: 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .close-btn:hover {
+      opacity: 1;
+      background: rgba(0, 0, 0, 0.1);
+    }
+
+    /* Form Sections */
+    .section {
+      background: var(--white);
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+      border: 1px solid var(--border-color);
+      border-radius: var(--border-radius);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .section-title {
+      font-size: 1.125rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 2px solid var(--border-color);
+    }
+
+    /* Disposal Status Indicator */
+    .disposal-status {
+      display: inline-flex;
+      align-items: center;
+      padding: 0.25rem 0.5rem;
+      border-radius: var(--border-radius);
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-left: 0.5rem;
+    }
+
+    .disposal-status.pending {
+      background-color: #fff3cd;
+      color: #856404;
+      border: 1px solid #ffeaa7;
+    }
+
+    .disposal-status.approved {
+      background-color: #d4edda;
+      color: #155724;
+      border: 1px solid #c3e6cb;
+    }
+
+    /* Form Fields */
+    .field-group {
+      margin-bottom: 1rem;
+    }
+
+    .field-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .field-label {
+      display: block;
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 0.25rem;
+    }
+
+    .required {
+      color: var(--primary-color);
+    }
+
+    .field-input {
+      width: 100%;
+      padding: 0.75rem;
+      border: 1px solid var(--border-color);
+      border-radius: var(--border-radius);
+      background: var(--white);
+      color: var(--text-primary);
+      font-size: 0.875rem;
+      font-family: 'Inter', sans-serif;
+      transition: var(--transition);
+    }
+
+    .field-input:focus {
+      outline: none;
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+    }
+
+    .field-input:read-only {
+      background-color: var(--light-bg);
+      color: var(--text-secondary);
+      cursor: not-allowed;
+    }
+
+    /* Email Transfer Flow Visualization */
+    .transfer-flow {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin: 1.5rem 0;
+      padding: 1rem;
+      background: linear-gradient(135deg, #fff5f5 0%, #fed7d7 100%);
+      border: 1px solid #feb2b2;
+      border-radius: var(--border-radius);
+    }
+
+    .transfer-step {
+      text-align: center;
+      flex: 1;
+    }
+
+    .transfer-arrow {
+      font-size: 1.5rem;
+      color: var(--primary-color);
+      margin: 0 1rem;
+    }
+
+    .transfer-email {
+      font-weight: 600;
+      color: var(--primary-color);
+      font-size: 0.875rem;
+      margin-bottom: 0.25rem;
+    }
+
+    .transfer-label {
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    /* File Input Styling */
+    .file-input-container {
+      position: relative;
+      display: inline-block;
+      width: 100%;
+    }
+
+    .file-input {
+      position: absolute;
+      opacity: 0;
+      width: 100%;
+      height: 100%;
+      cursor: pointer;
+    }
+
+    .file-input-label {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.75rem 1rem;
+      border: 2px dashed var(--border-color);
+      border-radius: var(--border-radius);
+      background: var(--light-bg);
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: var(--transition);
+      min-height: 3rem;
+    }
+
+    .file-input-label:hover {
+      border-color: var(--primary-color);
+      background: #fff5f5;
+    }
+
+    .file-input:focus + .file-input-label {
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+    }
+
+    /* Signature Preview */
+    .signature-preview {
+      margin-top: 0.75rem;
+      border: 2px dashed var(--border-color);
+      border-radius: var(--border-radius);
+      min-height: 4rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--light-bg);
+      color: var(--text-secondary);
+      font-style: italic;
+      transition: var(--transition);
+    }
+
+    .signature-preview.has-image {
+      border-color: var(--primary-color);
+      background: #fff5f5;
+    }
+
+    .signature-preview img {
+      max-height: 3.5rem;
+      max-width: 100%;
+      border-radius: var(--border-radius);
+    }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.75rem 1.5rem;
+      font-size: 0.875rem;
+      font-weight: 600;
+      text-align: center;
+      border: none;
+      border-radius: var(--border-radius);
+      cursor: pointer;
+      transition: var(--transition);
+      text-decoration: none;
+      font-family: 'Inter', sans-serif;
+      gap: 0.5rem;
+    }
+
+    .btn-primary {
+      background: var(--primary-color);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: var(--primary-hover);
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .btn-primary:active {
+      transform: translateY(0);
+    }
+
+    .btn-primary:disabled {
+      background: var(--secondary-color);
+      cursor: not-allowed;
+      opacity: 0.6;
+      transform: none;
+    }
+
+    .btn-block {
+      width: 100%;
+      margin: 1.5rem 0;
+    }
+
+    /* Status Messages */
+    .status-message {
+      padding: 0.75rem 1rem;
+      border-radius: var(--border-radius);
+      margin-top: 1rem;
+      font-weight: 500;
+      display: none;
+    }
+
+    .status-message.success {
+      background: #d4edda;
+      color: #155724;
+      border: 1px solid #c3e6cb;
+    }
+
+    .status-message.error {
+      background: #f8d7da;
+      color: #721c24;
+      border: 1px solid #f1aeb5;
+    }
+
+    .status-message.info {
+      background: #cce5ff;
+      color: #004085;
+      border: 1px solid #b3d7ff;
+    }
+
+    /* Disposal Warning Card */
+    .warning-card {
+      background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
+      border: 1px solid #faebcc;
+      border-left: 4px solid var(--warning-color);
+      border-radius: var(--border-radius);
+      padding: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .warning-card-title {
+      font-weight: 600;
+      color: #856404;
+      margin-bottom: 0.5rem;
+      font-size: 0.875rem;
+    }
+
+    .warning-card-text {
+      font-size: 0.8125rem;
+      color: #856404;
+      line-height: 1.4;
+    }
+
+    /* Accessibility */
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    /* Focus indicators */
+    button:focus,
+    input:focus {
+      outline: 2px solid var(--primary-color);
+      outline-offset: 2px;
+    }
+
+    /* Print styles */
+    @media print {
+      body {
+        padding: 0;
+        background: white;
+      }
+      
+      .container {
+        box-shadow: none;
+        border: none;
+      }
+      
+      .btn,
+      .file-input-container {
+        display: none;
+      }
+    }
+
+    /* =========================================
+       RESPONSIVE DESIGN - MOBILE FIRST
+       ========================================= */
+
+    /* Mobile styles (default) */
+    @media (max-width: 768px) {
+      body {
+        padding: 0.5rem;
+      }
+
+      .container {
+        border-radius: 0;
+        box-shadow: none;
+        border: none;
+      }
+
+      .form-header {
+        padding: 1rem;
+      }
+
+      .form-header h1 {
+        font-size: 1.25rem;
+      }
+
+      .form-subtitle {
+        font-size: 0.8125rem;
+      }
+
+      .form-content {
+        padding: 1rem;
+      }
+
+      .section {
+        padding: 1rem;
+        margin-bottom: 1rem;
+      }
+
+      .section-title {
+        font-size: 1rem;
+      }
+
+      .field-row {
+        grid-template-columns: 1fr;
+        gap: 0.5rem;
+      }
+
+      .transfer-flow {
+        flex-direction: column;
+        gap: 1rem;
+      }
+
+      .transfer-arrow {
+        transform: rotate(90deg);
+        margin: 0.5rem 0;
+      }
+
+      .btn {
+        padding: 1rem 1.5rem;
+        font-size: 0.875rem;
+      }
+    }
+
+    /* Tablet styles */
+    @media (min-width: 769px) and (max-width: 1024px) {
+      .container {
+        margin: 1rem;
+      }
+    }
+
+    /* Desktop styles */
+    @media (min-width: 1025px) {
+      body {
+        padding: 2rem;
+      }
+
+      .form-header h1 {
+        font-size: 1.75rem;
+      }
+
+      .form-content {
+        padding: 2rem;
+      }
+
+      .section {
+        padding: 2rem;
+      }
+    }
+
+    /* High DPI displays */
+    @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+      .signature-preview {
+        border-width: 1px;
+      }
+    }
+
+    /* Dark mode support */
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --light-bg: #1a1a1a;
+        --white: #2d2d2d;
+        --text-primary: #e9ecef;
+        --text-secondary: #adb5bd;
+        --border-color: #495057;
+      }
+
+      body {
+        background: #121212;
+        color: var(--text-primary);
+      }
+
+      .container,
+      .section,
+      .field-input {
+        background: var(--white);
+        color: var(--text-primary);
+      }
+    }
+
+    /* Motion preferences */
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+
+    /* Hidden utility */
+    .hidden {
+      display: none !important;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <!-- Professional Header -->
+    <header class="form-header">
+      <h1>Email Account Disposal Review</h1>
+      <div class="form-subtitle">HOD Approval & Email Account Disposal Verification System</div>
+    </header>
+
+    <!-- Form Content -->
+    <main class="form-content">
+      <!-- Status Banner (Hidden by default) -->
+      <div id="statusBanner" class="status-banner hidden" role="alert" aria-live="polite">
+        <div class="status-content">
+          <span class="status-icon" aria-hidden="true"></span>
+          <div class="status-text">
+            <strong id="statusTitle"></strong>
+            <div id="statusMessage"></div>
+          </div>
+        </div>
+        <button class="close-btn" aria-label="Close notification" onclick="hideStatusBanner()">×</button>
+      </div>
+
+      <!-- Important Warning -->
+      <div class="warning-card">
+        <div class="warning-card-title">⚠️ Email Account Disposal Warning</div>
+        <div class="warning-card-text">
+          This form is for the permanent disposal of email accounts. Please review all transfer details carefully before approval as this action cannot be undone.
+        </div>
+      </div>
+
+      <!-- Employee Information Section -->
+      <section class="section" id="employeeSection">
+        <h2 class="section-title">
+          Email Account Transfer & Disposal Details
+          <span class="disposal-status pending" id="disposalStatus">Pending Review</span>
+        </h2>
+        
+        <div class="field-row">
+          <div class="field-group">
+            <label class="field-label" for="unitName">Unit Name</label>
+            <input type="text" id="unitName" class="field-input" readonly 
+                   aria-readonly="true" aria-describedby="unitNameHelp">
+            <small id="unitNameHelp" class="sr-only">Organization unit name</small>
+          </div>
+          
+          <div class="field-group">
+            <label class="field-label" for="department">Department</label>
+            <input type="text" id="department" class="field-input" readonly 
+                   aria-readonly="true" aria-describedby="departmentHelp">
+            <small id="departmentHelp" class="sr-only">Employee's department</small>
+          </div>
+        </div>
+
+        <div class="field-row">
+          <div class="field-group">
+            <label class="field-label" for="emailFrom">Email ID of (Mr./Ms./Mrs.)</label>
+            <input type="email" id="emailFrom" class="field-input" readonly 
+                   aria-readonly="true" aria-describedby="emailFromHelp">
+            <small id="emailFromHelp" class="sr-only">Source email account to be disposed</small>
+          </div>
+          
+          <div class="field-group">
+            <label class="field-label" for="designationFrom">Designation</label>
+            <input type="text" id="designationFrom" class="field-input" readonly 
+                   aria-readonly="true" aria-describedby="designationFromHelp">
+            <small id="designationFromHelp" class="sr-only">Source employee designation</small>
+          </div>
+        </div>
+
+        <div class="field-row">
+          <div class="field-group">
+            <label class="field-label" for="empNoFrom">Employee No.</label>
+            <input type="text" id="empNoFrom" class="field-input" readonly 
+                   aria-readonly="true" aria-describedby="empNoFromHelp">
+            <small id="empNoFromHelp" class="sr-only">Source employee number</small>
+          </div>
+          
+          <div class="field-group">
+            <label class="field-label" for="transferDate">Transfer Date</label>
+            <input type="date" id="transferDate" class="field-input" readonly 
+                   aria-readonly="true" aria-describedby="transferDateHelp">
+            <small id="transferDateHelp" class="sr-only">Date when email transfer occurred</small>
+          </div>
+        </div>
+
+        <!-- Email Transfer Flow Visualization -->
+        <div class="transfer-flow" role="img" aria-label="Email transfer flow visualization">
+          <div class="transfer-step">
+            <div class="transfer-email" id="fromEmailDisplay">source@company.com</div>
+            <div class="transfer-label">From Account</div>
+          </div>
+          <div class="transfer-arrow">→</div>
+          <div class="transfer-step">
+            <div class="transfer-email" id="toEmailDisplay">destination@company.com</div>
+            <div class="transfer-label">To Account</div>
+          </div>
+          <div class="transfer-arrow">→</div>
+          <div class="transfer-step">
+            <div class="transfer-email" id="disposeEmailDisplay">dispose@company.com</div>
+            <div class="transfer-label">Disposal Account</div>
+          </div>
+        </div>
+
+        <div class="field-row">
+          <div class="field-group">
+            <label class="field-label" for="emailTo">Transferred to Email ID of</label>
+            <input type="email" id="emailTo" class="field-input" readonly 
+                   aria-readonly="true" aria-describedby="emailToHelp">
+            <small id="emailToHelp" class="sr-only">Destination email account</small>
+          </div>
+          
+          <div class="field-group">
+            <label class="field-label" for="designationTo">Designation</label>
+            <input type="text" id="designationTo" class="field-input" readonly 
+                   aria-readonly="true" aria-describedby="designationToHelp">
+            <small id="designationToHelp" class="sr-only">Destination employee designation</small>
+          </div>
+        </div>
+
+        <div class="field-row">
+          <div class="field-group">
+            <label class="field-label" for="empNoTo">Employee No.</label>
+            <input type="text" id="empNoTo" class="field-input" readonly 
+                   aria-readonly="true" aria-describedby="empNoToHelp">
+            <small id="empNoToHelp" class="sr-only">Destination employee number</small>
+          </div>
+          
+          <div class="field-group">
+            <label class="field-label" for="disposableEmail">Email ID to be Disposed</label>
+            <input type="email" id="disposableEmail" class="field-input" readonly 
+                   aria-readonly="true" aria-describedby="disposableEmailHelp">
+            <small id="disposableEmailHelp" class="sr-only">Email account scheduled for disposal</small>
+          </div>
+        </div>
+      </section>
+
+      <!-- HOD Approval Section -->
+      <section class="section" id="hodSection">
+        <h2 class="section-title">HOD Approval Section</h2>
+
+        <div class="field-row">
+          <div class="field-group">
+            <label class="field-label" for="hodName">
+              Name of HOD <span class="required" aria-label="required">*</span>
+            </label>
+            <input type="text" id="hodName" class="field-input" required 
+                   aria-required="true" aria-describedby="hodNameHelp"
+                   placeholder="Enter your full name">
+            <small id="hodNameHelp" class="sr-only">Enter the full name of the Head of Department</small>
+          </div>
+          
+          <div class="field-group">
+            <label class="field-label" for="hodEmpNo">
+              Employee No. <span class="required" aria-label="required">*</span>
+            </label>
+            <input type="text" id="hodEmpNo" class="field-input" required 
+                   aria-required="true" aria-describedby="hodEmpNoHelp"
+                   placeholder="Enter your employee number">
+            <small id="hodEmpNoHelp" class="sr-only">Enter your official employee identification number</small>
+          </div>
+        </div>
+
+        <div class="field-group">
+          <label class="field-label" for="hodEmail">
+            Email ID <span class="required" aria-label="required">*</span>
+          </label>
+          <input type="email" id="hodEmail" class="field-input" required 
+                 aria-required="true" aria-describedby="hodEmailHelp"
+                 placeholder="Enter your official email address">
+          <small id="hodEmailHelp" class="sr-only">Enter your official email address for verification</small>
+        </div>
+
+        <div class="field-group">
+          <label class="field-label" for="signatureUpload">
+            Digital Signature <span class="required" aria-label="required">*</span>
+          </label>
+          <div class="file-input-container">
+            <input type="file" id="signatureUpload" class="file-input" 
+                   accept="image/*" required aria-required="true"
+                   aria-describedby="signatureHelp">
+            <label for="signatureUpload" class="file-input-label">
+              📁 Choose signature file or drag and drop
+            </label>
+          </div>
+          <small id="signatureHelp" class="sr-only">
+            Upload a clear image of your signature (JPG, PNG, GIF - max 2MB)
+          </small>
+          
+          <div id="signaturePreview" class="signature-preview" aria-live="polite">
+            No signature uploaded
+          </div>
+        </div>
+      </section>
+
+      <!-- Action Section -->
+      <section class="section">
+        <button type="button" class="btn btn-primary btn-block" 
+                onclick="submitHodReview()" aria-describedby="submitHelp">
+          ✅ Submit HOD Approval for Email Disposal
+        </button>
+        <small id="submitHelp" class="sr-only">
+          Submit your approval for this email account disposal request
+        </small>
+        
+        <div id="statusMsg" class="status-message" role="alert" aria-live="polite"></div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Production JavaScript -->
+  <script>
+    // =========================================
+    // PRODUCTION JAVASCRIPT WITH ERROR HANDLING
+    // =========================================
+    
+    // Global variables
+    let isFormLoading = false;
+    let formId = '';
+
+    // Initialize form when DOM is ready
+    document.addEventListener('DOMContentLoaded', async () => {
+      try {
+        setLoadingState(true);
+        await initializeForm();
+      } catch (error) {
+        console.error('Form initialization failed:', error);
+        showStatusBanner('Error', 'Failed to initialize form. Please refresh the page.', 'error');
+      } finally {
+        setLoadingState(false);
+      }
+    });
+
+    // Set loading state
+    function setLoadingState(loading) {
+      isFormLoading = loading;
+      const container = document.querySelector('.container');
+      const submitBtn = document.querySelector('.btn-primary');
+      
+      if (loading) {
+        container.classList.add('loading');
+        if (submitBtn) submitBtn.disabled = true;
+      } else {
+        container.classList.remove('loading');
+        if (submitBtn) submitBtn.disabled = false;
+      }
+    }
+
+    // Show status banner
+    function showStatusBanner(title, message, type = 'info') {
+      const banner = document.getElementById('statusBanner');
+      const titleEl = document.getElementById('statusTitle');
+      const messageEl = document.getElementById('statusMessage');
+      const iconEl = banner.querySelector('.status-icon');
+      
+      titleEl.textContent = title;
+      messageEl.textContent = message;
+      
+      // Set icon based on type
+      const icons = {
+        info: 'ℹ️',
+        success: '✅',
+        warning: '⚠️',
+        error: '❌'
+      };
+      iconEl.textContent = icons[type] || icons.info;
+      
+      // Set banner class
+      banner.className = `status-banner ${type}`;
+      banner.classList.remove('hidden');
+      
+      // Auto-hide success messages
+      if (type === 'success') {
+        setTimeout(hideStatusBanner, 5000);
+      }
+    }
+
+    // Hide status banner
+    function hideStatusBanner() {
+      const banner = document.getElementById('statusBanner');
+      banner.classList.add('hidden');
+    }
+
+    // Initialize form
+    async function initializeForm() {
+      const queryParams = new URLSearchParams(window.location.search);
+      formId = queryParams.get('formId');
+
+      if (!formId) {
+        showStatusBanner('Error', 'Missing form ID parameter', 'error');
+        return;
+      }
+
+      await loadDisposalFormData();
+      initializeFileUpload();
+      initializeFormValidation();
+      initializeAccessibility();
+    }
+
+    // Fetch with timeout wrapper
+    async function fetchWithTimeout(url, options = {}, timeout = 10000) {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), timeout);
+      
+      try {
+        const response = await fetch(url, {
+          ...options,
+          signal: controller.signal
+        });
+        clearTimeout(timeoutId);
+        return response;
+      } catch (error) {
+        clearTimeout(timeoutId);
+        if (error.name === 'AbortError') {
+          throw new Error('Request timeout');
+        }
+        throw error;
+      }
+    }
+
+    // Sanitize input to prevent XSS
+    function sanitizeInput(input) {
+      if (typeof input !== 'string') return input;
+      
+      const div = document.createElement('div');
+      div.textContent = input;
+      return div.innerHTML;
+    }
+
+    // Load form data with enhanced error handling
+    async function loadDisposalFormData() {
+      try {
+        showStatusBanner('Loading', 'Loading email disposal form data...', 'info');
+
+        const response = await fetchWithTimeout(`/api/hod/form-details?formId=${encodeURIComponent(formId)}`, {
+          credentials: 'include'
+        });
+
+        const data = await response.json();
+
+        if (!response.ok || !data.success) {
+          throw new Error(data.message || 'Failed to load form data');
+        }
+
+        const form = data.form?.formResponses?.disposalFormData;
+        if (!form) {
+          throw new Error('Disposal form data missing');
+        }
+
+        // Populate form fields with sanitized data
+        const fieldMappings = {
+          'unitName': form.unitName,
+          'department': form.department,
+          'emailFrom': form.emailFrom,
+          'designationFrom': form.designationFrom,
+          'empNoFrom': form.empNoFrom,
+          'emailTo': form.emailTo,
+          'designationTo': form.designationTo,
+          'empNoTo': form.empNoTo,
+          'transferDate': form.transferDate,
+          'disposableEmail': form.disposableEmail
+        };
+
+        Object.entries(fieldMappings).forEach(([fieldId, value]) => {
+          const element = document.getElementById(fieldId);
+          if (element) {
+            const sanitizedValue = sanitizeInput(value) || '';
+            element.value = sanitizedValue;
+            
+            // Update transfer flow visualization
+            if (fieldId === 'emailFrom') {
+              document.getElementById('fromEmailDisplay').textContent = sanitizedValue || 'source@company.com';
+            } else if (fieldId === 'emailTo') {
+              document.getElementById('toEmailDisplay').textContent = sanitizedValue || 'destination@company.com';
+            } else if (fieldId === 'disposableEmail') {
+              document.getElementById('disposeEmailDisplay').textContent = sanitizedValue || 'dispose@company.com';
+            }
+          }
+        });
+
+        // Update disposal status
+        updateDisposalStatus('pending');
+
+        showStatusBanner('Success', 'Email disposal form data loaded successfully', 'success');
+        console.log('Email disposal form data loaded successfully');
+
+      } catch (error) {
+        console.error('Error loading disposal form:', error);
+        const message = error.message === 'Request timeout' 
+          ? 'Loading timed out. Please try again.'
+          : `Error loading disposal form: ${error.message}`;
+        
+        showStatusBanner('Error', message, 'error');
+        showStatusMessage(message, 'error');
+      }
+    }
+
+    // Update disposal status indicator
+    function updateDisposalStatus(status) {
+      const statusEl = document.getElementById('disposalStatus');
+      if (!statusEl) return;
+
+      statusEl.className = `disposal-status ${status}`;
+      
+      const statusText = {
+        'pending': 'Pending Review',
+        'approved': 'Disposal Approved',
+        'rejected': 'Disposal Rejected'
+      };
+
+      statusEl.textContent = statusText[status] || 'Unknown Status';
+    }
+
+    // Initialize file upload handling
+    function initializeFileUpload() {
+      const fileInput = document.getElementById('signatureUpload');
+      const preview = document.getElementById('signaturePreview');
+
+      if (fileInput && preview) {
+        fileInput.addEventListener('change', handleSignatureUpload);
+        
+        // Drag and drop functionality
+        const label = document.querySelector('.file-input-label');
+        
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+          label.addEventListener(eventName, preventDefaults, false);
+        });
+
+        function preventDefaults(e) {
+          e.preventDefault();
+          e.stopPropagation();
+        }
+
+        ['dragenter', 'dragover'].forEach(eventName => {
+          label.addEventListener(eventName, highlight, false);
+        });
+
+        ['dragleave', 'drop'].forEach(eventName => {
+          label.addEventListener(eventName, unhighlight, false);
+        });
+
+        function highlight(e) {
+          label.style.borderColor = 'var(--primary-color)';
+          label.style.background = '#fff5f5';
+        }
+
+        function unhighlight(e) {
+          label.style.borderColor = 'var(--border-color)';
+          label.style.background = 'var(--light-bg)';
+        }
+
+        label.addEventListener('drop', handleDrop, false);
+
+        function handleDrop(e) {
+          const dt = e.dataTransfer;
+          const files = dt.files;
+          
+          if (files.length > 0) {
+            fileInput.files = files;
+            handleSignatureUpload({ target: { files: files } });
+          }
+        }
+      }
+    }
+
+    // Handle signature upload with validation
+    function handleSignatureUpload(event) {
+      const file = event.target.files[0];
+      const preview = document.getElementById('signaturePreview');
+      
+      if (!file) return;
+
+      // Validate file
+      const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif'];
+      const maxSize = 2 * 1024 * 1024; // 2MB
+
+      if (!validTypes.includes(file.type)) {
+        showStatusBanner('Error', 'Please select a valid image file (JPEG, PNG, GIF)', 'error');
+        event.target.value = '';
+        return;
+      }
+
+      if (file.size > maxSize) {
+        showStatusBanner('Error', 'File size must be less than 2MB', 'error');
+        event.target.value = '';
+        return;
+      }
+
+      // Preview signature
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        preview.innerHTML = `<img src="${e.target.result}" alt="HOD Signature" loading="lazy">`;
+        preview.classList.add('has-image');
+        preview.setAttribute('aria-label', 'Signature uploaded successfully');
+        
+        showStatusBanner('Success', 'Signature uploaded successfully', 'success');
+      };
+      
+      reader.onerror = function() {
+        showStatusBanner('Error', 'Failed to read signature file', 'error');
+        event.target.value = '';
+      };
+      
+      reader.readAsDataURL(file);
+    }
+
+    // Enhanced form validation
+    function validateForm() {
+      const requiredFields = [
+        { id: 'hodName', name: 'HOD Name' },
+        { id: 'hodEmpNo', name: 'Employee Number' },
+        { id: 'hodEmail', name: 'Email ID' },
+        { id: 'signatureUpload', name: 'Signature' }
+      ];
+
+      for (const field of requiredFields) {
+        const element = document.getElementById(field.id);
+        
+        if (!element) continue;
+
+        let value;
+        if (field.id === 'signatureUpload') {
+          value = element.files && element.files.length > 0;
+        } else {
+          value = element.value.trim();
+        }
+
+        if (!value) {
+          // Highlight the field
+          element.focus();
+          element.style.borderColor = 'var(--primary-color)';
+          
+          // Remove highlight after a delay
+          setTimeout(() => {
+            element.style.borderColor = '';
+          }, 3000);
+          
+          return {
+            isValid: false,
+            message: `Please ${field.id === 'signatureUpload' ? 'upload' : 'enter'} ${field.name}`
+          };
+        }
+      }
+
+      // Validate email format
+      const email = document.getElementById('hodEmail').value.trim();
+      if (email && !isValidEmail(email)) {
+        document.getElementById('hodEmail').focus();
+        return {
+          isValid: false,
+          message: 'Please enter a valid email address'
+        };
+      }
+
+      return { isValid: true };
+    }
+
+    // Email validation helper
+    function isValidEmail(email) {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      return emailRegex.test(email);
+    }
+
+    // Submit HOD review with comprehensive error handling
+    async function submitHodReview() {
+      if (isFormLoading) return;
+
+      try {
+        setLoadingState(true);
+        showStatusMessage('Validating email disposal form...', 'info');
+
+        // Validate form
+        const validation = validateForm();
+        if (!validation.isValid) {
+          showStatusBanner('Validation Error', validation.message, 'error');
+          showStatusMessage(validation.message, 'error');
+          return;
+        }
+
+        showStatusMessage('Submitting HOD approval for email disposal...', 'info');
+
+        // Prepare form data
+        const formData = new FormData();
+        formData.append('formId', formId);
+        formData.append('formType', 'disposal');
+        formData.append('hodName', sanitizeInput(document.getElementById('hodName').value.trim()));
+        formData.append('hodEmpNo', sanitizeInput(document.getElementById('hodEmpNo').value.trim()));
+        formData.append('hodEmail', sanitizeInput(document.getElementById('hodEmail').value.trim()));
+        formData.append('signature', document.getElementById('signatureUpload').files[0]);
+
+        // Submit form
+        const response = await fetchWithTimeout('/api/hod/submit-form', {
+          method: 'POST',
+          credentials: 'include',
+          body: formData
+        });
+
+        const result = await response.json();
+
+        if (response.ok && result.success) {
+          showStatusBanner('Success', result.message || 'HOD email disposal approval submitted successfully!', 'success');
+          showStatusMessage(result.message || 'Email disposal approval submitted successfully!', 'success');
+          
+          // Update status and disable form after successful submission
+          updateDisposalStatus('approved');
+          
+          setTimeout(() => {
+            document.querySelectorAll('input, button').forEach(el => {
+              if (!el.classList.contains('close-btn')) {
+                el.disabled = true;
+              }
+            });
+          }, 2000);
+          
+        } else {
+          throw new Error(result.message || 'Failed to submit email disposal approval');
+        }
+
+      } catch (error) {
+        console.error('Error submitting HOD disposal review:', error);
+        const message = error.message === 'Request timeout' 
+          ? 'Submission timed out. Please try again.' 
+          : `Failed to submit email disposal approval: ${error.message}`;
+        
+        showStatusBanner('Error', message, 'error');
+        showStatusMessage(message, 'error');
+      } finally {
+        setLoadingState(false);
+      }
+    }
+
+    // Initialize form validation
+    function initializeFormValidation() {
+      const inputs = document.querySelectorAll('input[required]');
+      
+      inputs.forEach(input => {
+        input.addEventListener('blur', validateField);
+        input.addEventListener('input', clearFieldError);
+      });
+    }
+
+    // Validate individual field
+    function validateField(event) {
+      const field = event.target;
+      let isValid = true;
+      
+      if (field.type === 'email') {
+        isValid = field.value.trim() === '' || isValidEmail(field.value.trim());
+      } else if (field.type === 'file') {
+        isValid = field.files && field.files.length > 0;
+      } else {
+        isValid = field.value.trim() !== '';
+      }
+      
+      if (!isValid) {
+        field.style.borderColor = 'var(--primary-color)';
+        field.setAttribute('aria-invalid', 'true');
+      } else {
+        field.style.borderColor = '';
+        field.removeAttribute('aria-invalid');
+      }
+    }
+
+    // Clear field error styling
+    function clearFieldError(event) {
+      const field = event.target;
+      field.style.borderColor = '';
+      field.removeAttribute('aria-invalid');
+    }
+
+    // Initialize accessibility features
+    function initializeAccessibility() {
+      // Add aria-live region for form status
+      const liveRegion = document.createElement('div');
+      liveRegion.setAttribute('aria-live', 'polite');
+      liveRegion.setAttribute('aria-atomic', 'true');
+      liveRegion.className = 'sr-only';
+      liveRegion.id = 'status-live-region';
+      document.body.appendChild(liveRegion);
+
+      // Add skip link
+      const skipLink = document.createElement('a');
+      skipLink.href = '#main-content';
+      skipLink.className = 'sr-only';
+      skipLink.textContent = 'Skip to main content';
+      skipLink.addEventListener('focus', () => skipLink.classList.remove('sr-only'));
+      skipLink.addEventListener('blur', () => skipLink.classList.add('sr-only'));
+      document.body.insertBefore(skipLink, document.body.firstChild);
+
+      // Add main landmark
+      const main = document.querySelector('.form-content');
+      if (main) {
+        main.id = 'main-content';
+      }
+    }
+
+    // Show status messages
+    function showStatusMessage(message, type) {
+      const messageEl = document.getElementById('statusMsg');
+      if (messageEl) {
+        messageEl.textContent = message;
+        messageEl.className = `status-message ${type}`;
+        messageEl.style.display = 'block';
+
+        // Update live region for screen readers
+        const liveRegion = document.getElementById('status-live-region');
+        if (liveRegion) {
+          liveRegion.textContent = message;
+        }
+
+        // Auto-hide success messages
+        if (type === 'success') {
+          setTimeout(() => {
+            messageEl.style.display = 'none';
+          }, 5000);
+        }
+      }
+    }
+
+    // Error boundary for unhandled errors
+    window.addEventListener('error', function(event) {
+      console.error('Unhandled error:', event.error);
+      showStatusBanner('Error', 'An unexpected error occurred', 'error');
+    });
+
+    // Unhandled promise rejections
+    window.addEventListener('unhandledrejection', function(event) {
+      console.error('Unhandled promise rejection:', event.reason);
+      showStatusBanner('Error', 'An unexpected error occurred', 'error');
+    });
+
+    // Performance monitoring
+    if ('performance' in window) {
+      window.addEventListener('load', function() {
+        setTimeout(() => {
+          const perfData = performance.getEntriesByType('navigation')[0];
+          console.log('Page load performance:', {
+            loadTime: perfData.loadEventEnd - perfData.fetchStart,
+            domContentLoaded: perfData.domContentLoadedEventEnd - perfData.fetchStart
+          });
+        }, 0);
+      });
+    }
+  </script>
+</body>
+
+</html>

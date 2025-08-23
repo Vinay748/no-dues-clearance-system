@@ -1,0 +1,572 @@
+[
+  {
+    "formId": "F1755429455287",
+    "name": "Suresh Dubey",
+    "employeeName": "Suresh Dubey",
+    "employeeId": "EMP1001",
+    "email": "vs23cs92@thdcihet.ac.in",
+    "department": "C&RRSW",
+    "noDuesType": "Transfer",
+    "reason": "",
+    "orderLetter": "1755429455268-transfer.webp",
+    "status": "rejected",
+    "submissionDate": "2025-08-17T11:17:35.287Z",
+    "submittedBy": "EMP1001",
+    "lastUpdated": "2025-08-17T13:39:28.608Z",
+    "assignedForms": [],
+    "formResponses": {},
+    "remark": "Forms assigned by IT - All three forms selected",
+    "finalSubmittedAt": "2025-08-17T13:39:28.608Z",
+    "hodApproval": {
+      "approvedBy": "Sushil Kumar Uniyal",
+      "approverEmployeeId": "3401234",
+      "approverEmail": "sushil.uniyal@company.com",
+      "approverDepartment": "Academic Department",
+      "approverDesignation": "HOD",
+      "approvedAt": "2025-08-17T15:03:22.486Z",
+      "action": "approved",
+      "remarks": "",
+      "completedForms": [
+        "disposalForm",
+        "efileForm",
+        "form365Trans"
+      ],
+      "ipAddress": "::1",
+      "autoFilled": true,
+      "hodDetails": {
+        "hodId": "SUSHIL KUMAR UNIYAL",
+        "name": "Sushil Kumar Uniyal",
+        "employeeId": "3401234",
+        "email": "sushil.uniyal@company.com",
+        "department": "Academic Department",
+        "designation": "HOD"
+      }
+    },
+    "rejectionReason": "etrert",
+    "rejectedAt": "2025-08-17T15:20:22.885Z",
+    "rejectedBy": "IT Admin",
+    "rejectionStage": "IT Review",
+    "itProcessing": {
+      "processedBy": "IT Admin",
+      "processedAt": "2025-08-17T15:20:22.885Z",
+      "action": "rejected",
+      "remarks": "etrert"
+    }
+  },
+  {
+    "formId": "F1755464459489",
+    "name": "Suresh Dubey",
+    "employeeName": "Suresh Dubey",
+    "employeeId": "EMP1001",
+    "email": "vs23cs92@thdcihet.ac.in",
+    "department": "C&RRSW",
+    "noDuesType": "Transfer",
+    "reason": "",
+    "orderLetter": "1755464459466-transfer.webp",
+    "status": "rejected",
+    "submissionDate": "2025-08-17T21:00:59.489Z",
+    "submittedBy": "EMP1001",
+    "lastUpdated": "2025-08-20T09:05:40.534Z",
+    "assignedForms": [],
+    "formResponses": {},
+    "remark": "Forms assigned by IT - All three forms selected",
+    "finalSubmittedAt": "2025-08-20T09:05:40.534Z",
+    "rejectionReason": "EWDGSSD3\n.",
+    "rejectedAt": "2025-08-20T09:06:19.606Z",
+    "rejectedBy": "Sushil Kumar Uniyal",
+    "hodRejection": {
+      "actionBy": "Sushil Kumar Uniyal",
+      "actionEmployeeId": "3401234",
+      "actionEmail": "sushil.uniyal@company.com",
+      "actionDepartment": "IT",
+      "actionDesignation": "HOD",
+      "actionAt": "2025-08-20T09:06:19.605Z",
+      "action": "rejected",
+      "remarks": "EWDGSSD3\n.",
+      "ipAddress": "::1",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36 Edg/139.0.0.0",
+      "hodDetails": {
+        "hodId": "SUSHIL KUMAR UNIYAL",
+        "name": "Sushil Kumar Uniyal",
+        "employeeId": "3401234",
+        "email": "sushil.uniyal@company.com",
+        "department": "IT",
+        "designation": "HOD"
+      }
+    }
+  },
+  {
+    "formId": "F1755543765091",
+    "name": "Kavita Verma",
+    "employeeName": "Kavita Verma",
+    "employeeId": "EMP1002",
+    "email": "vs23cs92@thdcihet.ac.in",
+    "department": "Central Store",
+    "noDuesType": "Transfer",
+    "reason": "",
+    "orderLetter": "1755543765088-transfer.webp",
+    "status": "Submitted to IT",
+    "submissionDate": "2025-08-18T19:02:45.091Z",
+    "submittedBy": "EMP1002",
+    "lastUpdated": "2025-08-20T09:11:12.576Z",
+    "assignedForms": [
+      {
+        "title": "E-File",
+        "path": "/forms/efile.html"
+      },
+      {
+        "title": "Disposal Form",
+        "path": "/forms/disposalform.html"
+      },
+      {
+        "title": "Form 365 - Transfer",
+        "path": "/forms/form365transfer.html"
+      }
+    ],
+    "formResponses": {
+      "disposalForm": {
+        "confirmationReason": "Superannuation",
+        "unitName": "WDFEWF",
+        "department": "Electrical",
+        "emailFrom": "GNFBHF",
+        "salutationFrom": "Mr.",
+        "nameFrom": "GNFBHF",
+        "designationFrom": "fhfh",
+        "empNoFrom": "3401234",
+        "emailTo": "FHNTGDJ",
+        "salutationTo": "Mr.",
+        "nameTo": "FHNTGDJ",
+        "designationTo": "fhfh",
+        "empNoTo": "3401234",
+        "transferDate": "2025-08-19",
+        "disposableEmail": "FHTJT",
+        "hodName": "Sushil Kumar Uniyal",
+        "hodEmpNo": "3401234",
+        "hodEmail": "sushil.uniyal@company.com",
+        "hodSignatureArea": "",
+        "hodSignatureInput": "",
+        "itSection": "DGM (IT) Confirmation\n\n        \n          \n            The Email ID\n            \n            has been deactivated on\n            \n          \n\n          \n            by (Name)\n            \n            (Designation)",
+        "deactivatedEmail": "",
+        "deactivationDate": "",
+        "itName": "",
+        "itDesignation": "",
+        "saveMessage": "HOD details auto-filled successfully!",
+        "globalBackButton": "←\n        Back to Dashboard"
+      },
+      "efileForm": {
+        "customField": "fbvfb",
+        "reason": "Transfer",
+        "salutation": "Mr.",
+        "empName": "FVBBFBF",
+        "designation": "dfvvdf",
+        "empNo": "FBHGF",
+        "fromEoffice": "dffv",
+        "toEoffice": "REGRG",
+        "tosalutation": "Mr.",
+        "toName": "fthrth",
+        "toDesignation": "rth",
+        "toEmpNo": "FBHGF",
+        "efileTable": "Sl. No.\n                Transfer from EOffice Id\n                Transfer to EOffice Id\n                Electronic File No.",
+        "efileBody": "",
+        "hodName": "Sushil Kumar Uniyal",
+        "hodEmpNo": "3401234",
+        "hodEmail": "sushil.uniyal@company.com",
+        "hodSignatureArea": "",
+        "hodSignatureInput": "",
+        "saveMessage": "HOD details auto-filled successfully!",
+        "globalBackButton": "←\n        Back to Dashboard"
+      },
+      "form365Trans": {
+        "unitName": "WDFEWF",
+        "department": "Dam and Spillway",
+        "fromId": "EFEGF",
+        "empSalutation": "Mr.",
+        "empName": "EFEGF",
+        "designation": "fhfh",
+        "empNo": "3401234",
+        "oldId": "RGERG",
+        "newId": "RGVRG",
+        "toSalutation": "Mr.",
+        "toEmp": "tftftf",
+        "toDesignation": "RGVRG",
+        "toEmpNo": "ERGEG",
+        "date": "2025-08-19",
+        "hodName": "Sushil Kumar Uniyal",
+        "hodEmpNo": "3401234",
+        "hodEmail": "sushil.uniyal@company.com",
+        "hodSignatureArea": "",
+        "hodSignatureInput": "",
+        "saveMessage": "HOD details auto-filled successfully!",
+        "globalBackButton": "←\n        Back to Dashboard"
+      }
+    },
+    "remark": "Forms assigned by IT - All three forms selected",
+    "finalSubmittedAt": "2025-08-20T09:11:12.576Z",
+    "hodApproval": {
+      "approvedBy": "Sushil Kumar Uniyal",
+      "approverEmployeeId": "3401234",
+      "approverEmail": "sushil.uniyal@company.com",
+      "approverDepartment": "IT",
+      "approverDesignation": "HOD",
+      "approvedAt": "2025-08-20T09:12:02.119Z",
+      "action": "approved",
+      "remarks": "",
+      "completedForms": [
+        "disposalForm",
+        "efileForm",
+        "form365Trans"
+      ],
+      "ipAddress": "::1",
+      "autoFilled": true,
+      "hodDetails": {
+        "hodId": "SUSHIL KUMAR UNIYAL",
+        "name": "Sushil Kumar Uniyal",
+        "employeeId": "3401234",
+        "email": "sushil.uniyal@company.com",
+        "department": "IT",
+        "designation": "HOD"
+      }
+    }
+  },
+  {
+    "formId": "F1755678541754",
+    "name": "Sneha Joshi",
+    "employeeName": "Sneha Joshi",
+    "employeeId": "EMP1003",
+    "email": "vs23cs92@thdcihet.ac.in",
+    "department": "CISF",
+    "noDuesType": "Retirement",
+    "reason": "",
+    "orderLetter": "1755678541744-transfer.webp",
+    "status": "Submitted to IT",
+    "submissionDate": "2025-08-20T08:29:01.754Z",
+    "submittedBy": "EMP1003",
+    "lastUpdated": "2025-08-20T09:20:56.182Z",
+    "assignedForms": [
+      {
+        "title": "E-File",
+        "path": "/forms/efile.html"
+      },
+      {
+        "title": "Disposal Form",
+        "path": "/forms/disposalform.html"
+      },
+      {
+        "title": "Form 365 - Disposal",
+        "path": "/forms/form365disposal.html"
+      }
+    ],
+    "formResponses": {
+      "disposalForm": {
+        "confirmationReason": "Superannuation",
+        "unitName": "WDFEWF",
+        "department": "Electrical",
+        "emailFrom": "GNFBHF",
+        "salutationFrom": "Mr.",
+        "nameFrom": "GNFBHF",
+        "designationFrom": "rth",
+        "empNoFrom": "FBHGF",
+        "emailTo": "FHNTGDJ",
+        "salutationTo": "Mr.",
+        "nameTo": "FHNTGDJ",
+        "designationTo": "rth",
+        "empNoTo": "FBHGF",
+        "transferDate": "",
+        "disposableEmail": "FHTJT",
+        "hodName": "Sushil Kumar Uniyal",
+        "hodEmpNo": "3401234",
+        "hodEmail": "sushil.uniyal@company.com",
+        "hodSignatureArea": "",
+        "hodSignatureInput": "",
+        "itSection": "DGM (IT) Confirmation\n\n        \n          \n            The Email ID\n            \n            has been deactivated on\n            \n          \n\n          \n            by (Name)\n            \n            (Designation)",
+        "deactivatedEmail": "",
+        "deactivationDate": "",
+        "itName": "",
+        "itDesignation": "",
+        "saveMessage": "HOD details auto-filled successfully!",
+        "globalBackButton": "←\n        Back to Dashboard"
+      },
+      "efileForm": {
+        "customField": "fbvfb",
+        "reason": "Transfer",
+        "salutation": "Mr.",
+        "empName": "FVBBFBF",
+        "designation": "dfvvdf",
+        "empNo": "FBHGF",
+        "fromEoffice": "dffv",
+        "toEoffice": "REGRG",
+        "tosalutation": "Mr.",
+        "toName": "fthrth",
+        "toDesignation": "rth",
+        "toEmpNo": "FBHGF",
+        "efileTable": "Sl. No.\n                Transfer from EOffice Id\n                Transfer to EOffice Id\n                Electronic File No.",
+        "efileBody": "",
+        "hodName": "Sushil Kumar Uniyal",
+        "hodEmpNo": "3401234",
+        "hodEmail": "sushil.uniyal@company.com",
+        "hodSignatureArea": "",
+        "hodSignatureInput": "",
+        "saveMessage": "HOD details auto-filled successfully!",
+        "globalBackButton": "←\n        Back to Dashboard"
+      },
+      "form365Disp": {
+        "hodName": "Sushil Kumar Uniyal",
+        "hodEmpNo": "3401234",
+        "hodEmail": "sushil.uniyal@company.com",
+        "signatureArea": "",
+        "signatureInput": "",
+        "saveMessage": "HOD details auto-filled successfully!",
+        "globalBackButton": "←\n        Back to Dashboard"
+      }
+    },
+    "remark": "Forms assigned by IT - All three forms selected",
+    "finalSubmittedAt": "2025-08-20T09:20:56.182Z",
+    "hodApproval": {
+      "approvedBy": "Sushil Kumar Uniyal",
+      "approverEmployeeId": "3401234",
+      "approverEmail": "sushil.uniyal@company.com",
+      "approverDepartment": "IT",
+      "approverDesignation": "HOD",
+      "approvedAt": "2025-08-20T09:21:36.217Z",
+      "action": "approved",
+      "remarks": "",
+      "completedForms": [
+        "disposalForm",
+        "efileForm",
+        "form365Disp"
+      ],
+      "ipAddress": "::1",
+      "autoFilled": true,
+      "hodDetails": {
+        "hodId": "SUSHIL KUMAR UNIYAL",
+        "name": "Sushil Kumar Uniyal",
+        "employeeId": "3401234",
+        "email": "sushil.uniyal@company.com",
+        "department": "IT",
+        "designation": "HOD"
+      }
+    }
+  },
+  {
+    "formId": "F1755678754255",
+    "name": "Seema Goswami",
+    "employeeName": "Seema Goswami",
+    "employeeId": "EMP1004",
+    "email": "vs23cs92@thdcihet.ac.in",
+    "department": "CSR",
+    "noDuesType": "Transfer",
+    "reason": "",
+    "orderLetter": "1755678754249-transfer.webp",
+    "status": "rejected",
+    "submissionDate": "2025-08-20T08:32:34.255Z",
+    "submittedBy": "EMP1004",
+    "lastUpdated": "2025-08-20T08:38:25.738Z",
+    "assignedForms": [],
+    "formResponses": {},
+    "remark": "Forms assigned by IT - All three forms selected",
+    "finalSubmittedAt": "2025-08-20T08:38:25.738Z",
+    "hodApproval": {
+      "approvedBy": "Sushil Kumar Uniyal",
+      "approverEmployeeId": "3401234",
+      "approverEmail": "sushil.uniyal@company.com",
+      "approverDepartment": "IT",
+      "approverDesignation": "HOD",
+      "approvedAt": "2025-08-20T08:56:52.053Z",
+      "action": "approved",
+      "remarks": "",
+      "completedForms": [
+        "disposalForm",
+        "efileForm",
+        "form365Trans"
+      ],
+      "ipAddress": "::1",
+      "autoFilled": true,
+      "hodDetails": {
+        "hodId": "SUSHIL KUMAR UNIYAL",
+        "name": "Sushil Kumar Uniyal",
+        "employeeId": "3401234",
+        "email": "sushil.uniyal@company.com",
+        "department": "IT",
+        "designation": "HOD"
+      }
+    },
+    "rejectionReason": "yyrj",
+    "rejectedAt": "2025-08-20T19:39:39.693Z",
+    "rejectedBy": "IT Admin",
+    "rejectionStage": "IT Review",
+    "itProcessing": {
+      "processedBy": "IT Admin",
+      "processedAt": "2025-08-20T19:39:39.693Z",
+      "action": "rejected",
+      "remarks": "yyrj"
+    }
+  },
+  {
+    "formId": "F1755700332519",
+    "name": "Suresh Dubey",
+    "employeeName": "Suresh Dubey",
+    "employeeId": "EMP1001",
+    "email": "vs23cs92@thdcihet.ac.in",
+    "department": "C&RRSW",
+    "noDuesType": "Transfer",
+    "reason": "DGFDGBDGFFBDG",
+    "orderLetter": "1755700332500-transfer.webp",
+    "status": "rejected",
+    "submissionDate": "2025-08-20T14:32:12.519Z",
+    "submittedBy": "EMP1001",
+    "lastUpdated": "2025-08-20T14:35:57.097Z",
+    "assignedForms": [],
+    "formResponses": {},
+    "remark": "Forms assigned by IT - All three forms selected",
+    "finalSubmittedAt": "2025-08-20T14:35:57.097Z",
+    "hodApproval": {
+      "approvedBy": "Sushil Kumar Uniyal",
+      "approverEmployeeId": "3401234",
+      "approverEmail": "sushil.uniyal@company.com",
+      "approverDepartment": "IT",
+      "approverDesignation": "HOD",
+      "approvedAt": "2025-08-20T17:43:24.140Z",
+      "action": "approved",
+      "remarks": "",
+      "completedForms": [
+        "disposalForm",
+        "efileForm",
+        "form365Trans"
+      ],
+      "ipAddress": "::1",
+      "autoFilled": true,
+      "hodDetails": {
+        "hodId": "SUSHIL KUMAR UNIYAL",
+        "name": "Sushil Kumar Uniyal",
+        "employeeId": "3401234",
+        "email": "sushil.uniyal@company.com",
+        "department": "IT",
+        "designation": "HOD"
+      }
+    },
+    "rejectionReason": "rger",
+    "rejectedAt": "2025-08-20T19:38:20.054Z",
+    "rejectedBy": "IT Admin",
+    "rejectionStage": "IT Review",
+    "itProcessing": {
+      "processedBy": "IT Admin",
+      "processedAt": "2025-08-20T19:38:20.054Z",
+      "action": "rejected",
+      "remarks": "rger"
+    }
+  },
+  {
+    "formId": "F1755719747927",
+    "name": "Suresh Dubey",
+    "employeeName": "Suresh Dubey",
+    "employeeId": "EMP1001",
+    "email": "vs23cs92@thdcihet.ac.in",
+    "department": "C&RRSW",
+    "noDuesType": "Transfer",
+    "reason": "jtjrdtrd",
+    "orderLetter": "1755719747900-transfer.webp",
+    "status": "rejected",
+    "submissionDate": "2025-08-20T19:55:47.927Z",
+    "submittedBy": "EMP1001",
+    "lastUpdated": "2025-08-20T19:59:10.077Z",
+    "assignedForms": [],
+    "formResponses": {},
+    "remark": "Forms assigned by IT - All three forms selected",
+    "finalSubmittedAt": "2025-08-20T19:59:10.077Z",
+    "hodApproval": {
+      "approvedBy": "Sushil Kumar Uniyal",
+      "approverEmployeeId": "3401234",
+      "approverEmail": "sushil.uniyal@company.com",
+      "approverDepartment": "IT",
+      "approverDesignation": "HOD",
+      "approvedAt": "2025-08-20T20:15:46.833Z",
+      "action": "approved",
+      "remarks": "",
+      "completedForms": [
+        "disposalForm",
+        "efileForm",
+        "form365Trans"
+      ],
+      "ipAddress": "::1",
+      "autoFilled": true,
+      "hodDetails": {
+        "hodId": "SUSHIL KUMAR UNIYAL",
+        "name": "Sushil Kumar Uniyal",
+        "employeeId": "3401234",
+        "email": "sushil.uniyal@company.com",
+        "department": "IT",
+        "designation": "HOD"
+      }
+    },
+    "rejectionReason": "gfx",
+    "rejectedAt": "2025-08-21T11:35:29.513Z",
+    "rejectedBy": "IT Admin",
+    "rejectionStage": "IT Review",
+    "itProcessing": {
+      "processedBy": "IT Admin",
+      "processedAt": "2025-08-21T11:35:29.513Z",
+      "action": "rejected",
+      "remarks": "gfx"
+    }
+  },
+  {
+    "formId": "F1755776333826",
+    "name": "Suresh Dubey",
+    "employeeName": "Suresh Dubey",
+    "employeeId": "EMP1001",
+    "email": "np23csaiml31@thdcihet.ac.in",
+    "department": "C&RRSW",
+    "noDuesType": "Retirement",
+    "reason": "",
+    "orderLetter": "1755776333821-transfer.webp",
+    "status": "approved",
+    "submissionDate": "2025-08-21T11:38:53.826Z",
+    "submittedBy": "EMP1001",
+    "lastUpdated": "2025-08-22T20:31:48.855Z",
+    "assignedForms": [
+      {
+        "title": "E-File",
+        "path": "/forms/efile.html"
+      },
+      {
+        "title": "Disposal Form",
+        "path": "/forms/disposalform.html"
+      },
+      {
+        "title": "Form 365 - Disposal",
+        "path": "/forms/form365disposal.html"
+      }
+    ],
+    "formResponses": {
+      "efileFormData": {
+        "reason": "Transfer",
+        "customField": "fbvfb",
+        "salutation": "Mr.",
+        "empName": "FVBBFBF",
+        "designation": "fhfh",
+        "empNo": "3401234",
+        "fromEoffice": "dffv",
+        "toEoffice": "REGRG",
+        "tosalutation": "Mr.",
+        "toName": "nmnbn",
+        "toDesignation": "fhfh",
+        "toEmpNo": "3401234",
+        "hodName": "",
+        "hodEmpNo": "",
+        "hodEmail": "",
+        "tableRows": [
+          {
+            "sl": "1",
+            "from": "bnkkn",
+            "to": "uihyvbuyv1",
+            "file": "uguvgykv"
+          }
+        ],
+        "formId": "",
+        "lastUpdated": "2025-08-22T20:31:48.845Z",
+        "userRole": "employee"
+      }
+    },
+    "remark": "Forms assigned by IT - All three forms selected"
+  }
+]

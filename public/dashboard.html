@@ -1,0 +1,3608 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Employee Dashboard</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background-color: #f7fafc;
+      color: #263238;
+      padding-left: 0;
+    }
+
+    .top-bar {
+      background-color: #1a355b;
+      color: white;
+      padding: 18px 32px;
+      font-size: 24px;
+      font-weight: 700;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      letter-spacing: 0.5px;
+      border-bottom: 2px solid #1976d2;
+      position: relative;
+    }
+
+    .nav-bar {
+      display: flex;
+      background-color: #1976d2;
+      padding: 12px 0;
+      justify-content: center;
+      gap: 22px;
+      font-size: 17px;
+      flex-wrap: wrap;
+      position: relative;
+      overflow-x: auto;
+    }
+
+    .nav-bar button {
+      background: #1976d2;
+      border: none;
+      color: white;
+      padding: 10px 22px;
+      font-size: 16px;
+      cursor: pointer;
+      border-radius: 6px;
+      font-weight: 600;
+      letter-spacing: 0.2px;
+      transition: background 0.15s;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .nav-bar button:hover {
+      background: #1456a6;
+    }
+
+    /* Hamburger Menu for Mobile */
+    .nav-toggle {
+      display: none;
+      background: transparent;
+      border: none;
+      color: white;
+      font-size: 24px;
+      cursor: pointer;
+      padding: 5px 10px;
+    }
+
+    .nav-mobile {
+      display: none;
+      flex-direction: column;
+      background: #1976d2;
+      padding: 0;
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .nav-mobile.show {
+      display: flex;
+    }
+
+    .nav-mobile button {
+      width: 100%;
+      text-align: left;
+      padding: 15px 32px;
+      border-radius: 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .nav-mobile button:last-child {
+      border-bottom: none;
+    }
+
+    .main-content {
+      padding: 38px 24px 24px 24px;
+      max-width: 1050px;
+      margin: 30px auto;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 2px 18px rgba(25, 118, 210, 0.07);
+      min-height: 540px;
+      animation: fadeIn 0.4s ease;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(14px);
+      }
+
+      to {
+        opacity: 1;
+        transform: none;
+      }
+    }
+
+    /* Profile section */
+    .profile-section {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+    }
+
+    .profile-pic {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      border: 2px solid #1976d2;
+      cursor: pointer;
+    }
+
+    .profile-popup {
+      display: none;
+      position: absolute;
+      top: 60px;
+      right: 18px;
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 2px 18px rgba(25, 118, 210, 0.13);
+      padding: 18px;
+      z-index: 1000;
+      width: 230px;
+      border: 1px solid #e3e8ee;
+    }
+
+    .profile-popup img {
+      width: 76px;
+      height: 76px;
+      border-radius: 50%;
+      display: block;
+      margin: 0 auto 15px;
+      border: 2px solid #2196f3;
+    }
+
+    .profile-popup .info {
+      text-align: center;
+      font-size: 15px;
+      color: #1456a6;
+      margin-bottom: 12px;
+      font-weight: 500;
+    }
+
+    .profile-popup button {
+      width: 100%;
+      margin-top: 8px;
+      padding: 10px 0;
+      background: #1976d2;
+      border: none;
+      color: white;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 15px;
+      transition: background 0.15s;
+    }
+
+    .profile-popup button:hover {
+      background: #1456a6;
+    }
+
+    /* Main buttons */
+    .apply-button {
+      padding: 13px 36px;
+      font-size: 17px;
+      background-color: #2196f3;
+      color: white;
+      border: none;
+      border-radius: 9px;
+      margin-top: 21px;
+      cursor: pointer;
+      transition: background 0.18s;
+      width: 260px;
+      font-weight: 700;
+      box-shadow: 0 1px 8px rgba(33, 150, 243, 0.08);
+    }
+
+    .apply-button:hover {
+      background-color: #1565c0;
+    }
+
+    /* Cards and entries */
+    .form-entry {
+      background: #fafbfc;
+      padding: 18px 18px 8px 18px;
+      margin-bottom: 18px;
+      border-radius: 10px;
+      box-shadow: 0 1px 7px rgba(25, 118, 210, 0.07);
+      border: 1px solid #e3e8ee;
+    }
+
+    .form-entry button {
+      margin-top: 8px;
+      margin-right: 9px;
+      padding: 7px 16px;
+      background: #2196f3;
+      border: none;
+      color: white;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 14px;
+      transition: background 0.15s;
+    }
+
+    .form-entry button:hover {
+      background: #1565c0;
+    }
+
+    /* Status badges - FIXED FOR VISIBILITY */
+    .status {
+      padding: 5px 14px;
+      border-radius: 13px;
+      font-size: 13px;
+      font-weight: 600;
+      color: white !important;
+      display: inline-block;
+      letter-spacing: 0.1px;
+      background-color: #6c757d;
+    }
+
+    .status.pending {
+      background: #f39c12 !important;
+      color: white !important;
+    }
+
+    .status.approved {
+      background: #2ecc71 !important;
+      color: white !important;
+    }
+
+    .status.rejected {
+      background: #e74c3c !important;
+      color: white !important;
+    }
+
+    .status.submitted {
+      background: #1976d2 !important;
+      color: white !important;
+    }
+
+    .status.it-completed {
+      background: #28a745 !important;
+      color: white !important;
+    }
+
+    .status.not-started {
+      background: #6c757d !important;
+      color: white !important;
+    }
+
+    /* Force status visibility in all contexts */
+    table .status,
+    .table .status,
+    td .status,
+    span.status,
+    *[class*="status"] {
+      color: white !important;
+    }
+
+    /* Data table - FIXED TABLE HEADERS */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 22px;
+      overflow-x: auto;
+      display: block;
+      white-space: nowrap;
+    }
+
+    table th,
+    table td {
+      padding: 13px;
+      border: 1px solid #e2e8f0;
+      text-align: left;
+      font-size: 15px;
+      background: #fff;
+      white-space: nowrap;
+    }
+
+    /* FIXED: Table headers now visible with proper colors */
+    table thead {
+      background: #1976d2 !important;
+      color: white !important;
+      font-size: 16px;
+      letter-spacing: 0.2px;
+    }
+
+    table thead th {
+      background: #1976d2 !important;
+      color: white !important;
+      font-weight: 600;
+      border-bottom: 2px solid #1456a6;
+    }
+
+    table thead th a {
+      color: white !important;
+      text-decoration: none;
+    }
+
+    table tbody tr:nth-child(even) {
+      background: #f6f6f8;
+    }
+
+    table tbody tr:hover {
+      background: #e3e8ee;
+    }
+
+    /* Table wrapper for horizontal scroll */
+    .table-wrapper {
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .table-wrapper table {
+      display: table;
+      min-width: 600px;
+    }
+
+    .loading-message {
+      font-style: italic;
+      color: #789;
+      margin-top: 10px;
+    }
+
+    .error-message {
+      color: #d9534f;
+      font-weight: 600;
+      margin-top: 10px;
+    }
+
+    /* Certificate grid/cards */
+    .certificates-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+      gap: 22px;
+      margin-top: 20px;
+    }
+
+    .certificate-card {
+      background: #f7fbff;
+      border-radius: 13px;
+      padding: 28px 22px 22px 22px;
+      box-shadow: 0 2px 12px rgba(33, 150, 243, 0.07);
+      border-left: 5px solid #2ecc71;
+      transition: box-shadow 0.18s, transform 0.18s;
+      position: relative;
+      overflow: hidden;
+      border: 1px solid #e3e8ee;
+    }
+
+    .certificate-card:hover {
+      box-shadow: 0 10px 34px rgba(25, 182, 155, 0.13);
+      transform: translateY(-6px);
+      border-left: 5px solid #1976d2;
+    }
+
+    .certificate-icon {
+      font-size: 34px;
+      color: #2ecc71;
+      margin-bottom: 15px;
+      text-align: center;
+    }
+
+    .certificate-title {
+      font-size: 17px;
+      font-weight: 700;
+      color: #1976d2;
+      margin-bottom: 9px;
+      text-align: center;
+    }
+
+    .certificate-details {
+      font-size: 14px;
+      color: #555;
+      margin-bottom: 16px;
+      line-height: 1.52;
+    }
+
+    .certificate-details div {
+      margin-bottom: 7px;
+    }
+
+    .certificate-details strong {
+      color: #1976d2;
+    }
+
+    .certificate-actions {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+    }
+
+    .download-btn {
+      background: #1976d2;
+      color: white;
+      border: none;
+      padding: 12px 22px;
+      border-radius: 7px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 600;
+      transition: background 0.17s, transform 0.17s;
+    }
+
+    .download-btn:hover {
+      background: #1456a6;
+      transform: translateY(-2px);
+    }
+
+    .download-btn:disabled {
+      background: #c6c8ca;
+      cursor: not-allowed;
+    }
+
+    .empty-certificates {
+      text-align: center;
+      padding: 50px 18px;
+      color: #5C6670;
+      background: #f7fbff;
+      border-radius: 13px;
+      border: 1px solid #e3e8ee;
+      box-shadow: 0 1px 4px rgba(33, 150, 243, 0.05);
+    }
+
+    .empty-certificates .certificate-icon {
+      font-size: 62px;
+      color: #e3e8ee;
+      margin-bottom: 16px;
+    }
+
+    .empty-certificates h3 {
+      color: #1976d2;
+      margin-bottom: 10px;
+    }
+
+    /* Loading spinner */
+    .loading {
+      text-align: center;
+      padding: 34px;
+      color: #5C6670;
+      font-style: italic;
+    }
+
+    .loading::after {
+      content: '';
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      border: 3px solid #f3f3f3;
+      border-top: 3px solid #1976d2;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      vertical-align: -3px;
+      margin-left: 8px;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    /* Toast notification */
+    .toast {
+      position: fixed;
+      top: 24px;
+      right: 24px;
+      padding: 17px 24px;
+      border-radius: 9px;
+      box-shadow: 0 4px 18px rgba(25, 118, 210, 0.15);
+      z-index: 10000;
+      font-weight: bold;
+      max-width: 340px;
+      opacity: 0;
+      transform: translateX(120%);
+      transition: all 0.3s cubic-bezier(.42, 0, .58, 1);
+      background: #1976d2;
+      color: white;
+    }
+
+    .toast.toast-success {
+      background: #2ecc71;
+    }
+
+    .toast.toast-error {
+      background: #d9534f;
+    }
+
+    .toast.toast-info {
+      background: #1976d2;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+    .track-preview {
+      background: #1976d2;
+      border-radius: 13px;
+      padding: 28px;
+      color: white;
+      text-align: center;
+      box-shadow: 0 3px 20px rgba(25, 118, 210, 0.10);
+      margin-bottom: 22px;
+    }
+
+    .track-preview h2 {
+      margin-bottom: 15px;
+      font-size: 2.1rem;
+      font-weight: 700;
+    }
+
+    .track-preview p {
+      margin-bottom: 24px;
+      font-size: 1.1rem;
+      opacity: 0.92;
+    }
+
+    .track-button {
+      background: rgba(255, 255, 255, 0.16);
+      color: white;
+      border: 2px solid #fff;
+      padding: 13px 32px;
+      border-radius: 50px;
+      cursor: pointer;
+      font-size: 15px;
+      font-weight: 600;
+      transition: background 0.15s, transform 0.15s;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .track-button:hover {
+      background: rgba(255, 255, 255, 0.23);
+      transform: translateY(-3px);
+      border-color: #e3e8ee;
+    }
+
+    .quick-status-card {
+      background: #fafbfc;
+      border-radius: 10px;
+      padding: 21px;
+      margin-top: 19px;
+      box-shadow: 0 2px 10px rgba(25, 118, 210, 0.05);
+      border-left: 4px solid #1976d2;
+      border: 1px solid #e3e8ee;
+    }
+
+    .quick-status-card h4 {
+      color: #1976d2;
+      margin-bottom: 15px;
+      font-size: 1.15rem;
+      font-weight: 700;
+    }
+
+    .status-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 7px 0;
+      border-bottom: 1px solid #ecedf0;
+    }
+
+    .status-item:last-child {
+      border-bottom: none;
+    }
+
+    .status-label {
+      font-weight: 600;
+      color: #263238;
+    }
+
+    .status-value {
+      color: #1976d2;
+      font-weight: 600;
+    }
+
+    /* Enhanced Styling */
+    .dashboard-title {
+      font-size: 24px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+    }
+
+    .profile-header {
+      text-align: center;
+      margin-bottom: 16px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid #e3e8ee;
+    }
+
+    .info-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 6px 0;
+      margin-bottom: 4px;
+    }
+
+    .info-label {
+      font-weight: 500;
+      color: #1976d2;
+      font-size: 14px;
+    }
+
+    .info-value {
+      font-weight: 600;
+      color: #263238;
+      font-size: 14px;
+    }
+
+    .profile-actions {
+      margin-top: 16px;
+      padding-top: 16px;
+      border-top: 1px solid #e3e8ee;
+    }
+
+    .profile-actions button {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      width: 100%;
+      margin-top: 8px;
+      padding: 10px 12px;
+      background: #f7fafc;
+      border: 1px solid #e3e8ee;
+      color: #1976d2;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 500;
+      font-size: 14px;
+      transition: all 0.15s;
+    }
+
+    .profile-actions button:hover {
+      background: #1976d2;
+      color: white;
+    }
+
+    /* Enhanced Navigation */
+    .nav-btn {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: #1976d2;
+      border: none;
+      color: white;
+      padding: 12px 20px;
+      font-size: 15px;
+      cursor: pointer;
+      border-radius: 6px;
+      font-weight: 600;
+      letter-spacing: 0.2px;
+      transition: all 0.15s;
+      position: relative;
+    }
+
+    .nav-btn:hover {
+      background: #1456a6;
+      transform: translateY(-1px);
+    }
+
+    .nav-btn.active {
+      background: #0d47a1;
+      box-shadow: 0 2px 8px rgba(25, 118, 210, 0.3);
+    }
+
+    .nav-btn.logout-btn {
+      background: #d32f2f;
+    }
+
+    .nav-btn.logout-btn:hover {
+      background: #c62828;
+    }
+
+    /* Content Loading State */
+    .content-loading {
+      text-align: center;
+      padding: 80px 20px;
+      color: #666;
+    }
+
+    .loading-spinner {
+      width: 32px;
+      height: 32px;
+      border: 3px solid #f3f3f3;
+      border-top: 3px solid #1976d2;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 16px;
+    }
+
+    /* Enhanced Global Spinner */
+    .global-spinner {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(247, 250, 252, 0.9);
+      z-index: 10000;
+      backdrop-filter: blur(2px);
+    }
+
+    .spinner-content {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+      padding: 32px;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 8px 32px rgba(25, 118, 210, 0.15);
+      border: 1px solid #e3e8ee;
+    }
+
+    .spinner-ring {
+      width: 40px;
+      height: 40px;
+      border: 4px solid #f3f3f3;
+      border-top: 4px solid #1976d2;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 16px;
+    }
+
+    .spinner-text {
+      color: #263238;
+      font-weight: 600;
+      font-size: 16px;
+    }
+
+    /* =========================
+       MOBILE RESPONSIVE STYLES
+       ========================= */
+
+    /* Large tablets and small desktops */
+    @media (max-width: 1024px) {
+      .main-content {
+        max-width: 900px;
+        padding: 32px 20px;
+        margin: 24px auto;
+      }
+
+      .certificates-grid {
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 18px;
+      }
+    }
+
+    /* Tablets */
+    @media (max-width: 820px) {
+      body {
+        padding-left: 70px;
+      }
+
+      .top-bar {
+        padding: 16px 20px;
+        font-size: 20px;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+
+      .nav-bar {
+        padding: 10px 8px;
+        gap: 12px;
+        flex-wrap: wrap;
+        justify-content: flex-start;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+      }
+
+      .nav-bar::-webkit-scrollbar {
+        display: none;
+      }
+
+      .nav-bar button {
+        padding: 8px 16px;
+        font-size: 14px;
+        min-width: auto;
+      }
+
+      .main-content {
+        padding: 20px 16px;
+        margin: 16px auto;
+        width: calc(100% - 80px);
+        max-width: none;
+      }
+
+      .certificates-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+      }
+
+      .apply-button {
+        width: 100%;
+        max-width: none;
+      }
+
+      .track-preview {
+        padding: 20px;
+      }
+
+      .track-preview h2 {
+        font-size: 1.8rem;
+      }
+
+      .form-entry {
+        padding: 16px;
+      }
+
+      .profile-popup {
+        width: 280px;
+        right: 8px;
+        top: 70px;
+      }
+
+      .toast {
+        right: 16px;
+        top: 16px;
+        max-width: 280px;
+      }
+
+      /* Mobile table adjustments */
+      table th,
+      table td {
+        padding: 10px 8px;
+        font-size: 14px;
+      }
+
+      /* Mobile status badges */
+      .status {
+        font-size: 12px !important;
+        padding: 4px 10px !important;
+      }
+
+      /* Global back button adjustment for tablets */
+      #globalBackButton {
+        left: 10px !important;
+        bottom: 20px !important;
+      }
+    }
+
+    /* Mobile Phones - Large */
+    @media (max-width: 640px) {
+      body {
+        padding-left: 60px;
+      }
+
+      .top-bar {
+        padding: 12px 16px;
+        font-size: 18px;
+        flex-direction: column;
+        text-align: center;
+        gap: 12px;
+      }
+
+      .dashboard-title {
+        font-size: 18px;
+      }
+
+      .profile-section {
+        align-self: flex-end;
+        position: absolute;
+        top: 12px;
+        right: 16px;
+      }
+
+      .nav-bar {
+        display: none;
+        position: relative;
+      }
+
+      .nav-toggle {
+        display: block;
+        position: absolute;
+        top: 12px;
+        left: 16px;
+        z-index: 1001;
+      }
+
+      .nav-mobile {
+        display: none;
+        position: fixed;
+        top: 60px;
+        left: 0;
+        right: 0;
+        background: #1976d2;
+        z-index: 1000;
+        max-height: calc(100vh - 60px);
+        overflow-y: auto;
+      }
+
+      .main-content {
+        width: calc(100% - 70px);
+        margin: 12px auto;
+        padding: 16px;
+        border-radius: 8px;
+      }
+
+      .track-preview {
+        padding: 16px;
+        margin-bottom: 16px;
+      }
+
+      .track-preview h2 {
+        font-size: 1.5rem;
+      }
+
+      .track-preview p {
+        font-size: 1rem;
+      }
+
+      .track-button {
+        padding: 10px 24px;
+        font-size: 14px;
+      }
+
+      .certificate-card {
+        padding: 20px 16px;
+      }
+
+      .certificate-icon {
+        font-size: 28px;
+      }
+
+      .certificate-title {
+        font-size: 16px;
+      }
+
+      .download-btn {
+        padding: 10px 18px;
+        font-size: 13px;
+      }
+
+      .profile-popup {
+        width: 260px;
+        right: 16px;
+        top: 60px;
+      }
+
+      .table-wrapper {
+        margin: 0 -16px;
+        padding: 0 16px;
+      }
+
+      /* Mobile table styling */
+      table th,
+      table td {
+        padding: 8px 6px;
+        font-size: 13px;
+      }
+
+      table thead th {
+        font-size: 12px !important;
+        padding: 8px 6px !important;
+      }
+
+      /* Mobile status badges */
+      .status {
+        font-size: 11px !important;
+        padding: 3px 8px !important;
+      }
+
+      .toast {
+        right: 12px;
+        top: 12px;
+        max-width: 260px;
+        padding: 12px 16px;
+      }
+    }
+
+    /* Mobile Phones - Small */
+    @media (max-width: 480px) {
+      body {
+        padding-left: 50px;
+      }
+
+      .top-bar {
+        padding: 10px 12px;
+        font-size: 16px;
+      }
+
+      .dashboard-title {
+        font-size: 16px;
+      }
+
+      .profile-pic {
+        width: 36px;
+        height: 36px;
+      }
+
+      .main-content {
+        width: calc(100% - 60px);
+        margin: 8px auto;
+        padding: 12px;
+      }
+
+      .track-preview {
+        padding: 12px;
+      }
+
+      .track-preview h2 {
+        font-size: 1.3rem;
+      }
+
+      .track-button {
+        padding: 8px 16px;
+        font-size: 13px;
+      }
+
+      .certificate-card {
+        padding: 16px 12px;
+      }
+
+      .form-entry {
+        padding: 12px;
+      }
+
+      .form-entry button {
+        padding: 6px 12px;
+        font-size: 12px;
+      }
+
+      .apply-button {
+        padding: 10px 24px;
+        font-size: 15px;
+      }
+
+      .profile-popup {
+        width: 220px;
+        right: 12px;
+      }
+
+      /* Extra small mobile table styling */
+      table th,
+      table td {
+        padding: 6px 4px;
+        font-size: 12px;
+      }
+
+      table thead th {
+        font-size: 11px !important;
+        padding: 6px 4px !important;
+      }
+
+      /* Extra small mobile status badges */
+      .status {
+        font-size: 10px !important;
+        padding: 2px 6px !important;
+      }
+
+      /* Global back button adjustment for small mobile */
+      #globalBackButton {
+        left: 8px !important;
+        bottom: 15px !important;
+      }
+    }
+
+    /* Extra Small Mobile */
+    @media (max-width: 360px) {
+      body {
+        padding-left: 45px;
+      }
+
+      .main-content {
+        width: calc(100% - 55px);
+        padding: 10px;
+      }
+
+      .top-bar {
+        padding: 8px 10px;
+      }
+
+      .track-preview h2 {
+        font-size: 1.2rem;
+      }
+
+      .certificate-card {
+        padding: 14px 10px;
+      }
+
+      /* Minimal table styling for very small screens */
+      table th,
+      table td {
+        padding: 4px 2px;
+        font-size: 11px;
+      }
+
+      table thead th {
+        font-size: 10px !important;
+        padding: 4px 2px !important;
+      }
+
+      /* Minimal status badges for very small screens */
+      .status {
+        font-size: 9px !important;
+        padding: 2px 4px !important;
+      }
+    }
+
+    /* Fix for Back Button Overlap */
+    @media (max-width: 820px) {
+
+      /* Ensure global back button doesn't get covered */
+      #globalBackButton,
+      .global-back-button {
+        z-index: 99999 !important;
+        position: fixed !important;
+      }
+    }
+
+    /* Additional fixes for forms table visibility */
+    #contentArea table thead,
+    .main-content table thead {
+      background: #1976d2 !important;
+    }
+
+    #contentArea table thead th,
+    .main-content table thead th {
+      color: white !important;
+      background: #1976d2 !important;
+    }
+
+    /* Ensure table headers are always visible */
+    .table thead,
+    table.table thead {
+      background: #1976d2 !important;
+      color: white !important;
+    }
+
+    .table thead th,
+    table.table thead th {
+      color: white !important;
+      background: #1976d2 !important;
+      font-weight: 600;
+    }
+
+    /* Additional status badge overrides */
+    .status-pending,
+    .status-approved,
+    .status-rejected,
+    .status-submitted {
+      color: white !important;
+    }
+  </style>
+
+
+
+  <!-- Add this JavaScript for mobile navigation -->
+  <script>
+    function toggleMobileNav() {
+      const navMobile = document.querySelector('.nav-mobile');
+      navMobile.classList.toggle('show');
+    }
+
+    // Close mobile nav when clicking outside
+    document.addEventListener('click', function (event) {
+      const navMobile = document.querySelector('.nav-mobile');
+      const navToggle = document.querySelector('.nav-toggle');
+
+      if (!navToggle.contains(event.target) && !navMobile.contains(event.target)) {
+        navMobile.classList.remove('show');
+      }
+    });
+  </script>
+
+
+
+
+  <!-- Navigation System for Dashboard -->
+  <link rel="stylesheet" href="/css/navigationStyles.css">
+  <script src="/js/navigationManager.js"></script>
+
+</head>
+
+<body>
+  <!-- Top Bar -->
+  <div class="top-bar">
+    <button class="nav-toggle" onclick="toggleMobileNav()">☰</button>
+    <span class="dashboard-title">Employee Dashboard</span>
+    <div class="profile-section">
+      <img src="profile.png" alt="Profile" class="profile-pic" id="profilePic">
+      <div class="profile-popup" id="profilePopup">
+        <div class="profile-header">
+          <img src="profile.png" alt="Profile Picture" />
+        </div>
+        <div class="info">
+          <div class="info-item">
+            <span class="info-label">Name:</span>
+            <span class="info-value" id="profileName">-</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Employee ID:</span>
+            <span class="info-value" id="profileId">-</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Form ID:</span>
+            <span class="info-value" id="profileFormId">Not Submitted</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Status:</span>
+            <span class="info-value" id="profileStatus">No Application</span>
+          </div>
+        </div>
+        <div class="profile-actions">
+          <button onclick="changeProfilePic()">
+            Change Profile Picture
+          </button>
+          <button onclick="openSettings()">
+            Settings
+          </button>
+          <button onclick="changePassword()">
+            Change Password
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Navigation Bar -->
+  <div class="nav-bar">
+    <button class="nav-btn active" onclick="loadPage('home')">Home</button>
+    <button class="nav-btn" onclick="loadPage('apply')">Apply for No Dues</button>
+    <button class="nav-btn" onclick="loadPage('forms')">Forms</button>
+    <button class="nav-btn" onclick="loadPage('track')">Track</button>
+    <button class="nav-btn" onclick="loadPage('certificates')">Certificates</button>
+    <button class="nav-btn" onclick="loadPage('history')">History</button>
+    <button class="nav-btn logout-btn" onclick="logout()">Logout</button>
+  </div>
+  <!-- Main Content Area -->
+  <div class="main-content" id="contentArea">
+    <div class="content-loading">
+      <div class="loading-spinner"></div>
+      <p>Loading dashboard...</p>
+    </div>
+  </div>
+
+  <!-- Mobile Navigation -->
+  <div class="nav-mobile" id="navMobile">
+    <button class="nav-btn active" onclick="loadPage('home'); toggleMobileNav()">Home</button>
+    <button class="nav-btn" onclick="loadPage('apply'); toggleMobileNav()">Apply for No Dues</button>
+    <button class="nav-btn" onclick="loadPage('forms'); toggleMobileNav()">Forms</button>
+    <button class="nav-btn" onclick="loadPage('track'); toggleMobileNav()">Track</button>
+    <button class="nav-btn" onclick="loadPage('certificates'); toggleMobileNav()">Certificates</button>
+    <button class="nav-btn" onclick="loadPage('history'); toggleMobileNav()">History</button>
+    <button class="nav-btn logout-btn" onclick="logout(); toggleMobileNav()">Logout</button>
+  </div>
+
+  <!-- Global Loading Spinner -->
+  <div id="spinner" class="global-spinner">
+    <div class="spinner-content">
+      <div class="spinner-ring"></div>
+      <span class="spinner-text">Loading...</span>
+    </div>
+  </div>
+
+
+  <script>
+    const profilePic = document.getElementById('profilePic');
+    const profilePopup = document.getElementById('profilePopup');
+    const contentArea = document.getElementById('contentArea');
+
+    // Data storage for state management
+    let dashboardState = {
+      employee: null,
+      formId: null,
+      applicationStatus: null,
+      hasAssignedForms: false,
+      formsStatus: 'none',
+      certificatesAvailable: 0,
+      showFormId: true,
+      rejectionReason: null,
+      rejectedAt: null,
+      canSubmitNew: false,
+      sessionCleanup: false,
+      lastUpdated: null,
+      isMobile: window.innerWidth <= 768,
+      isTablet: window.innerWidth <= 1024 && window.innerWidth > 768
+    };
+
+    // WebSocket connection for real-time notifications
+    let websocket = null;
+    let wsReconnectAttempts = 0;
+    const maxReconnectAttempts = 5;
+
+    // Mobile detection and responsive utilities
+    function updateDeviceInfo() {
+      const width = window.innerWidth;
+      dashboardState.isMobile = width <= 768;
+      dashboardState.isTablet = width <= 1024 && width > 768;
+      dashboardState.isDesktop = width > 1024;
+
+      // Update CSS classes for device-specific styling
+      document.body.classList.toggle('mobile-device', dashboardState.isMobile);
+      document.body.classList.toggle('tablet-device', dashboardState.isTablet);
+      document.body.classList.toggle('desktop-device', dashboardState.isDesktop);
+    }
+
+    // Touch and mobile event handlers
+    let touchStartTime = 0;
+    let touchStartPos = { x: 0, y: 0 };
+
+    function isTouchDevice() {
+      return 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+    }
+
+    // Profile popup handlers with mobile support
+    function toggleProfilePopup(e) {
+      e.stopPropagation();
+      const isVisible = profilePopup.style.display === 'block';
+      profilePopup.style.display = isVisible ? 'none' : 'block';
+
+      // Mobile-specific positioning
+      if (dashboardState.isMobile && !isVisible) {
+        profilePopup.style.position = 'fixed';
+        profilePopup.style.top = '60px';
+        profilePopup.style.right = '10px';
+        profilePopup.style.left = 'auto';
+        profilePopup.style.width = '280px';
+        profilePopup.style.maxWidth = 'calc(100vw - 20px)';
+        profilePopup.style.zIndex = '10001';
+      }
+    }
+
+    // Enhanced click/touch handlers
+    if (isTouchDevice()) {
+      profilePic.addEventListener('touchstart', (e) => {
+        touchStartTime = Date.now();
+        touchStartPos = { x: e.touches[0].clientX, y: e.touches.clientY };
+      });
+
+      profilePic.addEventListener('touchend', (e) => {
+        e.preventDefault();
+        const touchEndTime = Date.now();
+        const touchDuration = touchEndTime - touchStartTime;
+
+        if (touchDuration < 300) { // Quick tap
+          toggleProfilePopup(e);
+        }
+      });
+    } else {
+      profilePic.addEventListener('click', toggleProfilePopup);
+    }
+
+    // Close popup when clicking/touching outside
+    function handleOutsideClick(e) {
+      if (!profilePopup.contains(e.target) && e.target !== profilePic) {
+        profilePopup.style.display = 'none';
+      }
+    }
+
+    if (isTouchDevice()) {
+      document.addEventListener('touchstart', handleOutsideClick);
+    }
+    document.addEventListener('click', handleOutsideClick);
+
+    // Responsive content templates
+    const contentMap = {
+      home: `
+    <h2 style="color: #1976d2; font-weight: 600; margin-bottom: 25px; font-size: ${dashboardState.isMobile ? '1.3rem' : '1.5rem'};">Welcome To Your Dashboard</h2>
+    <div id="notificationBanner" style="margin-bottom: 15px;"></div>
+    <p id="welcomeMessage" style="margin: 15px 0; font-size: ${dashboardState.isMobile ? '14px' : '16px'};"></p>
+    <div id="smartActionContainer" style="margin-top:15px;"></div>
+    <div id="printButtonContainer" style="margin-top:10px;"></div>
+    <div id="downloadLatestPDFContainer" style="margin-top:20px;"></div>
+    <div id="certificateStatusContainer" style="margin-top:15px;"></div>
+  `,
+      apply: `
+    <h2 style="color: #1976d2; font-weight: 600; margin-bottom: 25px; font-size: ${dashboardState.isMobile ? '1.3rem' : '1.5rem'};">Apply for No Dues</h2>
+    <div id="applicationStatusCheck" style="margin-bottom: 20px;">
+      <div class="loading" style="color: #1976d2;">Checking application status...</div>
+    </div>
+    <p style="color: #5C6670; font-size: ${dashboardState.isMobile ? '14px' : '16px'}; margin: 20px 0;">Please fill out the form to apply for clearance.</p>
+    <a href="/employee.html">
+      <button class="apply-button" style="
+        background: #1976d2; color: white; border: none; padding: ${dashboardState.isMobile ? '12px 24px' : '14px 30px'}; 
+        border-radius: 8px; font-size: ${dashboardState.isMobile ? '14px' : '16px'}; font-weight: 600; cursor: pointer;
+        transition: background-color 0.2s; margin-top: 20px; width: ${dashboardState.isMobile ? '100%' : 'auto'};
+        max-width: ${dashboardState.isMobile ? 'none' : '260px'};
+      ">Open Application Form</button>
+    </a>
+  `,
+      track: `
+    <div class="track-preview" style="
+      background: #1976d2; color: white; border-radius: 10px; padding: ${dashboardState.isMobile ? '16px' : '22px'}; 
+      text-align: center; box-shadow: 0 2px 10px rgba(25, 118, 210, 0.12); 
+      margin: 16px 0 20px;
+    ">
+      <h2 style="margin: 0 0 10px; font-size: ${dashboardState.isMobile ? '1.3rem' : '1.6rem'}; font-weight: 600;">Interactive Application Tracking</h2>
+      <p style="margin: 0 0 16px; font-size: ${dashboardState.isMobile ? '14px' : '1rem'}; opacity: 0.95;">Track your application status with a detailed timeline and real-time progress monitoring.</p>
+      <a href="/track.html" class="track-button" style="
+        background: rgba(255, 255, 255, 0.18); color: white;
+        border: 1px solid rgba(255, 255, 255, 0.35); padding: ${dashboardState.isMobile ? '8px 16px' : '10px 18px'};
+        border-radius: 20px; cursor: pointer; font-size: ${dashboardState.isMobile ? '13px' : '14px'}; font-weight: 500;
+        text-decoration: none; display: inline-flex; align-items: center; gap: 8px;
+        width: ${dashboardState.isMobile ? '100%' : 'auto'}; justify-content: center;
+      ">
+        Open Interactive Tracking
+      </a>
+    </div>
+
+    <div class="quick-status-card" id="quickStatusCard" style="
+      background: #fafbfc; border: 1px solid #e3e8ee; border-radius: 10px; 
+      padding: ${dashboardState.isMobile ? '16px' : '18px'}; box-shadow: 0 1px 8px rgba(25, 118, 210, 0.07); 
+      margin-top: 16px; border-left: 4px solid #1976d2;
+    ">
+      <h4 style="color: #1976d2; margin: 0 0 12px; font-size: ${dashboardState.isMobile ? '1rem' : '1.1rem'}; font-weight: 600;">Quick Status Overview</h4>
+      <div id="quickStatusContent">
+        <div class="loading" style="color: #1976d2;">Loading status...</div>
+      </div>
+    </div>
+  `,
+      certificates: `
+    <div class="section-header" style="text-align: center; margin-bottom: ${dashboardState.isMobile ? '20px' : '30px'};">
+      <h2 style="color: #1976d2; font-weight: 600; margin-bottom: 10px; font-size: ${dashboardState.isMobile ? '1.3rem' : '1.5rem'};">My IT Clearance Certificates</h2>
+      <p style="color: #5C6670; font-size: ${dashboardState.isMobile ? '14px' : '16px'};">Download your approved IT clearance certificates</p>
+    </div>
+    <div class="certificates-grid" id="certificatesGrid" style="
+      display: grid; grid-template-columns: ${dashboardState.isMobile ? '1fr' : 'repeat(auto-fill, minmax(320px, 1fr))'};
+      gap: ${dashboardState.isMobile ? '16px' : '18px'}; margin-top: 20px;
+    ">
+      <div class="loading" style="color: #1976d2; text-align: center; padding: ${dashboardState.isMobile ? '40px' : '50px'};">Loading certificates...</div>
+    </div>
+  `,
+      history: `
+    <h2 style="color: #1976d2; font-weight: 600; margin-bottom: 25px; font-size: ${dashboardState.isMobile ? '1.3rem' : '1.5rem'};">Application History</h2>
+    <div id="historyList" style="color: #1976d2;">Loading history...</div>
+  `,
+      forms: `
+    <h2 style="color: #1976d2; font-weight: 600; margin-bottom: 25px; font-size: ${dashboardState.isMobile ? '1.3rem' : '1.5rem'};">Assigned Forms</h2>
+    <div id="formsStatusMessage" style="margin-bottom: 20px;"></div>
+    <div class="table-wrapper" style="overflow-x: auto; -webkit-overflow-scrolling: touch;">
+      <table style="
+        width: 100%; border-collapse: collapse; margin-top: 20px;
+        background: white; border-radius: 8px; overflow: hidden;
+        box-shadow: 0 1px 8px rgba(25, 118, 210, 0.07);
+        border: 1px solid #e3e8ee; min-width: ${dashboardState.isMobile ? '500px' : 'auto'};
+      ">
+        <thead style="background: #1976d2; color: white;">
+          <tr>
+            <th style="padding: ${dashboardState.isMobile ? '10px 8px' : '12px 14px'}; text-align: left; font-size: ${dashboardState.isMobile ? '13px' : '14px'};">Form Name</th>
+            <th style="padding: ${dashboardState.isMobile ? '10px 8px' : '12px 14px'}; text-align: left; font-size: ${dashboardState.isMobile ? '13px' : '14px'};">Status</th>
+            <th style="padding: ${dashboardState.isMobile ? '10px 8px' : '12px 14px'}; text-align: left; font-size: ${dashboardState.isMobile ? '13px' : '14px'};">Action</th>
+          </tr>
+        </thead>
+        <tbody id="assignedFormsTableBody">
+          <tr><td colspan="3" style="padding: 15px; color: #1976d2; text-align: center;">Loading assigned forms...</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div style="margin-top: 20px; text-align: center;">
+      <button class="apply-button" id="finalSubmitBtn" onclick="submitFinalForms()" style="
+        background: #1976d2; color: white; border: none; padding: ${dashboardState.isMobile ? '12px 24px' : '14px 30px'}; 
+        border-radius: 8px; cursor: pointer; font-weight: 600; transition: background-color 0.2s;
+        width: ${dashboardState.isMobile ? '100%' : 'auto'}; margin-bottom: ${dashboardState.isMobile ? '10px' : '0'};
+      ">Final Submit to HOD</button>
+      <button onclick="resetSavedForms()" style="
+        margin-left: ${dashboardState.isMobile ? '0' : '10px'}; background: white; color: #1976d2; 
+        border: 1px solid #1976d2; padding: ${dashboardState.isMobile ? '10px 20px' : '12px 24px'};
+        border-radius: 8px; cursor: pointer; font-weight: 500; width: ${dashboardState.isMobile ? '100%' : 'auto'};
+      ">Reset Saved Forms</button>
+      <p id="finalSubmitStatus" style="margin-top: 10px; font-weight: bold; color: #1976d2;"></p>
+    </div>
+    
+  `
+    };
+
+    // PDF Download Function with mobile optimizations
+    async function downloadLatestNoDuesPDF() {
+      const button = document.getElementById('downloadLatestPDFBtn');
+      if (!button) return;
+
+      try {
+        button.disabled = true;
+        button.innerHTML = dashboardState.isMobile ? 'Generating...' : 'Generating PDF...';
+        button.style.opacity = '0.7';
+
+        const latestFormId = dashboardState.formId;
+
+        if (!latestFormId) {
+          throw new Error('No active form ID found. Please submit an application first.');
+        }
+
+        const pdfUrl = `/api/pdf/download/${latestFormId}`;
+        const response = await fetch(pdfUrl, {
+          method: 'GET',
+          credentials: 'include',
+          headers: { 'Accept': 'application/pdf' }
+        });
+
+        if (!response.ok) {
+          if (response.status === 404) {
+            throw new Error('PDF not found. Please check if your application exists.');
+          } else if (response.status === 403) {
+            throw new Error('Access denied. Please check your login status.');
+          } else {
+            throw new Error(`Server error: ${response.status}. Please try again later.`);
+          }
+        }
+
+        const blob = await response.blob();
+
+        if (blob.size === 0) {
+          throw new Error('PDF file is empty. Please try generating it again.');
+        }
+
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `No-Dues-Application-${latestFormId}.pdf`;
+        link.style.display = 'none';
+
+        document.body.appendChild(link);
+        link.click();
+
+        setTimeout(() => {
+          document.body.removeChild(link);
+          window.URL.revokeObjectURL(url);
+        }, 100);
+
+        showToast('PDF download completed successfully', 'success', 5000);
+
+      } catch (error) {
+        showToast(`Error: ${error.message}`, 'error', 8000);
+        setTimeout(() => {
+          showToast('Please check your backend PDF configuration', 'info', 5000);
+        }, 1000);
+      } finally {
+        if (button) {
+          button.disabled = false;
+          button.innerHTML = dashboardState.isMobile ? 'Download PDF' : 'Download Latest No Dues PDF';
+          button.style.opacity = '1';
+        }
+      }
+    }
+
+    // WebSocket initialization
+    async function initializeWebSocketNotifications() {
+      try {
+        const wsInfoResponse = await fetch('/api/notification/websocket-info', {
+          credentials: 'include'
+        });
+
+        if (!wsInfoResponse.ok) {
+          return;
+        }
+
+        const wsInfo = await wsInfoResponse.json();
+        if (!wsInfo.success || !wsInfo.isEnabled) {
+          return;
+        }
+
+        const protocol = location.protocol === 'https:' ? 'wss' : 'ws';
+        const wsUrl = `${protocol}://${location.hostname}:${wsInfo.wsPort}`;
+
+        websocket = new WebSocket(wsUrl);
+
+        websocket.onopen = () => {
+          wsReconnectAttempts = 0;
+
+          if (dashboardState.employee?.employeeId) {
+            websocket.send(JSON.stringify({
+              type: 'identify',
+              employeeId: dashboardState.employee.employeeId
+            }));
+          }
+
+          showConnectionStatus(true);
+        };
+
+        websocket.onmessage = (event) => {
+          try {
+            const notification = JSON.parse(event.data);
+            handleRealTimeNotification(notification);
+          } catch (error) {
+            // Silent error handling
+          }
+        };
+
+        websocket.onclose = (event) => {
+          showConnectionStatus(false);
+
+          if (wsReconnectAttempts < maxReconnectAttempts && !dashboardState.sessionCleanup) {
+            wsReconnectAttempts++;
+            setTimeout(() => initializeWebSocketNotifications(), Math.pow(2, wsReconnectAttempts) * 1000);
+          }
+        };
+
+        websocket.onerror = (error) => {
+          showConnectionStatus(false);
+        };
+
+      } catch (error) {
+        // Silent error handling
+      }
+    }
+
+    // Notification handlers
+    function handleRealTimeNotification(notification) {
+      switch (notification.type) {
+        case 'form_rejection':
+          handleFormRejectionNotification(notification);
+          break;
+        case 'form_approval':
+          handleFormApprovalNotification(notification);
+          break;
+        case 'certificates_ready':
+          handleCertificatesReadyNotification(notification);
+          break;
+        case 'forms_assigned':
+          handleFormsAssignedNotification(notification);
+          break;
+        case 'browser_notification':
+          showBrowserNotification(notification);
+          break;
+        case 'it_announcement':
+          handleITAnnouncementNotification(notification);
+          break;
+        case 'status_update':
+          handleStatusUpdateNotification(notification);
+          break;
+        default:
+          // Unknown notification type
+          break;
+      }
+
+      if (notification.title && notification.message) {
+        showToast(notification.message, getToastTypeFromNotification(notification.type), 8000);
+      }
+    }
+
+    function handleFormRejectionNotification(notification) {
+      showNotificationBanner({
+        type: 'error',
+        title: 'Application Rejected',
+        message: `Your application ${notification.formId} was rejected by HOD.`,
+        details: notification.reason,
+        action: {
+          text: 'Submit New Application',
+          onclick: 'window.location.href="/employee.html"'
+        }
+      });
+
+      dashboardState.applicationStatus = 'rejected';
+      dashboardState.rejectionReason = notification.reason;
+      dashboardState.rejectedAt = notification.timestamp || new Date().toISOString();
+      dashboardState.formId = null;
+      dashboardState.showFormId = false;
+      dashboardState.canSubmitNew = true;
+      dashboardState.hasAssignedForms = false;
+      dashboardState.formsStatus = 'none';
+
+      if (contentArea.innerHTML.includes('Welcome To Your Dashboard')) {
+        setTimeout(() => loadPage('home'), 2000);
+      }
+    }
+
+    function handleFormApprovalNotification(notification) {
+      showNotificationBanner({
+        type: 'success',
+        title: 'Application Approved',
+        message: `Your application ${notification.formId} has been approved by HOD.`,
+        details: notification.details?.nextStep || 'Forms will be assigned shortly.',
+        action: {
+          text: 'View Progress',
+          onclick: 'loadPage("track")'
+        }
+      });
+
+      dashboardState.applicationStatus = 'approved';
+      if (notification.formId) {
+        dashboardState.formId = notification.formId;
+        dashboardState.showFormId = true;
+      }
+    }
+
+    function handleCertificatesReadyNotification(notification) {
+      showNotificationBanner({
+        type: 'success',
+        title: 'Certificates Ready',
+        message: 'Your IT clearance certificates are ready for download',
+        details: `${notification.certificates?.length || 'Multiple'} certificates available.`,
+        action: {
+          text: 'Download Certificates',
+          onclick: 'loadPage("certificates")'
+        }
+      });
+
+      dashboardState.certificatesAvailable = notification.certificates?.length || 1;
+      dashboardState.applicationStatus = 'IT Completed';
+    }
+
+    function handleFormsAssignedNotification(notification) {
+      showNotificationBanner({
+        type: 'info',
+        title: 'Forms Assigned',
+        message: 'Your application has been approved and forms have been assigned.',
+        details: 'Complete the assigned forms to proceed with your application.',
+        action: {
+          text: 'Fill Forms',
+          onclick: 'loadPage("forms")'
+        }
+      });
+
+      dashboardState.hasAssignedForms = true;
+      dashboardState.formsStatus = 'pending';
+    }
+
+    function handleStatusUpdateNotification(notification) {
+      showNotificationBanner({
+        type: 'info',
+        title: 'Status Update',
+        message: notification.message,
+        details: `Status changed to: ${notification.newStatus}`,
+        dismissible: true
+      });
+
+      if (notification.newStatus) {
+        dashboardState.applicationStatus = notification.newStatus;
+      }
+    }
+
+    function handleITAnnouncementNotification(notification) {
+      showNotificationBanner({
+        type: 'info',
+        title: notification.title,
+        message: notification.message,
+        details: `From: ${notification.details?.sentBy || 'IT Department'}`,
+        dismissible: true
+      });
+    }
+
+    function showBrowserNotification(notification) {
+      if ('Notification' in window) {
+        if (Notification.permission === 'granted') {
+          const browserNotification = new Notification(notification.title, {
+            body: notification.body,
+            icon: notification.icon || '/images/notification-icon.png',
+            badge: notification.badge || '/images/notification-badge.png',
+            tag: notification.tag || 'nodues-notification',
+            requireInteraction: notification.requireInteraction || false,
+            actions: notification.actions || []
+          });
+
+          browserNotification.onclick = () => {
+            window.focus();
+            if (notification.data?.redirectUrl) {
+              window.location.href = notification.data.redirectUrl;
+            }
+          };
+
+          setTimeout(() => browserNotification.close(), 10000);
+        } else if (Notification.permission === 'default') {
+          Notification.requestPermission().then(permission => {
+            if (permission === 'granted') {
+              showBrowserNotification(notification);
+            }
+          });
+        }
+      }
+    }
+
+    // Mobile-optimized notification banner display
+    function showNotificationBanner(config) {
+      const banner = document.getElementById('notificationBanner');
+      if (!banner) return;
+
+      const typeColors = {
+        success: { bg: '#d4edda', color: '#155724', border: '#c3e6cb' },
+        error: { bg: '#f8d7da', color: '#721c24', border: '#f5c6cb' },
+        info: { bg: '#E6F2FF', color: '#1976D2', border: '#CFE6FF' },
+        warning: { bg: '#fff3cd', color: '#856404', border: '#ffeaa7' }
+      };
+
+      const colors = typeColors[config.type] || typeColors.info;
+
+      banner.innerHTML = `
+    <div style="
+      background: ${colors.bg}; 
+      color: ${colors.color}; 
+      padding: ${dashboardState.isMobile ? '14px' : '18px'}; 
+      border-radius: 10px; 
+      border: 2px solid ${colors.border};
+      position: relative;
+      animation: slideInFromTop 0.5s ease-out;
+      box-shadow: 0 2px 8px rgba(25, 118, 210, 0.1);
+    ">
+      ${config.dismissible ? `
+        <button onclick="dismissNotificationBanner()" style="
+          position: absolute;
+          top: ${dashboardState.isMobile ? '10px' : '15px'};
+          right: ${dashboardState.isMobile ? '14px' : '18px'};
+          background: none;
+          border: none;
+          font-size: ${dashboardState.isMobile ? '18px' : '20px'};
+          cursor: pointer;
+          color: ${colors.color};
+          border-radius: 50%;
+          width: ${dashboardState.isMobile ? '24px' : '28px'};
+          height: ${dashboardState.isMobile ? '24px' : '28px'};
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          touch-action: manipulation;
+        ">&times;</button>
+      ` : ''}
+      <h4 style="margin: 0 0 12px 0; font-weight: 600; font-size: ${dashboardState.isMobile ? '1rem' : '1.1rem'};">${config.title}</h4>
+      <p style="margin: 0 0 10px 0; opacity: 0.95; font-size: ${dashboardState.isMobile ? '14px' : '16px'};">${config.message}</p>
+      ${config.details ? `<p style="margin: 0 0 18px 0; font-size: ${dashboardState.isMobile ? '13px' : '14px'}; opacity: 0.8;">${config.details}</p>` : ''}
+      ${config.action ? `
+        <button onclick="${config.action.onclick}" style="
+          background: ${colors.color};
+          color: ${colors.bg};
+          border: none;
+          padding: ${dashboardState.isMobile ? '8px 16px' : '10px 20px'};
+          border-radius: 6px;
+          cursor: pointer;
+          font-weight: bold;
+          transition: all 0.3s ease;
+          font-size: ${dashboardState.isMobile ? '13px' : '14px'};
+          touch-action: manipulation;
+        ">${config.action.text}</button>
+      ` : ''}
+    </div>
+  `;
+      banner.style.display = 'block';
+
+      if (config.dismissible) {
+        setTimeout(() => dismissNotificationBanner(), 30000);
+      }
+    }
+
+    function dismissNotificationBanner() {
+      const banner = document.getElementById('notificationBanner');
+      if (banner) {
+        banner.style.display = 'none';
+      }
+    }
+
+    function showConnectionStatus(connected) {
+      const statusIndicator = document.getElementById('wsConnectionStatus');
+      if (statusIndicator) {
+        statusIndicator.style.display = 'none';
+      }
+    }
+
+    function getToastTypeFromNotification(notificationType) {
+      const typeMap = {
+        'form_rejection': 'error',
+        'form_approval': 'success',
+        'certificates_ready': 'success',
+        'forms_assigned': 'info',
+        'it_announcement': 'info',
+        'status_update': 'info'
+      };
+      return typeMap[notificationType] || 'info';
+    }
+
+    // Dashboard state loader
+    async function loadDashboardState() {
+      try {
+        const dashboardResponse = await fetch('/api/employee/dashboard-status', {
+          credentials: 'include'
+        });
+
+        if (!dashboardResponse.ok) {
+          throw new Error(`Dashboard API returned ${dashboardResponse.status}`);
+        }
+
+        const dashboardData = await dashboardResponse.json();
+
+        try {
+          const formsResponse = await fetch('/api/employee/assigned-forms', {
+            credentials: 'include'
+          });
+
+          if (formsResponse.ok) {
+            const formsData = await formsResponse.json();
+
+            if (formsData.applicationStatus === 'rejected') {
+              dashboardData.applicationStatus = 'rejected';
+              dashboardData.rejectionReason = formsData.rejectionReason || 'No reason provided';
+              dashboardData.rejectedAt = formsData.rejectedAt || new Date().toISOString();
+              dashboardData.hasAssignedForms = false;
+              dashboardData.formsStatus = 'none';
+              dashboardData.canSubmitNew = formsData.canSubmitNew !== false;
+              dashboardData.formId = null;
+              dashboardData.showFormId = false;
+            } else {
+              dashboardData.hasAssignedForms = (formsData.assignedFormsCount || 0) > 0;
+              dashboardData.assignedForms = formsData.assignedForms || [];
+
+              if (dashboardData.hasAssignedForms) {
+                if (['Submitted to HOD', 'IT Completed'].includes(dashboardData.applicationStatus)) {
+                  dashboardData.formsStatus = 'preview';
+                } else {
+                  dashboardData.formsStatus = 'pending';
+                }
+              } else {
+                dashboardData.formsStatus = 'none';
+              }
+            }
+          }
+        } catch (formsError) {
+          dashboardData.hasAssignedForms = false;
+          dashboardData.formsStatus = 'none';
+        }
+
+        if (dashboardData.applicationStatus !== 'rejected') {
+          if (dashboardData.certificatesAvailable > 0 && dashboardData.applicationStatus === 'IT Completed') {
+            dashboardData.showFormId = false;
+          } else {
+            dashboardData.showFormId = true;
+          }
+        }
+
+        dashboardState = {
+          ...dashboardState,
+          ...dashboardData,
+          lastUpdated: new Date().toISOString()
+        };
+
+        if (websocket && websocket.readyState === WebSocket.OPEN && dashboardState.employee?.employeeId) {
+          websocket.send(JSON.stringify({
+            type: 'identify',
+            employeeId: dashboardState.employee.employeeId
+          }));
+        }
+
+        return dashboardData;
+
+      } catch (error) {
+        throw error;
+      }
+    }
+
+    // Mobile-optimized smart actions generator
+    function generateSmartActions(data) {
+      const container = document.getElementById('smartActionContainer');
+      if (!container) return;
+
+      let actions = [];
+      const buttonStyle = `
+        background: rgba(255,255,255,0.2); color: white; border: 2px solid rgba(255,255,255,0.3); 
+        padding: ${dashboardState.isMobile ? '10px 20px' : '12px 24px'}; border-radius: 8px; cursor: pointer; font-weight: bold; 
+        transition: all 0.3s ease; width: ${dashboardState.isMobile ? '100%' : 'auto'}; 
+        font-size: ${dashboardState.isMobile ? '14px' : '16px'}; touch-action: manipulation;
+      `;
+
+      if (data.applicationStatus === 'rejected') {
+        actions.push(`
+      <div style="background: #f8d7da; color: #721c24; padding: ${dashboardState.isMobile ? '20px' : '25px'}; border-radius: 12px; margin-bottom: 20px; border: 2px solid #f5c6cb; box-shadow: 0 2px 8px rgba(248, 215, 218, 0.2);">
+        <h4 style="margin: 0 0 15px 0; font-size: ${dashboardState.isMobile ? '1.1rem' : '1.2rem'}; font-weight: 600;">Application Rejected by HOD</h4>
+        <p style="margin: 0 0 15px 0; font-size: ${dashboardState.isMobile ? '14px' : '16px'};">Your previous application was rejected and has been cleared from the system.</p>
+        ${data.rejectionReason ? `<p style="margin: 0 0 20px 0; font-style: italic; background: rgba(114, 28, 36, 0.1); padding: 15px; border-radius: 8px; font-size: ${dashboardState.isMobile ? '13px' : '14px'};"><strong>Reason:</strong> ${data.rejectionReason}</p>` : ''}
+        <div style="display: flex; gap: ${dashboardState.isMobile ? '10px' : '15px'}; flex-direction: ${dashboardState.isMobile ? 'column' : 'row'};">
+          <button onclick="window.location.href='/employee.html'" style="background: #d9534f; color: white; border: none; padding: ${dashboardState.isMobile ? '10px 20px' : '12px 24px'}; border-radius: 8px; cursor: pointer; font-weight: bold; transition: all 0.3s ease; font-size: ${dashboardState.isMobile ? '14px' : '16px'}; touch-action: manipulation;">
+            Submit New Application
+          </button>
+          <button onclick="showRejectionDetails()" style="background: transparent; color: #721c24; border: 2px solid #721c24; padding: ${dashboardState.isMobile ? '8px 16px' : '10px 20px'}; border-radius: 8px; cursor: pointer; transition: all 0.3s ease; font-size: ${dashboardState.isMobile ? '13px' : '14px'}; touch-action: manipulation;">
+            View Details
+          </button>
+        </div>
+      </div>
+    `);
+      }
+      else if (data.hasAssignedForms && data.formsStatus === 'pending') {
+        actions.push(`
+      <div style="background: #1976d2; color: white; padding: ${dashboardState.isMobile ? '20px' : '25px'}; border-radius: 12px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(25, 118, 210, 0.2);">
+        <h4 style="margin: 0 0 15px 0; font-size: ${dashboardState.isMobile ? '1.1rem' : '1.2rem'}; font-weight: 600;">Forms Ready to Fill</h4>
+        <p style="margin: 0 0 20px 0; font-size: ${dashboardState.isMobile ? '14px' : '16px'};">You have ${data.assignedForms?.length || 'assigned'} forms that need to be completed.</p>
+        <button onclick="redirectToForms()" style="${buttonStyle}">
+          Fill Required Forms
+        </button>
+      </div>
+    `);
+      }
+      else if (data.formsStatus === 'preview') {
+        actions.push(`
+      <div style="background: #63B8FF; color: white; padding: ${dashboardState.isMobile ? '20px' : '25px'}; border-radius: 12px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(99, 184, 255, 0.2);">
+        <h4 style="margin: 0 0 15px 0; font-size: ${dashboardState.isMobile ? '1.1rem' : '1.2rem'}; font-weight: 600;">Forms Under Review</h4>
+        <p style="margin: 0 0 20px 0; font-size: ${dashboardState.isMobile ? '14px' : '16px'};">Your forms have been submitted and are currently being processed by IT.</p>
+        <button onclick="loadPage('track')" style="${buttonStyle}">
+          Track Progress
+        </button>
+      </div>
+    `);
+      }
+      else {
+        actions.push(`
+      <div style="background: #1a355b; color: white; padding: ${dashboardState.isMobile ? '20px' : '25px'}; border-radius: 12px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(26, 53, 91, 0.2);">
+        <h4 style="margin: 0 0 15px 0; font-size: ${dashboardState.isMobile ? '1.1rem' : '1.2rem'}; font-weight: 600;">Start New Application</h4>
+        <p style="margin: 0 0 20px 0; font-size: ${dashboardState.isMobile ? '14px' : '16px'};">Begin your no-dues clearance process with a comprehensive application.</p>
+        <button onclick="window.location.href='/employee.html'" style="${buttonStyle}">
+          Submit Application
+        </button>
+      </div>
+    `);
+      }
+
+      container.innerHTML = actions.join('');
+    }
+
+    // Mobile-optimized rejection details modal
+    function showRejectionDetails() {
+      const modal = document.createElement('div');
+      modal.style.cssText = `
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.6); z-index: 10000; display: flex;
+    align-items: center; justify-content: center;
+    animation: fadeIn 0.3s ease-out; padding: ${dashboardState.isMobile ? '10px' : '20px'};
+  `;
+
+      modal.innerHTML = `
+    <div style="
+      background: white; padding: ${dashboardState.isMobile ? '24px' : '35px'}; border-radius: 15px; 
+      max-width: ${dashboardState.isMobile ? '100%' : '500px'}; width: ${dashboardState.isMobile ? '100%' : '90%'}; 
+      box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+      animation: slideIn 0.3s ease-out; border: 2px solid #e3e8ee;
+      max-height: ${dashboardState.isMobile ? '90vh' : 'auto'}; overflow-y: auto;
+    ">
+      <h3 style="color: #d9534f; margin: 0 0 20px 0; display: flex; align-items: center; gap: 10px; font-weight: 600; font-size: ${dashboardState.isMobile ? '1.1rem' : '1.2rem'};">
+        Application Rejection Details
+      </h3>
+      <div style="background: #f7fafc; padding: ${dashboardState.isMobile ? '16px' : '20px'}; border-radius: 10px; margin-bottom: 25px; border: 1px solid #e3e8ee;">
+        <p style="margin: 0 0 10px 0; color: #1976d2; font-size: ${dashboardState.isMobile ? '14px' : '16px'};"><strong>Status:</strong> Rejected by HOD</p>
+        <p style="margin: 0 0 10px 0; color: #1976d2; font-size: ${dashboardState.isMobile ? '14px' : '16px'};"><strong>Rejection Reason:</strong></p>
+        <p style="margin: 0 0 15px 0; background: white; padding: 15px; border-radius: 8px; font-style: italic; border-left: 4px solid #d9534f; color: #263238; font-size: ${dashboardState.isMobile ? '13px' : '14px'};">
+          ${dashboardState.rejectionReason || 'No specific reason provided'}
+        </p>
+        ${dashboardState.rejectedAt ? `<p style="margin: 0; color: #1976d2; font-size: ${dashboardState.isMobile ? '13px' : '14px'};"><strong>Rejected On:</strong> ${new Date(dashboardState.rejectedAt).toLocaleString()}</p>` : ''}
+      </div>
+      <div style="background: #E6F2FF; padding: ${dashboardState.isMobile ? '16px' : '20px'}; border-radius: 10px; border-left: 4px solid #1976d2;">
+        <p style="margin: 0 0 10px 0; color: #1976d2; font-weight: bold; font-size: ${dashboardState.isMobile ? '14px' : '16px'};">Next Steps:</p>
+        <ul style="margin: 10px 0 0 20px; color: #1976d2; line-height: 1.6; font-size: ${dashboardState.isMobile ? '13px' : '14px'};">
+          <li>Review the rejection reason above</li>
+          <li>Address any issues mentioned by HOD</li>
+          <li>Prepare corrected information</li>
+          <li>Submit a new application when ready</li>
+        </ul>
+      </div>
+      <div style="text-align: center; margin-top: 30px; display: flex; gap: ${dashboardState.isMobile ? '10px' : '15px'}; justify-content: center; flex-direction: ${dashboardState.isMobile ? 'column' : 'row'};">
+        <button onclick="this.closest('div').parentElement.remove()" style="
+          background: #6c757d; color: white; border: none; 
+          padding: ${dashboardState.isMobile ? '10px 20px' : '12px 24px'}; border-radius: 8px; cursor: pointer; 
+          font-weight: bold; transition: all 0.3s ease; font-size: ${dashboardState.isMobile ? '14px' : '16px'};
+          touch-action: manipulation;
+        ">Close</button>
+        <button onclick="this.closest('div').parentElement.remove(); window.location.href='/employee.html'" style="
+          background: #d9534f; color: white; border: none; 
+          padding: ${dashboardState.isMobile ? '10px 20px' : '12px 24px'}; border-radius: 8px; cursor: pointer; 
+          font-weight: bold; transition: all 0.3s ease; font-size: ${dashboardState.isMobile ? '14px' : '16px'};
+          touch-action: manipulation;
+        ">Submit New Application</button>
+      </div>
+    </div>
+  `;
+
+      document.body.appendChild(modal);
+      modal.addEventListener('click', (e) => {
+        if (e.target === modal) modal.remove();
+      });
+
+      if (!document.getElementById('modalAnimations')) {
+        const style = document.createElement('style');
+        style.id = 'modalAnimations';
+        style.textContent = `
+      @keyframes fadeIn {from {opacity: 0; } to {opacity: 1; } }
+      @keyframes slideIn {from {transform: translateY(-50px); opacity: 0; } to {transform: translateY(0); opacity: 1; } }
+      @keyframes slideInFromTop {from {transform: translateY(-20px); opacity: 0; } to {transform: translateY(0); opacity: 1; } }
+    `;
+        document.head.appendChild(style);
+      }
+    }
+
+    function redirectToForms() {
+      if (dashboardState.hasAssignedForms && dashboardState.formsStatus === 'pending') {
+        showToast('Redirecting to assigned forms...', 'info');
+        setTimeout(() => {
+          window.location.href = '/forms/disposalform.html';
+        }, 1000);
+      } else {
+        showToast('No forms available to fill at the moment', 'info');
+        loadPage('forms');
+      }
+    }
+
+    // Quick track status loader with mobile optimizations
+    async function loadQuickTrackStatus() {
+      try {
+        const response = await fetch('/api/employee/tracking-details', {
+          credentials: 'include'
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          const quickStatusContent = document.getElementById('quickStatusContent');
+
+          if (data.success && data.hasApplication) {
+            const completedSteps = data.timeline.filter(t => t.status === 'completed').length;
+            const totalSteps = 6;
+            const progressPercentage = Math.round((completedSteps / totalSteps) * 100);
+
+            quickStatusContent.innerHTML = `
+          <div class="status-item" style="display: flex; justify-content: space-between; padding: ${dashboardState.isMobile ? '6px 0' : '8px 0'}; border-bottom: 1px solid #e3e8ee; flex-wrap: ${dashboardState.isMobile ? 'wrap' : 'nowrap'};">
+            <span class="status-label" style="color: #263238; font-weight: 500; font-size: ${dashboardState.isMobile ? '13px' : '14px'};">Form ID:</span>
+            <span class="status-value" style="color: #1976d2; font-weight: 600; font-size: ${dashboardState.isMobile ? '13px' : '14px'}; word-break: break-all;">${data.formId}</span>
+          </div>
+          <div class="status-item" style="display: flex; justify-content: space-between; padding: ${dashboardState.isMobile ? '6px 0' : '8px 0'}; border-bottom: 1px solid #e3e8ee; flex-wrap: ${dashboardState.isMobile ? 'wrap' : 'nowrap'};">
+            <span class="status-label" style="color: #263238; font-weight: 500; font-size: ${dashboardState.isMobile ? '13px' : '14px'};">Current Status:</span>
+            <span class="status-value status-${data.status.toLowerCase().replace(/\s+/g, '-')}" style="color: #1976d2; font-weight: 600; font-size: ${dashboardState.isMobile ? '13px' : '14px'};">${data.status}</span>
+          </div>
+          <div class="status-item" style="display: flex; justify-content: space-between; align-items: center; padding: ${dashboardState.isMobile ? '6px 0' : '8px 0'}; border-bottom: 1px solid #e3e8ee; flex-direction: ${dashboardState.isMobile ? 'column' : 'row'}; gap: ${dashboardState.isMobile ? '8px' : '0'};">
+            <span class="status-label" style="color: #263238; font-weight: 500; font-size: ${dashboardState.isMobile ? '13px' : '14px'}; align-self: ${dashboardState.isMobile ? 'flex-start' : 'auto'};">Progress:</span>
+            <div style="flex: 1; ${dashboardState.isMobile ? 'width: 100%;' : 'margin-left: 10px;'}">
+              <div style="background: #e3e8ee; border-radius: 10px; height: 8px; margin: 5px 0;">
+                <div style="background: #1976d2; height: 100%; border-radius: 10px; width: ${progressPercentage}%; transition: width 0.3s ease;"></div>
+              </div>
+              <div style="font-size: ${dashboardState.isMobile ? '12px' : '13px'}; color: #1976d2; font-weight: 600; text-align: ${dashboardState.isMobile ? 'center' : 'right'};">
+                ${completedSteps}/${totalSteps} steps (${progressPercentage}%)
+              </div>
+            </div>
+          </div>
+          <div class="status-item" style="display: flex; justify-content: space-between; padding: ${dashboardState.isMobile ? '6px 0' : '8px 0'}; border-bottom: 1px solid #e3e8ee; flex-wrap: ${dashboardState.isMobile ? 'wrap' : 'nowrap'};">
+            <span class="status-label" style="color: #263238; font-weight: 500; font-size: ${dashboardState.isMobile ? '13px' : '14px'};">Last Updated:</span>
+            <span class="status-value" style="color: #1976d2; font-weight: 600; font-size: ${dashboardState.isMobile ? '13px' : '14px'};">${data.lastUpdated ? new Date(data.lastUpdated).toLocaleDateString() : 'N/A'}</span>
+          </div>
+          <div class="status-item" style="display: flex; justify-content: space-between; padding: ${dashboardState.isMobile ? '6px 0' : '8px 0'}; flex-wrap: ${dashboardState.isMobile ? 'wrap' : 'nowrap'};">
+            <span class="status-label" style="color: #263238; font-weight: 500; font-size: ${dashboardState.isMobile ? '13px' : '14px'};">Forms Status:</span>
+            <span class="status-value" style="color: #1976d2; font-weight: 600; font-size: ${dashboardState.isMobile ? '13px' : '14px'};">${data.forms.length > 0 ? data.forms.filter(f => f.status === 'completed').length + '/' + data.forms.length + ' completed' : 'Not assigned yet'}</span>
+          </div>
+        `;
+          } else {
+            quickStatusContent.innerHTML = `
+          <div style="text-align: center; padding: ${dashboardState.isMobile ? '20px' : '30px'}; color: #263238;">
+            <div style="font-size: ${dashboardState.isMobile ? '36px' : '48px'}; margin-bottom: 15px; color: #e3e8ee;">-</div>
+            <h4 style="color: #1976d2; font-size: ${dashboardState.isMobile ? '1rem' : '1.1rem'};">No Application Submitted</h4>
+            <p style="margin: 10px 0 20px 0; color: #263238; font-size: ${dashboardState.isMobile ? '13px' : '14px'};">Start your no-dues clearance process to see tracking information.</p>
+            <button onclick="loadPage('apply')" style="background: #1976d2; color: white; border: none; padding: ${dashboardState.isMobile ? '10px 20px' : '12px 24px'}; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: ${dashboardState.isMobile ? '13px' : '14px'}; touch-action: manipulation;">
+              Submit Application
+            </button>
+          </div>
+        `;
+          }
+        }
+      } catch (error) {
+        const quickStatusContent = document.getElementById('quickStatusContent');
+        if (quickStatusContent) {
+          quickStatusContent.innerHTML = `
+        <div style="color: #d9534f; text-align: center; padding: ${dashboardState.isMobile ? '16px' : '20px'};">
+          <div style="font-size: ${dashboardState.isMobile ? '24px' : '32px'}; margin-bottom: 10px;">!</div>
+          <h4 style="font-size: ${dashboardState.isMobile ? '1rem' : '1.1rem'};">Error Loading Status</h4>
+          <p style="margin: 10px 0 15px 0; font-size: ${dashboardState.isMobile ? '13px' : '14px'};">Unable to load tracking information.</p>
+          <button onclick="loadQuickTrackStatus()" style="background: #d9534f; color: white; border: none; padding: ${dashboardState.isMobile ? '8px 16px' : '10px 20px'}; border-radius: 5px; cursor: pointer; font-size: ${dashboardState.isMobile ? '13px' : '14px'}; touch-action: manipulation;">
+            Retry
+          </button>
+        </div>
+      `;
+        }
+      }
+    }
+
+    // Certificates loader with mobile optimizations
+    async function loadCertificates() {
+      try {
+        const response = await fetch('/api/employee/certificates', {
+          credentials: 'include',
+          headers: {
+            'Accept': 'application/json'
+          }
+        });
+
+        if (!response.ok) {
+          throw new Error(`Server error: ${response.status}`);
+        }
+
+        const data = await response.json();
+
+        if (data.success) {
+          displayCertificates(data.certificates);
+        } else {
+          throw new Error(data.message || 'Failed to load certificates');
+        }
+      } catch (error) {
+        const certificatesGrid = document.getElementById('certificatesGrid');
+        if (certificatesGrid) {
+          certificatesGrid.innerHTML = `
+        <div class="empty-certificates" style="text-align: center; padding: ${dashboardState.isMobile ? '30px' : '40px'}; color: #d9534f; background: #fafbfc; border-radius: 10px; border: 1px solid #e3e8ee; box-shadow: 0 1px 8px rgba(25, 118, 210, 0.07);">
+          <div style="font-size: ${dashboardState.isMobile ? '36px' : '48px'}; margin-bottom: 20px;">!</div>
+          <h3 style="font-size: ${dashboardState.isMobile ? '1.1rem' : '1.2rem'};">Error Loading Certificates</h3>
+          <p style="margin: 15px 0; color: #263238; font-size: ${dashboardState.isMobile ? '13px' : '14px'};">${error.message}</p>
+          <button onclick="loadCertificates()" class="download-btn" style="margin-top: 15px; background: #1976d2; color: white; border: none; padding: ${dashboardState.isMobile ? '8px 16px' : '10px 20px'}; border-radius: 6px; cursor: pointer; font-size: ${dashboardState.isMobile ? '13px' : '14px'}; touch-action: manipulation;">
+            Retry Loading
+          </button>
+        </div>
+      `;
+        }
+      }
+    }
+
+    // Mobile-optimized certificates display
+    function displayCertificates(certificates) {
+      const grid = document.getElementById('certificatesGrid');
+      if (!grid) return;
+
+      if (!certificates || certificates.length === 0) {
+        grid.innerHTML = `
+      <div class="empty-certificates" style="text-align: center; padding: ${dashboardState.isMobile ? '40px 16px' : '50px 20px'}; color: #263238; background: #fafbfc; border-radius: 10px; border: 1px solid #e3e8ee; box-shadow: 0 1px 8px rgba(25, 118, 210, 0.07);">
+        <div style="font-size: ${dashboardState.isMobile ? '48px' : '64px'}; margin-bottom: 20px; color: #e3e8ee;">-</div>
+        <h3 style="color: #1976d2; font-size: ${dashboardState.isMobile ? '1.1rem' : '1.2rem'};">No Certificates Available</h3>
+        <p style="margin: 20px 0; line-height: 1.6; color: #263238; font-size: ${dashboardState.isMobile ? '13px' : '14px'};">Your approved IT clearance certificates will appear here once forms are processed by the IT department.</p>
+        <p style="margin-top: 20px; font-size: ${dashboardState.isMobile ? '12px' : '14px'}; opacity: 0.8; color: #263238;">
+          Use the Track section to monitor your application progress.
+        </p>
+        <div style="margin-top: 25px; display: flex; gap: 10px; justify-content: center; flex-direction: ${dashboardState.isMobile ? 'column' : 'row'};">
+          <button onclick="loadPage('track')" style="background: #1976d2; color: white; border: none; padding: ${dashboardState.isMobile ? '10px 20px' : '10px 20px'}; border-radius: 5px; cursor: pointer; margin-right: ${dashboardState.isMobile ? '0' : '10px'}; font-size: ${dashboardState.isMobile ? '13px' : '14px'}; touch-action: manipulation;">
+            Track Progress
+          </button>
+          <button onclick="loadCertificates()" style="background: #6c757d; color: white; border: none; padding: ${dashboardState.isMobile ? '10px 20px' : '10px 20px'}; border-radius: 5px; cursor: pointer; font-size: ${dashboardState.isMobile ? '13px' : '14px'}; touch-action: manipulation;">
+            Refresh
+          </button>
+        </div>
+      </div>
+    `;
+        return;
+      }
+
+      grid.innerHTML = certificates.map(cert => `
+    <div class="certificate-card" style="
+      background: #fafbfc; 
+      border-radius: 12px; 
+      padding: ${dashboardState.isMobile ? '20px 16px' : '25px'}; 
+      box-shadow: 0 1px 8px rgba(25, 118, 210, 0.07); 
+      border: 1px solid #e3e8ee;
+      transition: all 0.3s ease;
+    ">
+      <div class="certificate-title" style="font-size: ${dashboardState.isMobile ? '1.1rem' : '1.2rem'}; font-weight: bold; color: #1976d2; margin-bottom: 15px;">${cert.displayName}</div>
+      <div class="certificate-details" style="margin-bottom: 20px; line-height: 1.5;">
+        <div style="margin-bottom: 8px; font-size: ${dashboardState.isMobile ? '13px' : '14px'};"><strong style="color: #1976d2;">Type:</strong> <span style="color: #63B8FF;">${cert.noDuesType || 'N/A'}</span></div>
+        <div style="margin-bottom: 8px; font-size: ${dashboardState.isMobile ? '13px' : '14px'};"><strong style="color: #1976d2;">Generated:</strong> <span style="color: #263238;">${new Date(cert.generatedAt).toLocaleDateString()}</span></div>
+        <div style="margin-bottom: 8px; font-size: ${dashboardState.isMobile ? '13px' : '14px'};"><strong style="color: #1976d2;">Form ID:</strong> <code style="background: #f7fafc; color: #1976d2; padding: 2px 6px; border-radius: 4px; font-size: ${dashboardState.isMobile ? '12px' : '13px'};">${cert.formId}</code></div>
+        <div style="margin-bottom: 8px; font-size: ${dashboardState.isMobile ? '13px' : '14px'};"><strong style="color: #1976d2;">Status:</strong> <span style="color: #5cb85c; font-weight: bold;">Approved</span></div>
+      </div>
+      <div class="certificate-actions">
+        <button class="download-btn" data-cert-id="${cert.id}" data-filename="${cert.filename}" style="
+          background: #1976d2; 
+          color: white; border: none; padding: ${dashboardState.isMobile ? '10px 20px' : '12px 24px'}; 
+          border-radius: 8px; cursor: pointer; font-weight: bold;
+          transition: all 0.3s ease; width: 100%; font-size: ${dashboardState.isMobile ? '13px' : '14px'};
+          touch-action: manipulation;
+        ">
+          Download PDF
+        </button>
+      </div>
+    </div>
+  `).join('');
+
+      // Add enhanced mobile touch interactions
+      grid.querySelectorAll('.certificate-card').forEach(card => {
+        if (isTouchDevice()) {
+          card.addEventListener('touchstart', function () {
+            this.style.transform = 'scale(0.98)';
+          });
+          card.addEventListener('touchend', function () {
+            this.style.transform = 'scale(1)';
+          });
+        } else {
+          card.addEventListener('mouseenter', function () {
+            this.style.transform = 'translateY(-2px)';
+            this.style.boxShadow = '0 4px 12px rgba(25, 118, 210, 0.15)';
+          });
+          card.addEventListener('mouseleave', function () {
+            this.style.transform = 'translateY(0)';
+            this.style.boxShadow = '0 1px 8px rgba(25, 118, 210, 0.07)';
+          });
+        }
+      });
+
+      grid.querySelectorAll('.download-btn').forEach(btn => {
+        btn.addEventListener('click', function (e) {
+          const certId = this.getAttribute('data-cert-id');
+          const filename = this.getAttribute('data-filename');
+          downloadCertificate(e, certId, filename);
+        });
+
+        if (!isTouchDevice()) {
+          btn.addEventListener('mouseenter', function () {
+            this.style.background = '#1456a6';
+            this.style.transform = 'translateY(-1px)';
+          });
+
+          btn.addEventListener('mouseleave', function () {
+            this.style.background = '#1976d2';
+            this.style.transform = 'translateY(0)';
+          });
+        }
+      });
+    }
+
+    // Certificate download with mobile optimizations
+    async function downloadCertificate(event, certId, filename) {
+      try {
+        event.target.disabled = true;
+        event.target.innerHTML = dashboardState.isMobile ? 'Downloading...' : 'Downloading...';
+        event.target.style.opacity = '0.7';
+
+        const response = await fetch(`/api/employee/certificates/${certId}/download`, {
+          credentials: 'include'
+        });
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.message || 'Download failed');
+        }
+
+        const blob = await response.blob();
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        window.URL.revokeObjectURL(url);
+        document.body.removeChild(a);
+
+        showToast('Certificate downloaded successfully', 'success');
+
+      } catch (error) {
+        showToast(`Failed to download certificate: ${error.message}`, 'error');
+      } finally {
+        event.target.disabled = false;
+        event.target.innerHTML = 'Download PDF';
+        event.target.style.opacity = '1';
+      }
+    }
+
+    // Mobile-optimized toast notifications
+    function showToast(message, type = 'info', duration = 5000) {
+      const toast = document.createElement('div');
+      toast.className = `toast toast-${type}`;
+      toast.innerHTML = `
+    <div style="display: flex; align-items: center; gap: 10px;">
+      <span style="font-size: ${dashboardState.isMobile ? '16px' : '18px'};">
+        ${type === 'success' ? '✓' : type === 'error' ? '✗' : type === 'warning' ? '!' : 'i'}
+      </span>
+      <span style="font-size: ${dashboardState.isMobile ? '13px' : '14px'};">${message}</span>
+    </div>
+  `;
+
+      toast.style.cssText = `
+    position: fixed; top: ${dashboardState.isMobile ? '20px' : '24px'}; right: ${dashboardState.isMobile ? '10px' : '24px'}; z-index: 10000;
+    padding: ${dashboardState.isMobile ? '12px 16px' : '16px 24px'}; border-radius: 10px; color: white;
+    font-weight: 500; transform: translateX(100%);
+    transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    max-width: ${dashboardState.isMobile ? '280px' : '350px'}; box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+    ${type === 'success' ? 'background: #5cb85c;' :
+          type === 'error' ? 'background: #d9534f;' :
+            type === 'warning' ? 'background: #f0ad4e;' :
+              'background: #1976d2;'}
+  `;
+
+      document.body.appendChild(toast);
+
+      setTimeout(() => {
+        toast.style.transform = 'translateX(0)';
+      }, 100);
+
+      setTimeout(() => {
+        toast.style.transform = 'translateX(100%)';
+        setTimeout(() => {
+          if (document.body.contains(toast)) {
+            document.body.removeChild(toast);
+          }
+        }, 400);
+      }, duration);
+    }
+
+    // LocalStorage parsing
+    function parseOrNull(key) {
+      try {
+        const value = localStorage.getItem(key);
+        if (!value || value === 'null' || value === 'undefined') {
+          return null;
+        }
+        const parsed = JSON.parse(value);
+        if (!parsed || (typeof parsed === 'object' && Object.keys(parsed).length === 0)) {
+          return null;
+        }
+        return parsed;
+      } catch (error) {
+        return null;
+      }
+    }
+
+    // Form data collectors
+    function collectDisposalFormData() {
+      return parseOrNull('disposalFormData');
+    }
+
+    function collectEfileFormData() {
+      return parseOrNull('efileFormData');
+    }
+
+    function collectForm365TransferData() {
+      return parseOrNull('form365TransferData');
+    }
+
+    function collectForm365DisposalData() {
+      return parseOrNull('form365DisposalData') || parseOrNull('form365Data');
+    }
+
+    // Final form submission with mobile optimizations
+    async function submitFinalForms() {
+      const statusElement = document.getElementById('finalSubmitStatus');
+      statusElement.textContent = "Checking saved data...";
+      statusElement.style.color = '#1976d2';
+
+      try {
+        if (dashboardState.formsStatus === 'preview') {
+          statusElement.textContent = "Forms already submitted and under review.";
+          statusElement.style.color = '#f0ad4e';
+          showToast('Forms are already submitted and cannot be modified.', 'warning');
+          return;
+        }
+
+        const disposalFormData = collectDisposalFormData();
+        const efileFormData = collectEfileFormData();
+        const form365TransferData = collectForm365TransferData();
+        const form365DisposalData = collectForm365DisposalData();
+
+        const filledForms = [];
+        const emptyForms = [];
+
+        if (disposalFormData) filledForms.push('Disposal Form'); else emptyForms.push('Disposal Form');
+        if (efileFormData) filledForms.push('E-file Form'); else emptyForms.push('E-file Form');
+        if (form365TransferData) filledForms.push('Form 365 Transfer'); else emptyForms.push('Form 365 Transfer');
+        if (form365DisposalData) filledForms.push('Form 365 Disposal'); else emptyForms.push('Form 365 Disposal');
+
+        if (filledForms.length === 0) {
+          statusElement.textContent = "No saved form data found.";
+          statusElement.style.color = '#d9534f';
+          showToast('No saved form data found. Please fill out the assigned forms first.', 'error');
+          return;
+        }
+
+        if (emptyForms.length > 0) {
+          const proceed = confirm(`Form Submission Confirmation\n\nCompleted: ${filledForms.join(', ')}\nMissing: ${emptyForms.join(', ')}\n\nDo you want to submit with only the completed forms?\n\n(You can complete missing forms later)`);
+          if (!proceed) {
+            statusElement.textContent = "Submission cancelled by user.";
+            statusElement.style.color = '#6c757d';
+            return;
+          }
+        }
+
+        statusElement.textContent = "Submitting to server...";
+        statusElement.style.color = '#1976d2';
+
+        const submissionData = {
+          disposalForm: disposalFormData,
+          efileForm: efileFormData,
+          form365Transfer: form365TransferData,
+          form365Disposal: form365DisposalData,
+          submissionTimestamp: new Date().toISOString()
+        };
+
+        const response = await fetch('/api/employee/final-submit', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify(submissionData)
+        });
+
+        const result = await response.json();
+
+        if (response.ok && result.success) {
+          statusElement.textContent = "Successfully submitted to HOD";
+          statusElement.style.color = '#5cb85c';
+
+          ['disposalFormData', 'efileFormData', 'form365TransferData', 'form365Data', 'form365DisposalData']
+            .forEach(key => localStorage.removeItem(key));
+
+          showToast('Forms submitted successfully to HOD', 'success', 6000);
+
+          setTimeout(async () => {
+            await loadDashboardState();
+            await loadPage('home');
+            showToast('Dashboard updated with latest status', 'info', 4000);
+          }, 2000);
+
+        } else {
+          throw new Error(result.message || 'Submission failed');
+        }
+
+      } catch (error) {
+        statusElement.textContent = `Submission failed: ${error.message}`;
+        statusElement.style.color = '#d9534f';
+        showToast(`Submission failed: ${error.message}`, 'error', 8000);
+      }
+    }
+
+    // Mobile-optimized form data preview
+    /*function previewFormData() {
+      const preview = document.getElementById('previewContent');
+      if (!preview) return;
+
+      const formTypes = [
+        { key: 'disposalFormData', name: 'Disposal Form' },
+        { key: 'efileFormData', name: 'E-file Form' },
+        { key: 'form365TransferData', name: 'Form 365 Transfer' },
+        { key: 'form365Data', name: 'Form 365 Disposal' }
+      ];
+
+      let html = `<div style="font-family: monospace; font-size: ${dashboardState.isMobile ? '12px' : '13px'}; background: white; border-radius: 8px; padding: ${dashboardState.isMobile ? '12px' : '15px'};">`;
+
+      formTypes.forEach(form => {
+        const data = parseOrNull(form.key);
+        html += `
+      <div style="margin-bottom: 20px; padding: ${dashboardState.isMobile ? '12px' : '15px'}; border: 1px solid #e3e8ee; border-radius: 8px;">
+        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
+          <strong style="font-size: ${dashboardState.isMobile ? '14px' : '16px'}; color: #1976d2;">${form.name}</strong>
+        </div>
+    `;
+
+        if (data && Object.keys(data).length > 0) {
+          const fieldCount = Object.keys(data).length;
+          const filledFields = Object.values(data).filter(v => v && v.toString().trim()).length;
+
+          html += `
+        <div style="background: #d4edda; color: #155724; padding: 10px; border-radius: 6px; margin-bottom: 10px; font-size: ${dashboardState.isMobile ? '12px' : '13px'};">
+          <strong>Valid Data Found</strong> - ${filledFields}/${fieldCount} fields filled
+        </div>
+        <details style="margin-top: 10px;">
+          <summary style="cursor: pointer; padding: 5px; background: #f7fafc; border-radius: 4px; color: #1976d2; font-size: ${dashboardState.isMobile ? '12px' : '13px'};">
+            View Data (${fieldCount} fields)
+          </summary>
+          <pre style="background: #f7fafc; padding: 12px; margin: 8px 0; max-height: ${dashboardState.isMobile ? '150px' : '200px'}; overflow-y: auto; border-radius: 6px; font-size: ${dashboardState.isMobile ? '10px' : '11px'}; color: #263238; word-wrap: break-word; white-space: pre-wrap;">${JSON.stringify(data, null, 2)}</pre>
+        </details>
+      `;
+        } else {
+          html += `
+        <div style="background: #f8d7da; color: #721c24; padding: 10px; border-radius: 6px; font-size: ${dashboardState.isMobile ? '12px' : '13px'};">
+          <strong>No Valid Data</strong> - Form not filled or saved incorrectly
+        </div>
+      `;
+        }
+        html += '</div>';
+      });
+
+      html += '</div>';
+      preview.innerHTML = html;
+    }*/
+   
+    // Mobile-optimized form reset
+    function resetSavedForms() {
+      const modal = document.createElement('div');
+      modal.style.cssText = `
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.6); z-index: 10000; display: flex;
+    align-items: center; justify-content: center; padding: ${dashboardState.isMobile ? '10px' : '20px'};
+  `;
+
+      modal.innerHTML = `
+    <div style="background: white; padding: ${dashboardState.isMobile ? '24px' : '30px'}; border-radius: 15px; max-width: ${dashboardState.isMobile ? '100%' : '400px'}; width: ${dashboardState.isMobile ? '100%' : '90%'}; text-align: center; border: 2px solid #e3e8ee;">
+      <h3 style="color: #d9534f; margin-bottom: 20px; font-weight: 600; font-size: ${dashboardState.isMobile ? '1.1rem' : '1.2rem'};">Clear All Form Data</h3>
+      <p style="margin-bottom: 25px; line-height: 1.5; color: #263238; font-size: ${dashboardState.isMobile ? '14px' : '16px'};">This will permanently delete all saved form data from your browser. You'll need to fill out the forms again.</p>
+      <p style="margin-bottom: 25px; font-weight: bold; color: #f0ad4e; font-size: ${dashboardState.isMobile ? '14px' : '16px'};">Are you sure you want to continue?</p>
+      <div style="display: flex; gap: ${dashboardState.isMobile ? '10px' : '15px'}; justify-content: center; flex-direction: ${dashboardState.isMobile ? 'column' : 'row'};">
+        <button onclick="this.closest('div').parentElement.remove()" style="background: #6c757d; color: white; border: none; padding: ${dashboardState.isMobile ? '10px 20px' : '12px 24px'}; border-radius: 8px; cursor: pointer; font-weight: 500; font-size: ${dashboardState.isMobile ? '14px' : '16px'}; touch-action: manipulation;">
+          Cancel
+        </button>
+        <button onclick="confirmResetForms(this)" style="background: #d9534f; color: white; border: none; padding: ${dashboardState.isMobile ? '10px 20px' : '12px 24px'}; border-radius: 8px; cursor: pointer; font-weight: 500; font-size: ${dashboardState.isMobile ? '14px' : '16px'}; touch-action: manipulation;">
+          Yes, Clear All
+        </button>
+      </div>
+    </div>
+  `;
+
+      document.body.appendChild(modal);
+    }
+
+    function confirmResetForms(button) {
+      const keys = ['disposalFormData', 'efileFormData', 'form365TransferData', 'form365Data', 'form365DisposalData'];
+      keys.forEach(key => localStorage.removeItem(key));
+
+      button.closest('div').parentElement.remove();
+      showToast('All form data has been cleared from your browser', 'info', 5000);
+
+      const previewContent = document.getElementById('previewContent');
+      if (previewContent) {
+        previewContent.innerHTML = '<p style="text-align: center; color: #263238; font-style: italic;">Data cleared. Click "Check Saved Form Data" to refresh.</p>';
+      }
+    }
+
+    // Session validation
+    async function validateEmployeeSession() {
+      try {
+        const res = await fetch('/api/auth/check-session', { credentials: 'include' });
+        const sessionData = await res.json();
+        if (res.ok && sessionData.role === 'employee') {
+          return sessionData;
+        }
+      } catch (err) {
+        // Silent error handling
+      }
+
+      showToast('Session expired. Redirecting to login...', 'warning', 3000);
+      setTimeout(() => {
+        window.location.href = '/';
+      }, 3000);
+      return null;
+    }
+
+    // Page loader with mobile optimizations
+    async function loadPage(page) {
+      // Update device info on page load
+      updateDeviceInfo();
+
+      contentArea.innerHTML = `<div style="text-align: center; padding: ${dashboardState.isMobile ? '40px' : '50px'};"><div class="loading" style="color: #1976d2;">Loading...</div></div>`;
+
+      try {
+        contentArea.innerHTML = contentMap[page] || '<p>Page not found</p>';
+
+        // Wait for DOM to be updated
+        await new Promise(resolve => setTimeout(resolve, 100));
+
+        switch (page) {
+          case 'home':
+            // Verify elements exist before calling loadDashboardStatus
+            const welcomeMessage = document.getElementById('welcomeMessage');
+            const formIdDisplay = document.getElementById('formIdDisplay');
+
+            if (welcomeMessage && formIdDisplay) {
+              await loadDashboardStatus();
+            } else {
+              // Retry once more if elements not found
+              setTimeout(async () => {
+                await loadDashboardStatus();
+              }, 200);
+            }
+            break;
+          case 'apply':
+            await checkApplicationStatus();
+            break;
+          case 'history':
+            await loadHistory();
+            break;
+          case 'forms':
+            await fetchAssignedForms();
+            break;
+          case 'certificates':
+            await loadCertificates();
+            break;
+          case 'track':
+            await loadQuickTrackStatus();
+            break;
+        }
+
+        updateCurrentPageIndicator(page);
+
+      } catch (error) {
+        contentArea.innerHTML = `
+      <div style="text-align: center; padding: ${dashboardState.isMobile ? '40px' : '50px'}; color: #d9534f;">
+        <h3 style="font-size: ${dashboardState.isMobile ? '1.1rem' : '1.2rem'};">Error Loading Page</h3>
+        <p style="font-size: ${dashboardState.isMobile ? '14px' : '16px'};">Unable to load ${page} page. Please try again.</p>
+        <button onclick="loadPage('${page}')" style="background: #d9534f; color: white; border: none; padding: ${dashboardState.isMobile ? '8px 16px' : '10px 20px'}; border-radius: 5px; cursor: pointer; margin-top: 15px; font-size: ${dashboardState.isMobile ? '13px' : '14px'}; touch-action: manipulation;">
+          Retry
+        </button>
+      </div>
+    `;
+      }
+    }
+
+    // Current page indicator
+    function updateCurrentPageIndicator(page) {
+      const currentPageElement = document.getElementById('currentPage');
+      if (currentPageElement) {
+        const pageNames = {
+          home: 'Dashboard',
+          apply: 'Apply for No Dues',
+          forms: 'Assigned Forms',
+          track: 'Application Tracking',
+          certificates: 'Certificates',
+          history: 'Application History'
+        };
+        currentPageElement.textContent = pageNames[page] || 'Dashboard';
+      }
+
+      // Update nav button active states
+      document.querySelectorAll('.nav-btn').forEach(btn => {
+        btn.classList.remove('active');
+      });
+
+      const activeBtn = document.querySelector(`.nav-btn[onclick="loadPage('${page}')"]`);
+      if (activeBtn) {
+        activeBtn.classList.add('active');
+      }
+    }
+
+    // Application status check with mobile optimizations
+    async function checkApplicationStatus() {
+      const statusCheck = document.getElementById('applicationStatusCheck');
+      if (!statusCheck) return;
+
+      try {
+        await loadDashboardState();
+
+        if (dashboardState.applicationStatus === 'rejected') {
+          statusCheck.innerHTML = `
+        <div style="background: #f8d7da; border: 1px solid #f5c6cb; border-radius: 10px; padding: ${dashboardState.isMobile ? '16px' : '20px'}; color: #721c24;">
+          <h4 style="margin: 0 0 15px 0; display: flex; align-items: center; gap: 10px; font-weight: 600; font-size: ${dashboardState.isMobile ? '1rem' : '1.1rem'};">
+            Previous Application Rejected
+          </h4>
+          <p style="margin: 0 0 15px 0; font-size: ${dashboardState.isMobile ? '13px' : '14px'};">Your previous application was rejected by HOD and has been cleared from the system.</p>
+          ${dashboardState.rejectionReason ? `
+            <p style="margin: 0 0 20px 0; background: rgba(114, 28, 36, 0.1); padding: 15px; border-radius: 8px; font-size: ${dashboardState.isMobile ? '12px' : '13px'};">
+              <strong>Reason:</strong> ${dashboardState.rejectionReason}
+            </p>
+          ` : ''}
+          <div style="background: #d4edda; color: #155724; padding: 15px; border-radius: 8px;">
+            <strong>Ready to Apply:</strong> You can now submit a new no-dues clearance application with corrected information.
+          </div>
+        </div>
+      `;
+        } else if (dashboardState.formId && dashboardState.applicationStatus !== 'rejected') {
+          statusCheck.innerHTML = `
+        <div style="background: #E6F2FF; border: 1px solid #CFE6FF; border-radius: 10px; padding: ${dashboardState.isMobile ? '16px' : '20px'}; color: #1976d2;">
+          <h4 style="margin: 0 0 15px 0; display: flex; align-items: center; gap: 10px; font-weight: 600; font-size: ${dashboardState.isMobile ? '1rem' : '1.1rem'};">
+            Existing Application Found
+          </h4>
+          <p style="margin: 0 0 15px 0; font-size: ${dashboardState.isMobile ? '13px' : '14px'};">You already have an active application:</p>
+          <div style="background: white; padding: 15px; border-radius: 8px; margin-bottom: 15px; border: 1px solid #CFE6FF;">
+            <p style="font-size: ${dashboardState.isMobile ? '13px' : '14px'};"><strong>Form ID:</strong> <code style="background: #f7fafc; color: #1976d2; padding: 2px 6px; border-radius: 4px; font-size: ${dashboardState.isMobile ? '12px' : '13px'};">${dashboardState.formId}</code></p>
+            <p style="font-size: ${dashboardState.isMobile ? '13px' : '14px'};"><strong>Status:</strong> <span style="font-weight: bold; color: #63B8FF;">${dashboardState.applicationStatus}</span></p>
+          </div>
+          <button onclick="loadPage('track')" style="background: #1976d2; color: white; border: none; padding: ${dashboardState.isMobile ? '8px 16px' : '10px 20px'}; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: ${dashboardState.isMobile ? '13px' : '14px'}; touch-action: manipulation;">
+            Track Existing Application
+          </button>
+        </div>
+      `;
+        } else {
+          statusCheck.innerHTML = `
+        <div style="background: #d4edda; border: 1px solid #c3e6cb; border-radius: 10px; padding: ${dashboardState.isMobile ? '16px' : '20px'}; color: #155724;">
+          <h4 style="margin: 0 0 15px 0; display: flex; align-items: center; gap: 10px; font-weight: 600; font-size: ${dashboardState.isMobile ? '1rem' : '1.1rem'};">
+            Ready to Apply
+          </h4>
+          <p style="margin: 0; font-size: ${dashboardState.isMobile ? '13px' : '14px'};">You can submit a new no-dues clearance application. Make sure you have all required documents ready.</p>
+        </div>
+      `;
+        }
+      } catch (error) {
+        statusCheck.innerHTML = `
+      <div style="color: #d9534f; background: #f8d7da; padding: ${dashboardState.isMobile ? '16px' : '20px'}; border-radius: 10px; border: 1px solid #f5c6cb;">
+        <h4 style="font-size: ${dashboardState.isMobile ? '1rem' : '1.1rem'};">Error Checking Status</h4>
+        <p style="font-size: ${dashboardState.isMobile ? '13px' : '14px'};">Unable to verify your application status. Please try again or contact support.</p>
+        <button onclick="checkApplicationStatus()" style="background: #d9534f; color: white; border: none; padding: ${dashboardState.isMobile ? '8px 16px' : '10px 20px'}; border-radius: 6px; cursor: pointer; margin-top: 10px; font-size: ${dashboardState.isMobile ? '13px' : '14px'}; touch-action: manipulation;">
+          Retry
+        </button>
+      </div>
+    `;
+      }
+    }
+
+    // Dashboard status loader with mobile optimizations and profile updates
+    async function loadDashboardStatus() {
+      try {
+        const data = await loadDashboardState();
+
+        if (!data?.employee?.employeeId) {
+          throw new Error('Invalid employee data received');
+        }
+
+        const emp = data.employee;
+        const status = data.applicationStatus;
+        const certificatesAvailable = data.certificatesAvailable || 0;
+
+        // Get elements with safety checks
+        const msg = document.getElementById('formIdDisplay');
+        let welcomeMessage = document.getElementById('welcomeMessage');
+
+        // If welcomeMessage not found, wait and retry
+        if (!welcomeMessage) {
+          await new Promise(resolve => setTimeout(resolve, 100));
+          welcomeMessage = document.getElementById('welcomeMessage');
+        }
+
+        // Update profile section
+        updateProfileSection(emp, data.formId, status);
+
+        // Update main status display - with safety checks
+        if (status === 'rejected') {
+          if (msg) {
+            msg.innerHTML = `
+          <div style="color: #d9534f; font-weight: bold; font-size: ${dashboardState.isMobile ? '13px' : '14px'};">
+            Previous application was rejected - Ready for new application
+          </div>
+        `;
+          }
+          if (welcomeMessage) {
+            welcomeMessage.innerHTML = `
+          <div style="color: #f0ad4e; background: #fff3cd; padding: 15px; border-radius: 8px; border: 1px solid #ffeaa7; font-size: ${dashboardState.isMobile ? '13px' : '14px'};">
+            Your previous application was cleared - You can submit a new one
+          </div>
+        `;
+          }
+        } else {
+          if (msg) {
+            msg.innerHTML = `
+          <div style="color: #263238; font-weight: 500; font-size: ${dashboardState.isMobile ? '13px' : '14px'};">
+            Current Status: <span style="color: #1976d2; font-weight: bold;">${status || 'No application submitted yet'}</span>
+          </div>
+        `;
+          }
+          if (welcomeMessage) {
+            welcomeMessage.innerHTML = data.formId && data.showFormId ? `
+          <div style="color: #155724; background: #d4edda; padding: 15px; border-radius: 8px; border: 1px solid #c3e6cb; font-size: ${dashboardState.isMobile ? '13px' : '14px'};">
+            <strong>Your Form ID:</strong> <code style="background: white; color: #1976d2; padding: 4px 8px; border-radius: 4px; font-size: ${dashboardState.isMobile ? '12px' : '13px'};">${data.formId}</code>
+          </div>
+        ` : `
+          <div style="color: #263238; font-style: italic; font-size: ${dashboardState.isMobile ? '13px' : '14px'};">
+            Ready to submit your first application?
+          </div>
+        `;
+          }
+        }
+
+        generateSmartActions(data);
+
+        // Handle print button with mobile optimizations
+        const printContainer = document.getElementById('printButtonContainer');
+        if (printContainer) {
+          printContainer.innerHTML = '';
+          if (['Submitted', 'Pending', 'approved', 'Submitted to HOD'].includes(status) && data.formId) {
+            printContainer.innerHTML = `
+          <button onclick="window.open('/api/employee/form-pdf/${data.formId}', '_blank')" style="
+            background: #1976d2; 
+            color: white; border: none; padding: ${dashboardState.isMobile ? '10px 20px' : '12px 24px'}; 
+            border-radius: 8px; cursor: pointer; font-weight: bold;
+            transition: all 0.3s ease; width: ${dashboardState.isMobile ? '100%' : 'auto'};
+            font-size: ${dashboardState.isMobile ? '13px' : '14px'}; touch-action: manipulation;
+          ">
+            View/Print Submitted Form
+          </button>
+        `;
+          }
+        }
+
+        // Handle PDF download button with mobile optimizations
+        const downloadContainer = document.getElementById('downloadLatestPDFContainer');
+        if (downloadContainer) {
+          if (data.formId && data.applicationStatus !== 'rejected') {
+            downloadContainer.innerHTML = `
+          <div style="
+            background: #1976d2; 
+            color: white; padding: ${dashboardState.isMobile ? '20px' : '25px'}; border-radius: 15px; 
+            box-shadow: 0 2px 8px rgba(25, 118, 210, 0.2);
+            text-align: center; margin: 20px 0;
+          ">
+            <h4 style="margin: 0 0 12px 0; font-size: ${dashboardState.isMobile ? '1.1rem' : '1.2rem'}; font-weight: 600;">Download Application PDF</h4>
+            <p style="margin: 0 0 20px 0; opacity: 0.9; font-size: ${dashboardState.isMobile ? '13px' : '14px'};">
+              Download your latest no dues application PDF for Form ID: <code style="background: rgba(255,255,255,0.2); padding: 2px 6px; border-radius: 4px; font-size: ${dashboardState.isMobile ? '12px' : '13px'};">${data.formId}</code>
+            </p>
+            <button id="downloadLatestPDFBtn" onclick="downloadLatestNoDuesPDF()" style="
+              background: rgba(255,255,255,0.2); color: white; border: 2px solid rgba(255,255,255,0.3); 
+              padding: ${dashboardState.isMobile ? '12px 24px' : '15px 30px'}; border-radius: 8px; cursor: pointer; 
+              font-weight: bold; font-size: ${dashboardState.isMobile ? '14px' : '16px'}; transition: all 0.3s ease;
+              box-shadow: 0 4px 12px rgba(255,255,255,0.1); width: ${dashboardState.isMobile ? '100%' : 'auto'};
+              touch-action: manipulation;
+            " onmouseover="this.style.background='rgba(255,255,255,0.3)'" 
+               onmouseout="this.style.background='rgba(255,255,255,0.2)'">
+              ${dashboardState.isMobile ? 'Download PDF' : 'Download Latest No Dues PDF'}
+            </button>
+          </div>
+        `;
+          } else if (data.applicationStatus === 'rejected') {
+            downloadContainer.innerHTML = `
+          <div style="
+            background: #f8d7da; color: #721c24; padding: ${dashboardState.isMobile ? '16px' : '20px'}; border-radius: 10px; 
+            border: 1px solid #f5c6cb; text-align: center;
+          ">
+            <h4 style="margin: 0 0 10px 0; font-size: ${dashboardState.isMobile ? '1rem' : '1.1rem'};">No PDF Available</h4>
+            <p style="margin: 0; font-weight: bold; font-size: ${dashboardState.isMobile ? '13px' : '14px'};">Application was rejected</p>
+          </div>
+        `;
+          } else {
+            downloadContainer.innerHTML = `
+          <div style="
+            background: #f7fafc; color: #263238; padding: ${dashboardState.isMobile ? '16px' : '20px'}; border-radius: 10px; 
+            text-align: center; border: 1px solid #e3e8ee;
+          ">
+            <h4 style="margin: 0 0 10px 0; font-size: ${dashboardState.isMobile ? '1rem' : '1.1rem'};">No Application</h4>
+            <p style="margin: 0; font-weight: bold; font-size: ${dashboardState.isMobile ? '13px' : '14px'};">Submit an application to download PDF</p>
+          </div>
+        `;
+          }
+        }
+
+
+        // Handle certificates status with mobile optimizations
+        const certContainer = document.getElementById('certificateStatusContainer');
+        if (certContainer) {
+          if (certificatesAvailable > 0) {
+            certContainer.innerHTML = `
+          <div style="
+            background: #d4edda; 
+            color: #155724; padding: ${dashboardState.isMobile ? '20px' : '25px'}; border-radius: 15px; 
+            border: 1px solid #c3e6cb; 
+            box-shadow: 0 2px 8px rgba(40, 167, 69, 0.15);
+            text-align: center;
+          ">
+            <h4 style="margin: 0 0 12px 0; font-size: ${dashboardState.isMobile ? '1.1rem' : '1.3rem'}; font-weight: 600;">
+              ${certificatesAvailable} Certificate${certificatesAvailable > 1 ? 's' : ''} Available
+            </h4>
+            <p style="margin: 0 0 20px 0; line-height: 1.5; font-size: ${dashboardState.isMobile ? '13px' : '14px'};">
+              Your IT clearance certificates are ready for download.
+            </p>
+            <button onclick="loadPage('certificates')" style="
+              background: #5cb85c; color: white; border: none; 
+              padding: ${dashboardState.isMobile ? '12px 24px' : '15px 30px'}; border-radius: 8px; cursor: pointer; 
+              font-weight: bold; font-size: ${dashboardState.isMobile ? '14px' : '16px'};
+              transition: all 0.3s ease; box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+              width: ${dashboardState.isMobile ? '100%' : 'auto'}; touch-action: manipulation;
+            ">
+              View & Download Certificates
+            </button>
+          </div>
+        `;
+          } else if (status === 'IT Completed') {
+            certContainer.innerHTML = `
+          <div style="
+            background: #fff3cd; 
+            color: #856404; padding: ${dashboardState.isMobile ? '20px' : '25px'}; border-radius: 15px; 
+            border: 1px solid #ffeaa7; 
+            box-shadow: 0 2px 8px rgba(255, 193, 7, 0.15);
+            text-align: center;
+          ">
+            <h4 style="margin: 0 0 12px 0; font-size: ${dashboardState.isMobile ? '1.1rem' : '1.2rem'}; font-weight: 600;">Processing Complete</h4>
+            <p style="margin: 0; font-size: ${dashboardState.isMobile ? '13px' : '14px'};">Your forms have been processed by IT. Certificates should be available soon.</p>
+          </div>
+        `;
+          } else if (status && status !== 'Not Submitted' && status !== 'rejected') {
+            certContainer.innerHTML = `
+          <div style="
+            background: #E6F2FF; 
+            color: #1976d2; padding: ${dashboardState.isMobile ? '20px' : '25px'}; border-radius: 15px; 
+            border: 1px solid #CFE6FF; 
+            box-shadow: 0 2px 8px rgba(25, 118, 210, 0.15);
+            text-align: center;
+          ">
+            <h4 style="margin: 0 0 12px 0; font-size: ${dashboardState.isMobile ? '1.1rem' : '1.2rem'}; font-weight: 600;">Application In Progress</h4>
+            <p style="margin: 0 0 20px 0; font-size: ${dashboardState.isMobile ? '13px' : '14px'};">Track your application progress to see when certificates will be available.</p>
+            <button onclick="loadPage('track')" style="
+              background: #1976d2; color: white; border: none; 
+              padding: ${dashboardState.isMobile ? '10px 20px' : '12px 24px'}; border-radius: 8px; cursor: pointer; 
+              font-weight: bold; transition: all 0.3s ease; font-size: ${dashboardState.isMobile ? '13px' : '14px'};
+              width: ${dashboardState.isMobile ? '100%' : 'auto'}; touch-action: manipulation;
+            ">
+              Track Progress
+            </button>
+          </div>
+        `;
+          }
+        }
+
+      } catch (err) {
+        const msg = document.getElementById('formIdDisplay');
+        if (msg) {
+          msg.innerHTML = `
+        <div style="color: #d9534f; background: #f8d7da; padding: 15px; border-radius: 8px; border: 1px solid #f5c6cb; font-size: ${dashboardState.isMobile ? '13px' : '14px'};">
+          Unable to load dashboard. Please refresh or contact support.
+        </div>
+      `;
+        }
+      } finally {
+        const spinner = document.getElementById('spinner');
+        if (spinner) spinner.style.display = 'none';
+      }
+    }
+
+    // Enhanced function to update profile section with Form ID and Status - Mobile Optimized
+    function updateProfileSection(employeeData, formId, status) {
+      // Update basic profile info
+      const profileId = document.getElementById('profileId');
+      const profileName = document.getElementById('profileName');
+
+      if (profileId) profileId.textContent = employeeData?.employeeId || '-';
+      if (profileName) profileName.textContent = employeeData?.name || '-';
+
+      // Update Form ID with mobile-responsive styling
+      const profileFormId = document.getElementById('profileFormId');
+      if (profileFormId) {
+        if (formId && status !== 'rejected') {
+          profileFormId.textContent = formId;
+          profileFormId.style.color = '#1976d2';
+          profileFormId.style.fontWeight = '700';
+          profileFormId.style.background = '#f0f7ff';
+          profileFormId.style.padding = dashboardState.isMobile ? '3px 6px' : '4px 8px';
+          profileFormId.style.borderRadius = '6px';
+          profileFormId.style.border = '1px solid #cfe2ff';
+          profileFormId.style.fontFamily = 'Courier New, monospace';
+          profileFormId.style.fontSize = dashboardState.isMobile ? '11px' : '12px';
+          profileFormId.className = 'status-default';
+        } else {
+          profileFormId.textContent = 'Not Submitted';
+          profileFormId.style.color = '#6c757d';
+          profileFormId.style.fontWeight = '500';
+          profileFormId.style.background = '#f8f9fa';
+          profileFormId.style.padding = dashboardState.isMobile ? '3px 6px' : '4px 8px';
+          profileFormId.style.borderRadius = '6px';
+          profileFormId.style.border = '1px solid #dee2e6';
+          profileFormId.style.fontFamily = 'inherit';
+          profileFormId.style.fontSize = dashboardState.isMobile ? '11px' : '12px';
+          profileFormId.className = 'status-inactive';
+        }
+      }
+
+      // Update Status with mobile-responsive styling
+      const profileStatus = document.getElementById('profileStatus');
+      if (profileStatus) {
+        if (status && status !== 'rejected') {
+          profileStatus.textContent = status;
+          profileStatus.style.fontWeight = '700';
+          profileStatus.style.padding = dashboardState.isMobile ? '3px 8px' : '4px 10px';
+          profileStatus.style.borderRadius = '12px';
+          profileStatus.style.fontSize = dashboardState.isMobile ? '10px' : '12px';
+          profileStatus.style.textTransform = 'uppercase';
+          profileStatus.style.letterSpacing = '0.5px';
+
+          // Dynamic color based on status
+          switch (status.toLowerCase()) {
+            case 'approved':
+            case 'it completed':
+              profileStatus.style.background = '#d4edda';
+              profileStatus.style.color = '#155724';
+              profileStatus.style.border = '1px solid #c3e6cb';
+              profileStatus.className = 'status-approved';
+              break;
+            case 'pending':
+            case 'submitted':
+            case 'submitted to hod':
+              profileStatus.style.background = '#fff3cd';
+              profileStatus.style.color = '#856404';
+              profileStatus.style.border = '1px solid #ffeaa7';
+              profileStatus.className = 'status-pending';
+              break;
+            case 'rejected':
+              profileStatus.style.background = '#f8d7da';
+              profileStatus.style.color = '#721c24';
+              profileStatus.style.border = '1px solid #f5c6cb';
+              profileStatus.className = 'status-rejected';
+              break;
+            default:
+              profileStatus.style.background = '#e6f2ff';
+              profileStatus.style.color = '#1976d2';
+              profileStatus.style.border = '1px solid #cfe2ff';
+              profileStatus.className = 'status-default';
+          }
+        } else if (status === 'rejected') {
+          profileStatus.textContent = 'REJECTED';
+          profileStatus.style.background = '#f8d7da';
+          profileStatus.style.color = '#721c24';
+          profileStatus.style.border = '1px solid #f5c6cb';
+          profileStatus.style.fontWeight = '700';
+          profileStatus.style.padding = dashboardState.isMobile ? '3px 8px' : '4px 10px';
+          profileStatus.style.borderRadius = '12px';
+          profileStatus.style.fontSize = dashboardState.isMobile ? '10px' : '12px';
+          profileStatus.style.textTransform = 'uppercase';
+          profileStatus.style.letterSpacing = '0.5px';
+          profileStatus.className = 'status-rejected';
+        } else {
+          profileStatus.textContent = 'No Application';
+          profileStatus.style.background = '#f8f9fa';
+          profileStatus.style.color = '#6c757d';
+          profileStatus.style.border = '1px solid #dee2e6';
+          profileStatus.style.fontWeight = '500';
+          profileStatus.style.padding = dashboardState.isMobile ? '3px 8px' : '4px 10px';
+          profileStatus.style.borderRadius = '12px';
+          profileStatus.style.fontSize = dashboardState.isMobile ? '10px' : '12px';
+          profileStatus.style.textTransform = 'uppercase';
+          profileStatus.style.letterSpacing = '0.5px';
+          profileStatus.className = 'status-inactive';
+        }
+      }
+    }
+
+    // Mobile-optimized history loader
+    async function loadHistory() {
+      const user = await validateEmployeeSession();
+      if (!user) return;
+
+      const container = document.getElementById('historyList');
+      if (!container) return;
+
+      try {
+        const res = await fetch('/api/employee/history', { credentials: 'include' });
+        const data = await res.json();
+
+        if (data.history?.length) {
+          container.innerHTML = data.history.map(f => `
+        <div class="form-entry" style="
+          background: #fafbfc; padding: ${dashboardState.isMobile ? '16px' : '20px'}; margin-bottom: 15px; 
+          border-radius: 10px; border: 1px solid #e3e8ee; 
+          box-shadow: 0 1px 8px rgba(25, 118, 210, 0.07);
+        ">
+          <div style="display: ${dashboardState.isMobile ? 'block' : 'grid'}; ${dashboardState.isMobile ? '' : 'grid-template-columns: 1fr auto;'} gap: ${dashboardState.isMobile ? '15px' : '20px'}; align-items: center;">
+            <div>
+              <div style="font-size: ${dashboardState.isMobile ? '14px' : '16px'}; font-weight: bold; color: #1976d2; margin-bottom: 8px;">
+                Form ID: <code style="background: #f7fafc; color: #1976d2; padding: 2px 6px; border-radius: 4px; font-size: ${dashboardState.isMobile ? '12px' : '13px'};">${f.formId}</code>
+              </div>
+              <div style="margin-bottom: 5px; font-size: ${dashboardState.isMobile ? '13px' : '14px'};">
+                <strong style="color: #1976d2;">Status:</strong> 
+                <span class="status status-${f.status.toLowerCase().replace(/\s+/g, '-')}">${f.status}</span>
+              </div>
+              <div style="color: #263238; font-size: ${dashboardState.isMobile ? '13px' : '14px'};">
+                <strong style="color: #1976d2;">Date:</strong> ${new Date(f.submissionDate || f.lastUpdated).toLocaleDateString()}
+              </div>
+            </div>
+            <div style="display: flex; ${dashboardState.isMobile ? 'justify-content: space-between;' : 'flex-direction: column;'} gap: 8px; ${dashboardState.isMobile ? 'margin-top: 10px;' : ''}">
+              <button onclick="viewFormDetails('${f.formId}')" style="
+                background: #1976d2; color: white; border: none; 
+                padding: ${dashboardState.isMobile ? '6px 12px' : '8px 16px'}; border-radius: 5px; cursor: pointer;
+                transition: background-color 0.2s; font-size: ${dashboardState.isMobile ? '12px' : '13px'};
+                touch-action: manipulation; ${dashboardState.isMobile ? 'flex: 1;' : ''}
+              ">View Details</button>
+              <button onclick="downloadPDF('${f.formId}')" style="
+                background: #5cb85c; color: white; border: none; 
+                padding: ${dashboardState.isMobile ? '6px 12px' : '8px 16px'}; border-radius: 5px; cursor: pointer;
+                transition: background-color 0.2s; font-size: ${dashboardState.isMobile ? '12px' : '13px'};
+                touch-action: manipulation; ${dashboardState.isMobile ? 'flex: 1;' : ''}
+              ">Download PDF</button>
+            </div>
+          </div>
+        </div>
+      `).join('');
+        } else {
+          container.innerHTML = `
+        <div style="text-align: center; padding: ${dashboardState.isMobile ? '40px 16px' : '60px 20px'}; color: #263238; background: #fafbfc; border-radius: 10px; border: 1px solid #e3e8ee; box-shadow: 0 1px 8px rgba(25, 118, 210, 0.07);">
+          <div style="font-size: ${dashboardState.isMobile ? '48px' : '64px'}; margin-bottom: 20px; color: #e3e8ee;">-</div>
+          <h3 style="color: #1976d2; font-size: ${dashboardState.isMobile ? '1.1rem' : '1.2rem'};">No History Available</h3>
+          <p style="margin: 20px 0; line-height: 1.6; font-size: ${dashboardState.isMobile ? '13px' : '14px'};">Your application history will appear here once you submit forms.</p>
+          <button onclick="loadPage('apply')" style="
+            background: #1976d2; color: white; border: none; 
+            padding: ${dashboardState.isMobile ? '10px 20px' : '12px 24px'}; border-radius: 8px; cursor: pointer; 
+            font-weight: bold; margin-top: 15px; font-size: ${dashboardState.isMobile ? '13px' : '14px'};
+            transition: background-color 0.2s; touch-action: manipulation;
+          ">Submit Your First Application</button>
+        </div>
+      `;
+        }
+      } catch (err) {
+        container.innerHTML = `
+      <div style="color: #d9534f; text-align: center; padding: ${dashboardState.isMobile ? '30px' : '40px'}; background: #f8d7da; border-radius: 10px; border: 1px solid #f5c6cb;">
+        <h3 style="font-size: ${dashboardState.isMobile ? '1.1rem' : '1.2rem'};">Error Loading History</h3>
+        <p style="margin: 15px 0; font-size: ${dashboardState.isMobile ? '13px' : '14px'};">Unable to load your application history.</p>
+        <button onclick="loadHistory()" style="
+          background: #d9534f; color: white; border: none; 
+          padding: ${dashboardState.isMobile ? '8px 16px' : '10px 20px'}; border-radius: 6px; cursor: pointer;
+          font-size: ${dashboardState.isMobile ? '13px' : '14px'}; touch-action: manipulation;
+        ">Try Again</button>
+      </div>
+    `;
+      } finally {
+        const spinner = document.getElementById('spinner');
+        if (spinner) spinner.style.display = 'none';
+      }
+    }
+
+    // Mobile-optimized assigned forms loader
+    async function fetchAssignedForms() {
+      const table = document.getElementById('assignedFormsTableBody');
+      const statusMessage = document.getElementById('formsStatusMessage');
+      const finalSubmitBtn = document.getElementById('finalSubmitBtn');
+
+      if (!table) return;
+
+      try {
+        await loadDashboardState();
+
+        const res = await fetch('/api/employee/assigned-forms', { credentials: 'include' });
+        const data = await res.json();
+
+        // Handle rejected applications with mobile styling
+        if (data.applicationStatus === 'rejected') {
+          if (statusMessage) {
+            statusMessage.innerHTML = `
+          <div style="background: #f8d7da; color: #721c24; padding: ${dashboardState.isMobile ? '16px' : '20px'}; border-radius: 10px; border: 1px solid #f5c6cb;">
+            <h4 style="margin: 0 0 15px 0; display: flex; align-items: center; gap: 10px; font-weight: 600; font-size: ${dashboardState.isMobile ? '1rem' : '1.1rem'};">
+              Application Rejected
+            </h4>
+            <p style="margin: 0 0 15px 0; font-size: ${dashboardState.isMobile ? '13px' : '14px'};">Your previous application was rejected by HOD and has been cleared from the system.</p>
+            ${data.rejectionReason ? `<p style="margin: 0 0 20px 0; background: rgba(114, 28, 36, 0.1); padding: 15px; border-radius: 8px; font-size: ${dashboardState.isMobile ? '12px' : '13px'};"><strong>Reason:</strong> ${data.rejectionReason}</p>` : ''}
+            <button onclick="window.location.href='/employee.html'" style="
+              background: #d9534f; color: white; border: none; 
+              padding: ${dashboardState.isMobile ? '10px 20px' : '12px 24px'}; border-radius: 8px; cursor: pointer; 
+              font-weight: bold; transition: all 0.3s ease; font-size: ${dashboardState.isMobile ? '13px' : '14px'};
+              touch-action: manipulation; width: ${dashboardState.isMobile ? '100%' : 'auto'};
+            ">
+              Submit New Application
+            </button>
+          </div>
+        `;
+          }
+          table.innerHTML = `
+        <tr>
+          <td colspan="3" style="text-align: center; padding: ${dashboardState.isMobile ? '30px' : '40px'}; color: #721c24;">
+            <div style="font-size: ${dashboardState.isMobile ? '36px' : '48px'}; margin-bottom: 15px;">!</div>
+            <strong style="font-size: ${dashboardState.isMobile ? '14px' : '16px'};">No forms assigned - Previous application was rejected</strong><br>
+            <small style="margin-top: 10px; display: block; font-size: ${dashboardState.isMobile ? '12px' : '13px'};">Submit a new application to get assigned forms</small>
+          </td>
+        </tr>
+      `;
+          if (finalSubmitBtn) {
+            finalSubmitBtn.style.display = 'none';
+          }
+          return;
+        }
+
+        // Display assigned forms
+        const assignedForms = data.assignedForms || [];
+        const applicationStatus = data.applicationStatus || 'Not Started';
+
+        // Show status message based on forms status with mobile styling
+        if (statusMessage) {
+          if (dashboardState.formsStatus === 'preview') {
+            statusMessage.innerHTML = `
+          <div style="background: #E6F2FF; color: #1976d2; padding: ${dashboardState.isMobile ? '16px' : '20px'}; border-radius: 10px; border: 1px solid #CFE6FF;">
+            <h4 style="margin: 0 0 15px 0; display: flex; align-items: center; gap: 10px; font-weight: 600; font-size: ${dashboardState.isMobile ? '1rem' : '1.1rem'};">
+              Forms Submitted & Under Review
+            </h4>
+            <p style="margin: 0; font-size: ${dashboardState.isMobile ? '13px' : '14px'};">Your forms are submitted and currently being processed. You cannot modify them at this time.</p>
+          </div>
+        `;
+            if (finalSubmitBtn) {
+              finalSubmitBtn.disabled = true;
+              finalSubmitBtn.textContent = dashboardState.isMobile ? 'Already Submitted' : 'Forms Already Submitted';
+              finalSubmitBtn.style.background = '#6c757d';
+            }
+          } else if (dashboardState.formsStatus === 'pending' && assignedForms.length > 0) {
+            statusMessage.innerHTML = `
+          <div style="background: #fff3cd; color: #856404; padding: ${dashboardState.isMobile ? '16px' : '20px'}; border-radius: 10px; border: 1px solid #ffeaa7;">
+            <h4 style="margin: 0 0 15px 0; display: flex; align-items: center; gap: 10px; font-weight: 600; font-size: ${dashboardState.isMobile ? '1rem' : '1.1rem'};">
+              Forms Ready to Fill
+            </h4>
+            <p style="margin: 0; font-size: ${dashboardState.isMobile ? '13px' : '14px'};">Complete all ${assignedForms.length} assigned forms before final submission to HOD.</p>
+          </div>
+        `;
+          } else {
+            statusMessage.innerHTML = `
+          <div style="background: #f8d7da; color: #721c24; padding: ${dashboardState.isMobile ? '16px' : '20px'}; border-radius: 10px; border: 1px solid #f5c6cb;">
+            <h4 style="margin: 0 0 15px 0; display: flex; align-items: center; gap: 10px; font-weight: 600; font-size: ${dashboardState.isMobile ? '1rem' : '1.1rem'};">
+              No Forms Assigned
+            </h4>
+            <p style="margin: 0 0 15px 0; font-size: ${dashboardState.isMobile ? '13px' : '14px'};">Submit your initial application first to get assigned forms.</p>
+            <button onclick="loadPage('apply')" style="
+              background: #d9534f; color: white; border: none; 
+              padding: ${dashboardState.isMobile ? '8px 16px' : '10px 20px'}; border-radius: 6px; cursor: pointer;
+              font-weight: 500; transition: background-color 0.2s; font-size: ${dashboardState.isMobile ? '13px' : '14px'};
+              touch-action: manipulation; width: ${dashboardState.isMobile ? '100%' : 'auto'};
+            ">Go to Apply</button>
+          </div>
+        `;
+          }
+        }
+
+        // Display forms table with mobile styling
+        if (assignedForms.length > 0) {
+          table.innerHTML = assignedForms.map(f => `
+        <tr style="border-bottom: 1px solid #e3e8ee;">
+          <td style="padding: ${dashboardState.isMobile ? '10px 8px' : '15px'}; font-weight: bold; color: #1976d2; font-size: ${dashboardState.isMobile ? '13px' : '14px'};">${f.title}</td>
+          <td style="padding: ${dashboardState.isMobile ? '10px 8px' : '15px'};">
+            <span class="status status-${applicationStatus.toLowerCase().replace(/\s+/g, '-')}" style="font-size: ${dashboardState.isMobile ? '11px' : '12px'};">${applicationStatus}</span>
+          </td>
+          <td style="padding: ${dashboardState.isMobile ? '10px 8px' : '15px'};">
+            <button onclick="openForm('${f.path}')" style="
+              background: ${dashboardState.formsStatus === 'preview' ? '#6c757d' : '#1976d2'}; 
+              color: white; border: none; padding: ${dashboardState.isMobile ? '6px 12px' : '8px 16px'}; 
+              border-radius: 5px; cursor: pointer; font-weight: 500;
+              transition: all 0.3s ease; font-size: ${dashboardState.isMobile ? '12px' : '13px'};
+              touch-action: manipulation;
+            ">
+              ${dashboardState.formsStatus === 'preview' ? (dashboardState.isMobile ? 'View' : 'View (Read-only)') : 'Fill Form'}
+            </button>
+          </td>
+        </tr>
+      `).join('');
+        } else {
+          table.innerHTML = `
+        <tr>
+          <td colspan="3" style="text-align: center; padding: ${dashboardState.isMobile ? '40px 16px' : '50px'}; color: #263238;">
+            <div style="font-size: ${dashboardState.isMobile ? '36px' : '48px'}; margin-bottom: 20px; color: #e3e8ee;">-</div>
+            <h4 style="color: #1976d2; font-size: ${dashboardState.isMobile ? '1rem' : '1.1rem'};">No Forms Assigned Yet</h4>
+            <p style="margin: 15px 0; font-size: ${dashboardState.isMobile ? '13px' : '14px'};">Submit your initial application first to get assigned forms.</p>
+            <button onclick="loadPage('apply')" style="
+              background: #1976d2; color: white; border: none; 
+              padding: ${dashboardState.isMobile ? '8px 16px' : '10px 20px'}; border-radius: 6px; cursor: pointer; 
+              margin-top: 10px; font-weight: 500; transition: background-color 0.2s;
+              font-size: ${dashboardState.isMobile ? '13px' : '14px'}; touch-action: manipulation;
+            ">Submit Application</button>
+          </td>
+        </tr>
+      `;
+        }
+
+      } catch (err) {
+        table.innerHTML = `
+      <tr>
+        <td colspan="3" style="text-align: center; color: #d9534f; padding: ${dashboardState.isMobile ? '24px' : '30px'};">
+          <h4 style="font-size: ${dashboardState.isMobile ? '1rem' : '1.1rem'};">Error Loading Forms</h4>
+          <p style="font-size: ${dashboardState.isMobile ? '13px' : '14px'};">Unable to load assigned forms.</p>
+          <button onclick="fetchAssignedForms()" style="
+            background: #d9534f; color: white; border: none; 
+            padding: ${dashboardState.isMobile ? '8px 16px' : '10px 20px'}; border-radius: 5px; cursor: pointer; margin-top: 10px;
+            font-size: ${dashboardState.isMobile ? '13px' : '14px'}; touch-action: manipulation;
+          ">Retry</button>
+        </td>
+      </tr>
+    `;
+      } finally {
+        const spinner = document.getElementById('spinner');
+        if (spinner) spinner.style.display = 'none';
+      }
+    }
+
+    // Utility functions
+    function openForm(formPath) {
+      if (!formPath) {
+        showToast('Form path is invalid', 'error');
+        return;
+      }
+      window.open(formPath, '_blank');
+    }
+
+    // Mobile-optimized form details viewer
+    async function viewFormDetails(formId) {
+      try {
+        const res = await fetch(`/api/form-details?formId=${formId}`, { credentials: 'include' });
+        if (!res.ok) throw new Error('Failed to fetch form details');
+
+        const form = await res.json();
+
+        contentArea.innerHTML = `
+      <div style="max-width: ${dashboardState.isMobile ? '100%' : '800px'}; margin: 0 auto;">
+        <h3 style="margin-bottom: 25px; color: #1976d2; font-weight: 600; font-size: ${dashboardState.isMobile ? '1.2rem' : '1.3rem'};">Application Details</h3>
+        <div style="background: #fafbfc; padding: ${dashboardState.isMobile ? '20px' : '30px'}; border-radius: 15px; box-shadow: 0 1px 8px rgba(25, 118, 210, 0.07); border: 1px solid #e3e8ee;">
+          <div style="display: ${dashboardState.isMobile ? 'block' : 'grid'}; ${dashboardState.isMobile ? '' : 'grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));'} gap: ${dashboardState.isMobile ? '20px' : '25px'}; margin-bottom: ${dashboardState.isMobile ? '25px' : '30px'};">
+            <div>
+              <h4 style="color: #1976d2; margin-bottom: 15px; font-weight: 600; font-size: ${dashboardState.isMobile ? '1rem' : '1.1rem'};">Application Info</h4>
+              <p style="margin-bottom: 8px; font-size: ${dashboardState.isMobile ? '13px' : '14px'};"><strong style="color: #1976d2;">Form ID:</strong> <code style="background: #f7fafc; color: #1976d2; padding: 3px 6px; border-radius: 4px; font-size: ${dashboardState.isMobile ? '12px' : '13px'};">${form.formId}</code></p>
+              <p style="margin-bottom: 8px; font-size: ${dashboardState.isMobile ? '13px' : '14px'};"><strong style="color: #1976d2;">Name:</strong> <span style="color: #263238;">${form.name}</span></p>
+              <p style="margin-bottom: 8px; font-size: ${dashboardState.isMobile ? '13px' : '14px'};"><strong style="color: #1976d2;">Employee ID:</strong> <span style="color: #263238;">${form.employeeId}</span></p>
+              <p style="margin-bottom: 8px; font-size: ${dashboardState.isMobile ? '13px' : '14px'};"><strong style="color: #1976d2;">Department:</strong> <span style="color: #263238;">${form.department}</span></p>
+            </div>
+            <div>
+              <h4 style="color: #5cb85c; margin-bottom: 15px; font-weight: 600; font-size: ${dashboardState.isMobile ? '1rem' : '1.1rem'};">Status Info</h4>
+              <p style="margin-bottom: 8px; font-size: ${dashboardState.isMobile ? '13px' : '14px'};"><strong style="color: #1976d2;">No Dues Type:</strong> <span style="background: #E6F2FF; color: #1976d2; padding: 2px 8px; border-radius: 4px; font-size: ${dashboardState.isMobile ? '12px' : '14px'};">${form.noDuesType}</span></p>
+              <p style="margin-bottom: 8px; font-size: ${dashboardState.isMobile ? '13px' : '14px'};"><strong style="color: #1976d2;">Email:</strong> <span style="color: #263238;">${form.email}</span></p>
+              <p style="margin-bottom: 8px; font-size: ${dashboardState.isMobile ? '13px' : '14px'};"><strong style="color: #1976d2;">Status:</strong> <span class="status status-${form.status?.toLowerCase().replace(/\s+/g, '-')}">${form.status}</span></p>
+              <p style="margin-bottom: 8px; font-size: ${dashboardState.isMobile ? '13px' : '14px'};"><strong style="color: #1976d2;">Remarks:</strong> <span style="color: #263238;">${form.remarks || 'None'}</span></p>
+            </div>
+          </div>
+          <hr style="margin: 25px 0; border: none; border-top: 2px solid #e3e8ee;">
+          <div style="text-align: center;">
+            <p style="margin-bottom: 15px; color: #1976d2; font-weight: 600; font-size: ${dashboardState.isMobile ? '14px' : '16px'};"><strong>Order Letter:</strong></p>
+            <a href="/uploads/${form.orderLetter}" target="_blank" style="
+              display: inline-block; background: #1976d2; color: white; 
+              text-decoration: none; padding: ${dashboardState.isMobile ? '10px 20px' : '12px 24px'}; border-radius: 8px; 
+              font-weight: bold; transition: all 0.3s ease; font-size: ${dashboardState.isMobile ? '13px' : '14px'};
+              touch-action: manipulation; width: ${dashboardState.isMobile ? '100%' : 'auto'};
+            ">View Document</a>
+          </div>
+        </div>
+      </div>
+    `;
+      } catch (err) {
+        showToast('Failed to load form details', 'error');
+      } finally {
+        const spinner = document.getElementById('spinner');
+        if (spinner) spinner.style.display = 'none';
+      }
+    }
+
+    function downloadPDF(formId) {
+      window.open(`/api/employee/form-pdf/${formId}`, '_blank');
+    }
+
+    // Profile functions
+    function changeProfilePic() {
+      showToast("Profile picture change feature is coming soon", 'info');
+    }
+
+    function openSettings() {
+      showToast("Settings panel is coming soon", 'info');
+    }
+
+    function changePassword() {
+      showToast("Password change feature is coming soon", 'info');
+    }
+
+    // Mobile-optimized logout with proper cleanup
+    function logout() {
+      const modal = document.createElement('div');
+      modal.className = 'logout-modal-overlay';
+      modal.style.cssText = `
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.6); z-index: 10000; display: flex;
+    align-items: center; justify-content: center; padding: ${dashboardState.isMobile ? '10px' : '20px'};
+  `;
+
+      modal.innerHTML = `
+    <div style="background: white; padding: ${dashboardState.isMobile ? '24px' : '30px'}; border-radius: 15px; max-width: ${dashboardState.isMobile ? '100%' : '400px'}; width: ${dashboardState.isMobile ? '100%' : '90%'}; text-align: center; border: 2px solid #e3e8ee;">
+      <h3 style="color: #1976d2; margin-bottom: 20px; font-weight: 600; font-size: ${dashboardState.isMobile ? '1.1rem' : '1.2rem'};">Confirm Logout</h3>
+      <p style="margin-bottom: 25px; line-height: 1.5; color: #263238; font-size: ${dashboardState.isMobile ? '14px' : '16px'};">Are you sure you want to logout from your dashboard?</p>
+      <div style="display: flex; gap: ${dashboardState.isMobile ? '10px' : '15px'}; justify-content: center; flex-direction: ${dashboardState.isMobile ? 'column' : 'row'};">
+        <button class="cancel-logout-btn" style="
+          background: #6c757d; color: white; border: none; 
+          padding: ${dashboardState.isMobile ? '10px 20px' : '12px 24px'}; border-radius: 8px; cursor: pointer;
+          font-weight: 500; transition: background-color 0.2s; font-size: ${dashboardState.isMobile ? '14px' : '16px'};
+          touch-action: manipulation;
+        ">Cancel</button>
+        <button class="confirm-logout-btn" style="
+          background: #d9534f; color: white; border: none; 
+          padding: ${dashboardState.isMobile ? '10px 20px' : '12px 24px'}; border-radius: 8px; cursor: pointer;
+          font-weight: 500; transition: background-color 0.2s; font-size: ${dashboardState.isMobile ? '14px' : '16px'};
+          touch-action: manipulation;
+        ">Yes, Logout</button>
+      </div>
+    </div>
+  `;
+
+      document.body.appendChild(modal);
+
+      // Cleanup function
+      const closeModal = () => {
+        if (modal && modal.parentElement) {
+          modal.parentElement.removeChild(modal);
+        }
+        // Remove any leftover modal elements
+        const leftoverModals = document.querySelectorAll('.logout-modal-overlay');
+        leftoverModals.forEach(m => m.remove());
+
+        // Reset body styles in case they were modified
+        document.body.style.overflow = '';
+        document.body.classList.remove('modal-open');
+      };
+
+      // Cancel button handler
+      modal.querySelector('.cancel-logout-btn').addEventListener('click', closeModal);
+
+      // Confirm button handler
+      modal.querySelector('.confirm-logout-btn').addEventListener('click', () => {
+        closeModal();
+        confirmLogout();
+      });
+
+      // Close modal when clicking outside
+      modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+          closeModal();
+        }
+      });
+
+      // Close modal on Escape key
+      const handleEscape = (e) => {
+        if (e.key === 'Escape') {
+          closeModal();
+          document.removeEventListener('keydown', handleEscape);
+        }
+      };
+      document.addEventListener('keydown', handleEscape);
+    }
+
+    function confirmLogout() {
+      // Mark session for cleanup
+      dashboardState.sessionCleanup = true;
+
+      showToast('Logging out...', 'info', 2000);
+
+      // Close WebSocket connection
+      if (websocket && websocket.readyState === WebSocket.OPEN) {
+        websocket.close();
+      }
+
+      setTimeout(() => {
+        window.location.href = '/api/auth/logout';
+      }, 1500);
+    }
+
+    // Window resize handler for responsive updates
+    window.addEventListener('resize', () => {
+      updateDeviceInfo();
+
+      // Update profile popup positioning on resize
+      if (profilePopup.style.display === 'block') {
+        if (dashboardState.isMobile) {
+          profilePopup.style.position = 'fixed';
+          profilePopup.style.top = '60px';
+          profilePopup.style.right = '10px';
+          profilePopup.style.width = '280px';
+          profilePopup.style.maxWidth = 'calc(100vw - 20px)';
+        } else {
+          profilePopup.style.position = 'absolute';
+          profilePopup.style.top = '60px';
+          profilePopup.style.right = '18px';
+          profilePopup.style.width = '230px';
+          profilePopup.style.maxWidth = 'none';
+        }
+      }
+    });
+
+    // Initialization with mobile detection
+    window.addEventListener('DOMContentLoaded', async () => {
+      try {
+        // Initialize device detection
+        updateDeviceInfo();
+
+        const user = await validateEmployeeSession();
+        if (!user) return;
+
+        // Initialize dashboard state
+        await loadDashboardState();
+
+        // Initialize WebSocket notifications
+        await initializeWebSocketNotifications();
+
+        // Request notification permission
+        if ('Notification' in window && Notification.permission === 'default') {
+          await Notification.requestPermission();
+        }
+
+        // Load home page
+        await loadPage('home');
+
+        showToast('Dashboard loaded successfully', 'success', 3000);
+
+      } catch (error) {
+        showToast('Dashboard initialization had some issues, but continuing...', 'warning');
+        await loadPage('home');
+      } finally {
+        const spinner = document.getElementById('spinner');
+        if (spinner) spinner.style.display = 'none';
+      }
+    });
+
+    // Cleanup on page unload
+    window.addEventListener('beforeunload', () => {
+      dashboardState.sessionCleanup = true;
+      if (websocket && websocket.readyState === WebSocket.OPEN) {
+        websocket.close();
+      }
+    });
+
+    // Handle visibility change for connection management
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'visible' && !dashboardState.sessionCleanup) {
+        // Check if WebSocket needs reconnection
+        if (!websocket || websocket.readyState !== WebSocket.OPEN) {
+          setTimeout(initializeWebSocketNotifications, 1000);
+        }
+      }
+    });
+
+
+
+
+  </script>
+
+
+
+
+
+</body>
+
+</html>

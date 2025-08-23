@@ -1,0 +1,1012 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>IT No-Dues Login Portal</title>
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+  <style>
+    :root {
+      --bg-light-1: #7fc5ff;
+      --bg-light-2: #f0f4ff;
+      --bg-dark-1: #1a1a1a;
+      --bg-dark-2: #333;
+      --form-light: #ffffff;
+      --form-dark: #2a2a2a;
+      --text-light: #1e2a3a;
+      --text-dark: #f2f2f2;
+      --primary: #2c5aa0;
+      --primary-hover: #1a4480;
+      --primary-glow: rgba(44, 90, 160, .4);
+      --success: #28a745;
+      --danger: #dc3545;
+      --warning: #ffc107;
+      --info: #17a2b8;
+      --radius: 16px;
+      --field-height: 48px;
+      --field-pad-left: 36px;
+      --field-pad-right: 40px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', 'Segoe UI', Roboto, Helvetica, sans-serif;
+      color: var(--text-light);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 2rem;
+      position: relative;
+      overflow-x: hidden;
+      background: linear-gradient(135deg, var(--bg-light-1), var(--bg-light-2));
+      background-size: 200% 200%;
+      animation: bgShift 15s ease infinite;
+      transition: color .3s;
+    }
+
+    @keyframes bgShift {
+      0% {
+        background-position: 0% 50%;
+      }
+      50% {
+        background-position: 100% 50%;
+      }
+      100% {
+        background-position: 0% 50%;
+      }
+    }
+
+    body.dark-mode {
+      color: var(--text-dark);
+      background: linear-gradient(135deg, var(--bg-dark-1), var(--bg-dark-2));
+      background-size: 200% 200%;
+      animation: bgShiftDark 20s ease infinite;
+    }
+
+    @keyframes bgShiftDark {
+      0% {
+        background-position: 50% 0%;
+      }
+      50% {
+        background-position: 50% 100%;
+      }
+      100% {
+        background-position: 50% 0%;
+      }
+    }
+
+    .toggle-theme {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: transparent;
+      border: none;
+      font-size: 22px;
+      cursor: pointer;
+      z-index: 20;
+      transition: transform .15s;
+      color: var(--text-light);
+    }
+
+    body.dark-mode .toggle-theme {
+      color: var(--text-dark);
+    }
+
+    .toggle-theme:active {
+      transform: scale(.9);
+    }
+
+    .particles {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      overflow: hidden;
+      z-index: 0;
+    }
+
+    .particles span {
+      position: absolute;
+      display: block;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, .35);
+      animation: floatUp linear infinite;
+    }
+
+    @keyframes floatUp {
+      0% {
+        transform: translateY(0) scale(0.8);
+        opacity: .7;
+      }
+      70% {
+        opacity: .5;
+      }
+      100% {
+        transform: translateY(-120vh) scale(1);
+        opacity: 0;
+      }
+    }
+
+    body.dark-mode .particles span {
+      background: rgba(255, 255, 255, .15);
+    }
+
+    .login-container {
+      background: var(--form-light);
+      border-radius: var(--radius);
+      padding: 40px 30px;
+      width: 100%;
+      max-width: 420px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, .15);
+      transition: background .3s, transform .4s, opacity .4s;
+      z-index: 5;
+      opacity: 0;
+      transform: translateY(20px) scale(.98);
+      animation: cardIn .6s ease forwards .15s;
+    }
+
+    body.dark-mode .login-container {
+      background: var(--form-dark);
+    }
+
+    @keyframes cardIn {
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 30px;
+      font-size: 26px;
+      color: var(--primary);
+    }
+
+    .form-group {
+      position: relative;
+      margin-top: 28px;
+    }
+
+    .form-group input,
+    .form-group select {
+      width: 100%;
+      height: var(--field-height);
+      padding: 14px var(--field-pad-right) 14px var(--field-pad-left);
+      font-size: 15px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      background: #fff;
+      transition: border-color .3s, box-shadow .3s, background .3s;
+      appearance: none;
+    }
+
+    body.dark-mode .form-group input,
+    body.dark-mode .form-group select {
+      background: #2a2a2a;
+      color: #fff;
+      border-color: #555;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 8px var(--primary-glow);
+      outline: none;
+    }
+
+    .form-group .material-icons {
+      position: absolute;
+      left: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 20px;
+      color: #888;
+      transition: color .3s;
+      pointer-events: none;
+    }
+
+    .form-group.focused .material-icons {
+      color: var(--primary);
+    }
+
+    body.dark-mode .form-group .material-icons {
+      color: #aaa;
+    }
+
+    body.dark-mode .form-group.focused .material-icons {
+      color: var(--primary);
+    }
+
+    .form-group label {
+      position: absolute;
+      left: var(--field-pad-left);
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 14px;
+      color: #666;
+      pointer-events: none;
+      transition: all .2s ease;
+      background: transparent;
+      padding: 0 4px;
+    }
+
+    .form-group input:focus+label,
+    .form-group input:not(:placeholder-shown)+label,
+    .form-group select:focus+label,
+    .form-group select:valid+label {
+      top: -10px;
+      left: calc(var(--field-pad-left) - 6px);
+      font-size: 12px;
+      color: var(--primary);
+      background: var(--form-light);
+    }
+
+    body.dark-mode .form-group input:focus+label,
+    body.dark-mode .form-group input:not(:placeholder-shown)+label,
+    body.dark-mode .form-group select:focus+label,
+    body.dark-mode .form-group select:valid+label {
+      background: var(--form-dark);
+    }
+
+    .password-group {
+      position: relative;
+    }
+
+    .toggle-password {
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      padding: 0;
+      display: flex;
+      align-items: center;
+    }
+
+    .toggle-password .material-icons {
+      font-size: 20px;
+      color: #888;
+    }
+
+    .remember-me {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 10px;
+      margin-bottom: 10px;
+      font-size: 14px;
+    }
+
+    .btn-wrap {
+      position: relative;
+      margin-top: 32px;
+    }
+
+    .btn-wrap .login-btn {
+      width: 100%;
+      padding: 14px;
+      border: none;
+      border-radius: 8px;
+      background: var(--primary);
+      color: #fff;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background .3s, transform .2s, box-shadow .3s;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .btn-wrap .login-btn:hover {
+      background: var(--primary-hover);
+      transform: scale(1.03);
+      box-shadow: 0 0 10px var(--primary-glow);
+    }
+
+    .btn-wrap .login-btn:disabled {
+      cursor: not-allowed;
+      opacity: .75;
+      transform: none;
+      box-shadow: none;
+    }
+
+    .btn-wrap .spinner {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity .15s;
+    }
+
+    .btn-wrap.loading .spinner {
+      opacity: 1;
+    }
+
+    .btn-wrap.loading .login-btn {
+      color: transparent;
+    }
+
+    .spinner:after {
+      content: "";
+      width: 20px;
+      height: 20px;
+      border: 3px solid rgba(255, 255, 255, .4);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    .otp-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1000;
+      backdrop-filter: blur(5px);
+    }
+
+    .modal-overlay {
+      background: rgba(0, 0, 0, 0.7);
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .modal-content {
+      background: var(--form-light);
+      padding: 40px;
+      border-radius: 16px;
+      max-width: 450px;
+      width: 100%;
+      text-align: center;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      animation: modalIn 0.3s ease;
+    }
+
+    body.dark-mode .modal-content {
+      background: var(--form-dark);
+    }
+
+    @keyframes modalIn {
+      from {
+        opacity: 0;
+        transform: scale(0.9) translateY(-20px);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+      }
+    }
+
+    .modal-content h3 {
+      color: var(--primary);
+      margin-bottom: 20px;
+      font-size: 24px;
+    }
+
+    .modal-content p {
+      margin-bottom: 15px;
+      color: #666;
+    }
+
+    body.dark-mode .modal-content p {
+      color: #ccc;
+    }
+
+    .email-display {
+      font-weight: 600;
+      color: var(--primary);
+      font-size: 14px;
+    }
+
+    .otp-input-container {
+      margin: 30px 0;
+    }
+
+    .otp-input {
+      width: 100%;
+      padding: 20px;
+      font-size: 24px;
+      text-align: center;
+      border: 2px solid #e9ecef;
+      border-radius: 12px;
+      letter-spacing: 8px;
+      font-weight: 600;
+      font-family: 'Courier New', monospace;
+      transition: border-color 0.3s;
+    }
+
+    body.dark-mode .otp-input {
+      background: #2a2a2a;
+      color: #fff;
+      border-color: #555;
+    }
+
+    .otp-input:focus {
+      border-color: var(--primary);
+      outline: none;
+      box-shadow: 0 0 8px var(--primary-glow);
+    }
+
+    .modal-actions {
+      display: flex;
+      gap: 12px;
+      margin-top: 30px;
+      flex-wrap: wrap;
+    }
+
+    .modal-btn {
+      flex: 1;
+      padding: 12px 16px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 14px;
+      transition: all 0.3s;
+      min-width: 100px;
+    }
+
+    .verify-btn {
+      background: var(--primary);
+      color: white;
+    }
+
+    .verify-btn:hover {
+      background: var(--primary-hover);
+      transform: translateY(-1px);
+    }
+
+    .resend-btn {
+      background: var(--success);
+      color: white;
+    }
+
+    .resend-btn:hover {
+      background: #218838;
+      transform: translateY(-1px);
+    }
+
+    .cancel-btn {
+      background: #6c757d;
+      color: white;
+    }
+
+    .cancel-btn:hover {
+      background: #5a6268;
+      transform: translateY(-1px);
+    }
+
+    .modal-btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .otp-message {
+      margin-top: 15px;
+      padding: 12px;
+      border-radius: 6px;
+      font-weight: 500;
+      font-size: 14px;
+      min-height: 20px;
+    }
+
+    .otp-message.success {
+      background: #d4edda;
+      color: #155724;
+      border: 1px solid #c3e6cb;
+    }
+
+    .otp-message.error {
+      background: #f8d7da;
+      color: #721c24;
+      border: 1px solid #f5c6cb;
+    }
+
+    .otp-message.info {
+      background: #d1ecf1;
+      color: #0c5460;
+      border: 1px solid #bee5eb;
+    }
+
+    body.dark-mode .otp-message.success {
+      background: rgba(40, 167, 69, 0.2);
+      color: #4caf50;
+      border-color: rgba(40, 167, 69, 0.3);
+    }
+
+    body.dark-mode .otp-message.error {
+      background: rgba(220, 53, 69, 0.2);
+      color: #f44336;
+      border-color: rgba(220, 53, 69, 0.3);
+    }
+
+    body.dark-mode .otp-message.info {
+      background: rgba(23, 162, 184, 0.2);
+      color: #17a2b8;
+      border-color: rgba(23, 162, 184, 0.3);
+    }
+
+    .links {
+      margin-top: 20px;
+      text-align: center;
+      font-size: 14px;
+    }
+
+    .links a {
+      color: var(--primary);
+      text-decoration: none;
+      margin: 0 8px;
+    }
+
+    .links a:hover {
+      text-decoration: underline;
+    }
+
+    .error {
+      color: var(--danger);
+      margin-top: 16px;
+      text-align: center;
+      font-size: 14px;
+      min-height: 1.25em;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    @media (max-width: 480px) {
+      .login-container {
+        padding: 28px 20px;
+      }
+
+      h2 {
+        font-size: 22px;
+      }
+
+      .btn-wrap .login-btn {
+        font-size: 15px;
+      }
+
+      .modal-content {
+        padding: 30px 20px;
+      }
+
+      .modal-actions {
+        flex-direction: column;
+      }
+
+      .modal-btn {
+        width: 100%;
+      }
+
+      .otp-input {
+        font-size: 20px;
+        letter-spacing: 4px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <button class="toggle-theme" id="themeToggle" title="Toggle Light/Dark">Dark</button>
+
+  <div class="particles">
+    <span style="left:20%; animation-duration:8s; animation-delay:0s"></span>
+    <span style="left:40%; animation-duration:12s; animation-delay:2s"></span>
+    <span style="left:60%; animation-duration:10s; animation-delay:4s"></span>
+    <span style="left:80%; animation-duration:14s; animation-delay:1s"></span>
+  </div>
+
+  <div class="login-container" id="loginCard">
+    <h2>NO DUES CLEARANCE PORTAL</h2>
+
+    <form id="loginForm" autocomplete="off" novalidate>
+      <div class="form-group">
+        <span class="material-icons">arrow_drop_down</span>
+        <select id="userType" name="userType" required>
+          <option value="" disabled selected hidden></option>
+          <option value="employee">Employee</option>
+          <option value="it">IT Department</option>
+          <option value="hod">Head of Department</option>
+        </select>
+        <label for="userType">Login as</label>
+      </div>
+
+      <div class="form-group">
+        <span class="material-icons">person</span>
+        <input type="text" id="userId" name="userId" required placeholder=" " autocomplete="username" />
+        <label for="userId">User ID</label>
+      </div>
+
+      <div class="form-group password-group">
+        <span class="material-icons">lock</span>
+        <input type="password" id="password" name="password" required placeholder=" " autocomplete="current-password" />
+        <label for="password">Password</label>
+        <button type="button" id="togglePassword" class="toggle-password" title="Show/Hide Password">
+          <span class="material-icons" id="toggleIcon">visibility_off</span>
+        </button>
+      </div>
+
+      <div class="remember-me">
+        <input type="checkbox" id="rememberMe" />
+        <label for="rememberMe">Remember Me</label>
+      </div>
+
+      <div class="btn-wrap" id="btnWrap">
+        <button type="submit" class="login-btn" id="loginBtn">Login</button>
+        <div class="spinner"></div>
+      </div>
+
+      <div class="error" id="errorMsg" role="alert" aria-live="polite"></div>
+    </form>
+
+    <div class="links">
+      <a href="#">Forgot Password?</a> | <a href="#">Help & Support</a>
+    </div>
+  </div>
+
+  <div id="otpModal" class="otp-modal hidden">
+    <div class="modal-overlay">
+      <div class="modal-content">
+        <h3>Verify Your Identity</h3>
+        <p>We've sent a 6-digit verification code to:</p>
+        <p id="maskedEmail" class="email-display"></p>
+
+        <div class="otp-input-container">
+          <input type="text" id="otpInput" class="otp-input" maxlength="6" placeholder="000000" autocomplete="off">
+        </div>
+
+        <div class="modal-actions">
+          <button id="verifyOtpBtn" class="modal-btn verify-btn">Verify OTP</button>
+          <button id="resendOtpBtn" class="modal-btn resend-btn">Resend OTP</button>
+          <button id="cancelOtpBtn" class="modal-btn cancel-btn">Cancel</button>
+        </div>
+
+        <div id="otpMessage" class="otp-message"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    window.addEventListener('DOMContentLoaded', () => {
+      // DOM Elements
+      const themeToggle = document.getElementById('themeToggle');
+      const loginForm = document.getElementById('loginForm');
+      const loginBtn = document.getElementById('loginBtn');
+      const btnWrap = document.getElementById('btnWrap');
+      const errorMsg = document.getElementById('errorMsg');
+      const userIdInput = document.getElementById('userId');
+      const userTypeSelect = document.getElementById('userType');
+      const passwordInput = document.getElementById('password');
+      const rememberMeCheckbox = document.getElementById('rememberMe');
+      const togglePassword = document.getElementById('togglePassword');
+      const toggleIcon = document.getElementById('toggleIcon');
+
+      // OTP Modal Elements
+      const otpModal = document.getElementById('otpModal');
+      const otpInput = document.getElementById('otpInput');
+      const maskedEmail = document.getElementById('maskedEmail');
+      const verifyOtpBtn = document.getElementById('verifyOtpBtn');
+      const resendOtpBtn = document.getElementById('resendOtpBtn');
+      const cancelOtpBtn = document.getElementById('cancelOtpBtn');
+      const otpMessage = document.getElementById('otpMessage');
+
+      // Global Variables
+      let currentSessionToken = '';
+
+      // Theme Toggle
+      function applyPersistedTheme() {
+        const theme = localStorage.getItem('theme');
+        document.body.classList.toggle('dark-mode', theme === 'dark');
+        themeToggle.textContent = theme === 'dark' ? 'Light' : 'Dark';
+      }
+
+      themeToggle.addEventListener('click', () => {
+        const isDark = document.body.classList.toggle('dark-mode');
+        localStorage.setItem('theme', isDark ? 'dark' : 'light');
+        themeToggle.textContent = isDark ? 'Light' : 'Dark';
+      });
+
+      applyPersistedTheme();
+
+      // Password Toggle
+      togglePassword.addEventListener('click', () => {
+        const isVisible = passwordInput.type === 'text';
+        passwordInput.type = isVisible ? 'password' : 'text';
+        toggleIcon.textContent = isVisible ? 'visibility_off' : 'visibility';
+      });
+
+      // Remember Me
+      function autoFillRememberedUser() {
+        const rememberedUserId = localStorage.getItem('rememberedUserId');
+        const rememberedUserType = localStorage.getItem('rememberedUserType');
+        if (rememberedUserId && rememberedUserType) {
+          userIdInput.value = rememberedUserId;
+          userTypeSelect.value = rememberedUserType;
+          rememberMeCheckbox.checked = true;
+        }
+      }
+
+      function handleRememberMe(userId, userType) {
+        if (rememberMeCheckbox.checked) {
+          localStorage.setItem('rememberedUserId', userId);
+          localStorage.setItem('rememberedUserType', userType);
+        } else {
+          localStorage.removeItem('rememberedUserId');
+          localStorage.removeItem('rememberedUserType');
+        }
+      }
+
+      // Field Effects
+      function setupFieldFocusEffects() {
+        document.querySelectorAll('.form-group input, .form-group select').forEach(field => {
+          field.addEventListener('focus', e => e.target.parentElement.classList.add('focused'));
+          field.addEventListener('blur', e => e.target.parentElement.classList.remove('focused'));
+        });
+      }
+
+      setupFieldFocusEffects();
+      autoFillRememberedUser();
+      errorMsg.textContent = '';
+
+      // Employee Login with OTP
+      async function handleEmployeeLogin(employeeId, password) {
+        try {
+          showMessage('Verifying credentials...', 'info');
+
+          const response = await fetch('/api/auth/employee-login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
+            body: JSON.stringify({ employeeId, password })
+          });
+
+          const data = await response.json();
+
+          if (data.success && data.nextStep === 'verify_otp') {
+            currentSessionToken = data.sessionToken;
+            showOTPModal(data.message, data.email);
+            showMessage('OTP sent to your email', 'success');
+          } else {
+            showMessage(data.message || 'Login failed', 'error');
+          }
+
+        } catch (error) {
+          showMessage('Login failed. Please try again.', 'error');
+        }
+      }
+
+      // HOD/IT Direct Login
+      async function handleDirectLogin(endpoint, credentials, userType) {
+        try {
+          showMessage('Logging in...', 'info');
+
+          const response = await fetch(endpoint, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
+            body: JSON.stringify(credentials)
+          });
+
+          const data = await response.json();
+
+          if (data.success) {
+            handleRememberMe(credentials.hodId || credentials.itId, userType);
+            showMessage('Login successful! Redirecting...', 'success');
+            setTimeout(() => {
+              window.location.href = data.redirectTo;
+            }, 1000);
+          } else {
+            showMessage(data.message || 'Login failed', 'error');
+          }
+
+        } catch (error) {
+          showMessage('Login failed. Please try again.', 'error');
+        }
+      }
+
+      // OTP Modal Functions
+      function showOTPModal(message, maskedEmailValue) {
+        maskedEmail.textContent = maskedEmailValue || 'your registered email';
+        otpInput.value = '';
+        otpMessage.textContent = '';
+        otpModal.classList.remove('hidden');
+
+        setTimeout(() => {
+          otpInput.focus();
+        }, 300);
+      }
+
+      function closeOTPModal() {
+        otpModal.classList.add('hidden');
+        currentSessionToken = '';
+        otpInput.value = '';
+        otpMessage.textContent = '';
+        showLoading(false);
+      }
+
+      function showOTPMessage(message, type) {
+        otpMessage.textContent = message;
+        otpMessage.className = `otp-message ${type}`;
+
+        if (type === 'success') {
+          setTimeout(() => {
+            otpMessage.textContent = '';
+          }, 3000);
+        }
+      }
+
+      // OTP Verification
+      async function verifyOTP() {
+        const otp = otpInput.value.trim();
+
+        if (!otp || otp.length !== 6) {
+          showOTPMessage('Please enter a 6-digit OTP', 'error');
+          return;
+        }
+
+        try {
+          verifyOtpBtn.disabled = true;
+          showOTPMessage('Verifying OTP...', 'info');
+
+          const response = await fetch('/api/auth/verify-otp', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
+            body: JSON.stringify({
+              sessionToken: currentSessionToken,
+              otp: otp
+            })
+          });
+
+          const data = await response.json();
+
+          if (data.success) {
+            showOTPMessage('Login successful! Redirecting...', 'success');
+            handleRememberMe(userIdInput.value, userTypeSelect.value);
+
+            setTimeout(() => {
+              window.location.href = data.redirectTo || '/dashboard.html';
+            }, 1500);
+
+          } else {
+            showOTPMessage(data.message || 'Invalid OTP', 'error');
+            otpInput.focus();
+            otpInput.select();
+          }
+
+        } catch (error) {
+          showOTPMessage('Verification failed. Please try again.', 'error');
+        } finally {
+          verifyOtpBtn.disabled = false;
+        }
+      }
+
+      // Resend OTP
+      async function resendOTP() {
+        try {
+          resendOtpBtn.disabled = true;
+          showOTPMessage('Resending OTP...', 'info');
+
+          const response = await fetch('/api/auth/resend-otp', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
+            body: JSON.stringify({ sessionToken: currentSessionToken })
+          });
+
+          const data = await response.json();
+
+          if (data.success) {
+            showOTPMessage('New OTP sent to your email', 'success');
+            otpInput.focus();
+          } else {
+            showOTPMessage(data.message || 'Failed to resend OTP', 'error');
+          }
+
+        } catch (error) {
+          showOTPMessage('Failed to resend OTP', 'error');
+        } finally {
+          resendOtpBtn.disabled = false;
+        }
+      }
+
+      // Event Listeners
+      verifyOtpBtn.addEventListener('click', verifyOTP);
+      resendOtpBtn.addEventListener('click', resendOTP);
+      cancelOtpBtn.addEventListener('click', closeOTPModal);
+
+      otpInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+          verifyOTP();
+        }
+      });
+
+      otpInput.addEventListener('input', (e) => {
+        e.target.value = e.target.value.replace(/[^0-9]/g, '');
+      });
+
+      // Main Login Form Submit
+      loginForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        showLoading(true);
+
+        const userId = userIdInput.value.trim();
+        const password = passwordInput.value.trim();
+        const userType = userTypeSelect.value;
+
+        if (!userId || !password || !userType) {
+          showMessage('Please fill in all fields.', 'error');
+          return;
+        }
+
+        if (userType === 'employee') {
+          await handleEmployeeLogin(userId, password);
+        } else if (userType === 'hod') {
+          await handleDirectLogin('/api/auth/hod-login', {
+            hodId: userId,
+            password: password
+          }, userType);
+        } else if (userType === 'it') {
+          await handleDirectLogin('/api/auth/it-login', {
+            itId: userId,
+            password: password
+          }, userType);
+        }
+      });
+
+      // Utility Functions
+      function showLoading(isLoading) {
+        btnWrap.classList.toggle('loading', isLoading);
+        loginBtn.disabled = isLoading;
+      }
+
+      function showMessage(msg, type = 'error') {
+        errorMsg.textContent = msg;
+        errorMsg.style.color = type === 'success' ? 'var(--success)' :
+          type === 'info' ? 'var(--info)' : 'var(--danger)';
+        showLoading(false);
+
+        if (type === 'success') {
+          setTimeout(() => {
+            errorMsg.textContent = '';
+          }, 3000);
+        }
+      }
+
+      otpModal.addEventListener('click', (e) => {
+        if (e.target === otpModal) {
+          closeOTPModal();
+        }
+      });
+    });
+  </script>
+</body>
+
+</html>

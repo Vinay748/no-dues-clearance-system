@@ -1,0 +1,1601 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>IT Department Review</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f2f2f2;
+      padding: 20px;
+      margin: 0;
+    }
+
+    /* Updated header for search bar */
+    .header-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 30px;
+      padding: 20px;
+      background: linear-gradient(135deg, #023e8a 0%, #0077b6 100%);
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      flex-wrap: wrap;
+      gap: 15px;
+    }
+
+    .header-container h2 {
+      color: white;
+      margin: 0;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    }
+
+    .header-controls {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    /* Search bar styles */
+    .search-container {
+      display: flex;
+      align-items: center;
+      background: rgba(255, 255, 255, 0.15);
+      border-radius: 25px;
+      padding: 5px;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      transition: all 0.3s ease;
+    }
+
+    .search-container:focus-within {
+      background: rgba(255, 255, 255, 0.25);
+      border-color: rgba(255, 255, 255, 0.5);
+      box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
+    }
+
+    .search-input {
+      background: transparent;
+      border: none;
+      color: white;
+      padding: 8px 15px;
+      font-size: 14px;
+      width: 280px;
+      outline: none;
+    }
+
+    .search-input::placeholder {
+      color: rgba(255, 255, 255, 0.7);
+    }
+
+    .search-btn,
+    .clear-search-btn {
+      background: rgba(255, 255, 255, 0.2);
+      border: none;
+      color: white;
+      padding: 8px 12px;
+      border-radius: 20px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin-left: 5px;
+    }
+
+    .search-btn:hover,
+    .clear-search-btn:hover {
+      background: rgba(255, 255, 255, 0.3);
+      transform: scale(1.05);
+    }
+
+    .logout-btn {
+      background: rgba(255, 255, 255, 0.2);
+      color: white;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      padding: 10px 20px;
+      border-radius: 25px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 14px;
+    }
+
+    .logout-btn:hover {
+      background: rgba(255, 255, 255, 0.3);
+      border-color: rgba(255, 255, 255, 0.5);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+
+    .logout-btn:active {
+      transform: translateY(0);
+    }
+
+    /* Search results highlighting */
+    .search-highlight {
+      background: #ffeb3b !important;
+      color: #000 !important;
+      padding: 2px 4px;
+      border-radius: 3px;
+      font-weight: bold;
+    }
+
+    .search-results-info {
+      background: #d1ecf1;
+      color: #0c5460;
+      padding: 10px;
+      border-radius: 5px;
+      margin: 10px 0;
+      text-align: center;
+      border: 1px solid #bee5eb;
+    }
+
+    h2 {
+      text-align: center;
+      color: #023e8a;
+    }
+
+    .tab-buttons {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .tab-buttons button {
+      margin: 0 10px;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      background-color: #0077b6;
+      color: white;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .tab-buttons button.active {
+      background-color: #023e8a;
+    }
+
+    .tab-buttons button:hover {
+      background-color: #005577;
+    }
+
+    .tab {
+      display: none;
+    }
+
+    .tab.active {
+      display: block;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    th,
+    td {
+      padding: 12px;
+      border: 1px solid #ddd;
+      text-align: left;
+    }
+
+    th {
+      background-color: #0077b6;
+      color: white;
+      font-weight: bold;
+    }
+
+    tr:nth-child(even) {
+      background-color: #f8f9fa;
+    }
+
+    tr:hover {
+      background-color: #e3f2fd;
+    }
+
+    .actions {
+      white-space: nowrap;
+    }
+
+    .actions button {
+      margin-right: 5px;
+      padding: 6px 12px;
+      border: none;
+      border-radius: 4px;
+      color: white;
+      cursor: pointer;
+      font-size: 12px;
+      transition: all 0.3s ease;
+    }
+
+    .approve-btn {
+      background-color: #28a745;
+    }
+
+    .approve-btn:hover {
+      background-color: #218838;
+    }
+
+    .reject-btn {
+      background-color: #dc3545;
+    }
+
+    .reject-btn:hover {
+      background-color: #c82333;
+    }
+
+    .review-btn {
+      background-color: #17a2b8;
+    }
+
+    .review-btn:hover {
+      background-color: #138496;
+    }
+
+    .complete-btn {
+      background-color: #28a745;
+    }
+
+    .complete-btn:hover {
+      background-color: #218838;
+    }
+
+    /* UPDATED: Fixed modal positioning and z-index */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.6);
+      justify-content: center;
+      align-items: center;
+      z-index: 99999;
+      /* Higher z-index to appear above back button */
+      padding: 20px;
+      /* Add padding to prevent edge clipping */
+      box-sizing: border-box;
+    }
+
+    /* UPDATED: Fixed modal content layout */
+    .modal-content {
+      background: white;
+      padding: 0;
+      /* Remove padding from main container */
+      width: 95%;
+      height: 90%;
+      max-height: 90vh;
+      /* Prevent modal from being too tall */
+      display: flex;
+      flex-direction: column;
+      border-radius: 10px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+      position: relative;
+      /* Ensure proper positioning context */
+      overflow: hidden;
+      /* Prevent content overflow */
+    }
+
+    /* UPDATED: Fix for modal header */
+    .modal-content h2 {
+      margin: 0;
+      padding: 20px 30px 10px 30px;
+      border-bottom: 1px solid #ddd;
+      background: #f8f9fa;
+    }
+
+    .modal-content p {
+      padding: 10px 30px;
+      margin: 0;
+    }
+
+    /* UPDATED: Fixed iframe container */
+    .iframe-container {
+      display: flex;
+      gap: 15px;
+      flex: 1;
+      margin: 20px;
+      overflow: hidden;
+      /* Prevent iframe overflow */
+      min-height: 0;
+      /* Allow flex shrinking */
+    }
+
+    /* UPDATED: Fixed iframe wrapper */
+    .iframe-wrapper {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      border: 2px solid #ddd;
+      border-radius: 8px;
+      overflow: hidden;
+      min-height: 0;
+      /* Allow flex shrinking */
+    }
+
+    /* UPDATED: Fixed iframe sizing */
+    iframe {
+      flex: 1;
+      border: none;
+      width: 100%;
+      min-height: 300px;
+      /* Minimum height for iframes */
+    }
+
+    .iframe-header {
+      background: #f8f9fa;
+      padding: 10px;
+      border-bottom: 1px solid #ddd;
+      font-weight: bold;
+      text-align: center;
+      flex-shrink: 0;
+      /* Don't shrink header */
+    }
+
+    .form-checklist {
+      margin-top: 10px;
+      text-align: center;
+      padding: 10px;
+      background: #f0f8ff;
+      flex-shrink: 0;
+      /* Don't shrink checkbox area */
+    }
+
+    .form-checklist label {
+      margin: 0 10px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .form-checklist input[type="checkbox"] {
+      margin-right: 5px;
+      transform: scale(1.2);
+    }
+
+    /* UPDATED: FIXED Modal actions positioning */
+    .modal-actions {
+      background: white;
+      border-top: 2px solid #ddd;
+      padding: 20px 30px;
+      /* Increased padding */
+      display: flex;
+      justify-content: flex-end;
+      gap: 15px;
+      flex-shrink: 0;
+      /* Never shrink the button area */
+      position: relative;
+      /* Ensure proper stacking */
+      z-index: 10;
+      /* Above iframe content */
+    }
+
+    /* UPDATED: FIXED Modal action buttons */
+    .modal-actions button {
+      padding: 12px 24px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      min-width: 160px;
+      /* Ensure buttons are wide enough */
+      white-space: nowrap;
+      /* Prevent text wrapping */
+    }
+
+    .cancel-btn {
+      background: #6c757d;
+      color: white;
+    }
+
+    .cancel-btn:hover {
+      background: #5a6268;
+    }
+
+    .send-btn {
+      background: #0077b6;
+      color: white;
+    }
+
+    .send-btn:hover {
+      background: #005577;
+    }
+
+    .send-btn:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+    }
+
+    .workflow-indicator {
+      background: linear-gradient(135deg, #e8f4f8 0%, #f0f8ff 100%);
+      padding: 15px;
+      border-left: 4px solid #0077b6;
+      margin-bottom: 20px;
+      border-radius: 0 8px 8px 0;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .status-badge {
+      padding: 4px 8px;
+      border-radius: 12px;
+      font-size: 11px;
+      font-weight: bold;
+      text-transform: uppercase;
+    }
+
+    .status-pending {
+      background: #fff3cd;
+      color: #856404;
+    }
+
+    .status-approved {
+      background: #d4edda;
+      color: #155724;
+    }
+
+    .status-rejected {
+      background: #f8d7da;
+      color: #721c24;
+    }
+
+    .status-submitted {
+      background: #cce5ff;
+      color: #0066cc;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 40px 20px;
+      color: #666;
+    }
+
+    .empty-state i {
+      font-size: 48px;
+      color: #ccc;
+      margin-bottom: 16px;
+    }
+
+    /* UPDATED: Override any conflicting back button styles */
+    .global-back-button {
+      position: fixed;
+      left: 20px;
+      bottom: 20px;
+      z-index: 9999;
+      /* Lower than modal */
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 25px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      backdrop-filter: blur(10px);
+    }
+
+    /* Mobile responsive search and header */
+    @media (max-width: 768px) {
+      .header-container {
+        flex-direction: column;
+        text-align: center;
+      }
+
+      .header-controls {
+        width: 100%;
+        justify-content: center;
+        flex-direction: column;
+        gap: 15px;
+      }
+
+      .search-input {
+        width: 250px;
+      }
+
+      .tab-buttons button {
+        margin: 5px;
+        padding: 8px 12px;
+        font-size: 12px;
+      }
+
+      /* UPDATED: Mobile modal fixes */
+      .modal {
+        padding: 10px;
+      }
+
+      .modal-content {
+        width: 100%;
+        height: 95%;
+      }
+
+      .iframe-container {
+        flex-direction: column;
+        margin: 15px;
+        gap: 10px;
+      }
+
+      /* UPDATED: Mobile modal actions */
+      .modal-actions {
+        padding: 15px;
+        flex-direction: column;
+      }
+
+      .modal-actions button {
+        width: 100%;
+        min-width: unset;
+      }
+
+      table {
+        font-size: 12px;
+      }
+
+      .actions button {
+        padding: 4px 8px;
+        font-size: 10px;
+      }
+
+      .logout-btn {
+        padding: 8px 16px;
+        font-size: 13px;
+      }
+
+      /* UPDATED: Mobile back button positioning */
+      .global-back-button {
+        left: 10px;
+        bottom: 10px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .search-input {
+        width: 200px;
+        font-size: 13px;
+      }
+
+      .search-container {
+        padding: 3px;
+      }
+    }
+
+    /* Loading animation */
+    .loading {
+      text-align: center;
+      padding: 20px;
+    }
+
+    .loading::after {
+      content: '';
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 3px solid #f3f3f3;
+      border-top: 3px solid #0077b6;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      0% {
+        transform: rotate(0deg);
+      }
+
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+
+    /* Logout confirmation modal */
+    .logout-modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.7);
+      justify-content: center;
+      align-items: center;
+      z-index: 10000;
+    }
+
+    .logout-modal-content {
+      background: white;
+      padding: 30px;
+      border-radius: 15px;
+      max-width: 400px;
+      width: 90%;
+      text-align: center;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+    }
+
+    .logout-modal-buttons {
+      display: flex;
+      gap: 15px;
+      justify-content: center;
+      margin-top: 25px;
+    }
+
+    .logout-modal-buttons button {
+      padding: 12px 24px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: all 0.3s ease;
+    }
+
+    .confirm-logout {
+      background: #dc3545;
+      color: white;
+    }
+
+    .confirm-logout:hover {
+      background: #c82333;
+    }
+
+    .cancel-logout {
+      background: #6c757d;
+      color: white;
+    }
+
+    .cancel-logout:hover {
+      background: #5a6268;
+    }
+  </style>
+
+</head>
+
+<body>
+  <!-- Header with search bar and logout button -->
+  <div class="header-container">
+    <h2>IT Department - Review No Dues Forms</h2>
+    <div class="header-controls">
+      <!-- Search Bar -->
+      <div class="search-container">
+        <input type="text" id="globalSearch" placeholder="Search by Form ID, Employee ID, Name..." class="search-input">
+        <button onclick="performSearch()" class="search-btn">Search</button>
+        <button onclick="clearSearch()" class="clear-search-btn">Clear</button>
+      </div>
+      <!-- Logout Button -->
+      <button class="logout-btn" onclick="showLogoutConfirmation()">
+        <span>Logout</span>
+      </button>
+    </div>
+  </div>
+
+  <div class="tab-buttons">
+    <!-- Original tabs -->
+    <button onclick="showTab('pending')" id="pendingTab" class="active">Initial Requests</button>
+    <button onclick="showTab('approved')" id="approvedTab">Approved Requests</button>
+    <button onclick="showTab('rejected')" id="rejectedTab">Rejected Requests</button>
+
+    <!-- HOD workflow tab -->
+    <button onclick="showTab('hodApproved')" id="hodApprovedTab">From HOD Review</button>
+    <button onclick="showTab('completed')" id="completedTab">IT Completed</button>
+  </div>
+
+  <!-- Logout Confirmation Modal -->
+  <div id="logoutModal" class="logout-modal">
+    <div class="logout-modal-content">
+      <h3 style="color: #dc3545; margin-bottom: 20px;">Confirm Logout</h3>
+      <p style="margin-bottom: 25px; line-height: 1.5;">
+        Are you sure you want to logout from the IT Dashboard?
+      </p>
+      <div class="logout-modal-buttons">
+        <button class="cancel-logout" onclick="hideLogoutConfirmation()">
+          Cancel
+        </button>
+        <button class="confirm-logout" onclick="performLogout()">
+          Yes, Logout
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Original Pending Tab -->
+  <div id="pending" class="tab active">
+    <div class="workflow-indicator">
+      <strong>Initial Employee Requests</strong> - Fresh applications awaiting IT approval to assign forms
+    </div>
+    <h3>Pending Applications</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Form ID</th>
+          <th>Employee ID</th>
+          <th>Name</th>
+          <th>Department</th>
+          <th>Type</th>
+          <th>Submitted</th>
+          <th>Order Letter</th>
+          <th>Status</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody id="pendingTableBody">
+        <tr>
+          <td colspan="9" class="loading">Loading pending requests...</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Original Approved Tab -->
+  <div id="approved" class="tab">
+    <div class="workflow-indicator">
+      <strong>Approved for Form Filling</strong> - Employees assigned forms to complete
+    </div>
+    <h3>Approved Applications</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Form ID</th>
+          <th>Employee ID</th>
+          <th>Name</th>
+          <th>Department</th>
+          <th>Type</th>
+          <th>Submitted</th>
+          <th>Order Letter</th>
+          <th>Remark</th>
+        </tr>
+      </thead>
+      <tbody id="approvedTableBody">
+        <tr>
+          <td colspan="8" class="loading">Loading approved requests...</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Original Rejected Tab -->
+  <div id="rejected" class="tab">
+    <div class="workflow-indicator">
+      <strong>Rejected Applications</strong> - Applications that didn't meet initial requirements
+    </div>
+    <h3>Rejected Applications</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Form ID</th>
+          <th>Employee ID</th>
+          <th>Name</th>
+          <th>Department</th>
+          <th>Type</th>
+          <th>Submitted</th>
+          <th>Order Letter</th>
+          <th>Remark</th>
+        </tr>
+      </thead>
+      <tbody id="rejectedTableBody">
+        <tr>
+          <td colspan="8" class="loading">Loading rejected requests...</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- HOD Approved Tab -->
+  <div id="hodApproved" class="tab">
+    <div class="workflow-indicator">
+      <strong>Ready for IT Final Review</strong> - Forms completed by employees and approved by HOD
+    </div>
+    <h3>Forms from HOD (Ready for IT Processing)</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Form ID</th>
+          <th>Employee</th>
+          <th>Department</th>
+          <th>Type</th>
+          <th>HOD Approved</th>
+          <th>Status</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody id="hodApprovedTableBody">
+        <tr>
+          <td colspan="7" class="loading">Loading HOD approved forms...</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- IT Completed Tab -->
+  <div id="completed" class="tab">
+    <div class="workflow-indicator">
+      <strong>Process Complete</strong> - Final clearance completed by IT
+    </div>
+    <h3>IT Completed Applications</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Form ID</th>
+          <th>Employee</th>
+          <th>Department</th>
+          <th>Type</th>
+          <th>Completed Date</th>
+          <th>IT Officer</th>
+          <th>IT Remarks</th>
+        </tr>
+      </thead>
+      <tbody id="completedTableBody">
+        <tr>
+          <td colspan="7" class="loading">Loading completed forms...</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Enhanced Modal for Form Preview & Selection -->
+  <div id="formPreviewDialog" class="modal">
+    <div class="modal-content">
+      <h2>Select Forms to Send to Employee</h2>
+      <p>Preview and select which forms to assign to the employee:</p>
+
+      <div class="iframe-container">
+        <div class="iframe-wrapper">
+          <div class="iframe-header">E-file Transfer Form</div>
+          <iframe id="efilePreview" src="/forms/efile.html"></iframe>
+          <div class="form-checklist">
+            <label><input type="checkbox" id="efileCheck"> Select E-file Form</label>
+          </div>
+        </div>
+
+        <div class="iframe-wrapper">
+          <div class="iframe-header">Disposal Form</div>
+          <iframe id="disposalPreview" src="/forms/disposalform.html"></iframe>
+          <div class="form-checklist">
+            <label><input type="checkbox" id="disposalCheck"> Select Disposal Form</label>
+          </div>
+        </div>
+
+        <div class="iframe-wrapper">
+          <div class="iframe-header">Form 365</div>
+          <iframe id="form365Preview"></iframe>
+          <div class="form-checklist">
+            <label><input type="checkbox" id="form365Check"> Select Form 365</label>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-actions">
+        <button class="cancel-btn" onclick="closeDialog()">Cancel</button>
+        <button id="sendToEmployeeBtn" class="send-btn" onclick="sendFormsToEmployee()" disabled>
+          Send Selected Forms to Employee
+        </button>
+      </div>
+    </div>
+  </div>
+
+
+  <script>
+    let currentFormId = '';
+    let currentNoDuesType = '';
+
+    // Search functionality
+    function performSearch() {
+      const searchTerm = document.getElementById('globalSearch').value.toLowerCase().trim();
+
+      if (!searchTerm) {
+        clearSearch();
+        return;
+      }
+
+      // Find the currently active tab
+      const activeTab = document.querySelector('.tab.active');
+      if (!activeTab) return;
+
+      const tbody = activeTab.querySelector('tbody');
+      if (!tbody) return;
+
+      // Get all table rows in the active tab
+      const rows = Array.from(tbody.getElementsByTagName('tr'));
+      let visibleCount = 0;
+
+      // Filter rows based on search term
+      rows.forEach(row => {
+        // Skip loading rows and empty state rows
+        if (row.classList.contains('loading') ||
+          row.textContent.includes('Loading') ||
+          row.textContent.includes('No pending') ||
+          row.textContent.includes('No approved') ||
+          row.textContent.includes('No rejected') ||
+          row.textContent.includes('No forms') ||
+          row.textContent.includes('No completed')) {
+          return;
+        }
+
+        const rowText = row.textContent.toLowerCase();
+        if (rowText.includes(searchTerm)) {
+          row.style.display = '';
+          visibleCount++;
+
+          // Highlight matching text
+          highlightTextInRow(row, searchTerm);
+        } else {
+          row.style.display = 'none';
+        }
+      });
+
+      // Show "no results" message if no matches
+      if (visibleCount === 0) {
+        showNoResultsMessage(tbody);
+      }
+
+      // Show results count
+      showSearchResults(searchTerm, visibleCount);
+    }
+
+    // Helper function to highlight matching text
+    function highlightTextInRow(row, searchTerm) {
+      const cells = row.getElementsByTagName('td');
+      Array.from(cells).forEach(cell => {
+        // Skip cells with buttons or links
+        if (cell.querySelector('button') || cell.querySelector('a')) {
+          return;
+        }
+
+        const cellText = cell.textContent.toLowerCase();
+        if (cellText.includes(searchTerm)) {
+          const regex = new RegExp(`(${searchTerm})`, 'gi');
+          cell.innerHTML = cell.innerHTML.replace(regex, '<span class="search-highlight">$1</span>');
+        }
+      });
+    }
+
+    // Show no results message
+    function showNoResultsMessage(tbody) {
+      const table = tbody.parentElement;
+      const headerRow = table.querySelector('thead tr');
+      const colCount = headerRow ? headerRow.children.length : 5;
+
+      const noResultRow = document.createElement('tr');
+      noResultRow.className = 'no-results-row';
+      noResultRow.innerHTML = `<td colspan="${colCount}" class="empty-state">No matching records found for your search</td>`;
+      tbody.appendChild(noResultRow);
+    }
+
+    // Clear search function
+    function clearSearch() {
+      const searchInput = document.getElementById('globalSearch');
+      if (searchInput) {
+        searchInput.value = '';
+      }
+
+      // Find the currently active tab
+      const activeTab = document.querySelector('.tab.active');
+      if (!activeTab) return;
+
+      const tbody = activeTab.querySelector('tbody');
+      if (!tbody) return;
+
+      // Show all rows
+      const rows = Array.from(tbody.getElementsByTagName('tr'));
+      rows.forEach(row => {
+        row.style.display = '';
+      });
+
+      // Remove no results message
+      const noResultRows = tbody.querySelectorAll('.no-results-row');
+      noResultRows.forEach(row => row.remove());
+
+      // Remove search highlights
+      removeSearchHighlights(tbody);
+
+      // Hide search results info
+      hideSearchResults();
+    }
+
+    // Remove search highlights
+    function removeSearchHighlights(tbody) {
+      const highlights = tbody.querySelectorAll('.search-highlight');
+      highlights.forEach(highlight => {
+        highlight.outerHTML = highlight.textContent;
+      });
+    }
+
+    // Show search results count
+    function showSearchResults(searchTerm, count) {
+      let resultsDiv = document.getElementById('searchResults');
+      if (!resultsDiv) {
+        resultsDiv = document.createElement('div');
+        resultsDiv.id = 'searchResults';
+        resultsDiv.className = 'search-results-info';
+        document.querySelector('.tab-buttons').appendChild(resultsDiv);
+      }
+
+      resultsDiv.innerHTML = `Found ${count} result${count !== 1 ? 's' : ''} for "${searchTerm}"`;
+      resultsDiv.style.display = 'block';
+    }
+
+    // Hide search results
+    function hideSearchResults() {
+      const resultsDiv = document.getElementById('searchResults');
+      if (resultsDiv) {
+        resultsDiv.style.display = 'none';
+      }
+    }
+
+    // Logout functionality
+    function showLogoutConfirmation() {
+      document.getElementById('logoutModal').style.display = 'flex';
+    }
+
+    function hideLogoutConfirmation() {
+      document.getElementById('logoutModal').style.display = 'none';
+    }
+
+    async function performLogout() {
+      try {
+        // Show loading state
+        const confirmBtn = document.querySelector('.confirm-logout');
+        confirmBtn.innerHTML = 'Logging out...';
+        confirmBtn.disabled = true;
+
+        const response = await fetch('/api/auth/logout', {
+          method: 'POST',
+          credentials: 'include',
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        });
+
+        const data = await response.json();
+
+        if (response.ok && data.success) {
+          // Clear any stored session data
+          sessionStorage.clear();
+          localStorage.removeItem('userSession');
+
+          // Redirect to login page
+          window.location.href = data.redirect || '/login.html';
+        } else {
+          throw new Error(data.message || 'Logout failed');
+        }
+      } catch (error) {
+        alert('Logout failed: ' + error.message + '\nRedirecting to login page...');
+        window.location.href = '/login.html';
+      }
+    }
+
+    // Enhanced tab switching with proper state management
+    function showTab(tabId) {
+      // Clear search when switching tabs
+      clearSearch();
+
+      // Remove active from all tabs and buttons
+      document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+      document.querySelectorAll('.tab-buttons button').forEach(btn => btn.classList.remove('active'));
+
+      // Add active to selected tab and button
+      document.getElementById(tabId).classList.add('active');
+      document.getElementById(tabId + 'Tab').classList.add('active');
+
+      // Refresh data when switching to HOD approved tab
+      if (tabId === 'hodApproved') {
+        fetchHODApproved();
+      }
+    }
+
+    // Enhanced form preview dialog
+    function openFormPreviewDialog(formId, noDuesType) {
+      currentFormId = formId;
+      currentNoDuesType = noDuesType;
+
+      const form365Path = noDuesType.toLowerCase() === 'transfer' ? 'form365transfer.html' : 'form365disposal.html';
+      document.getElementById('form365Preview').src = `/forms/${form365Path}`;
+
+      // Reset checkboxes
+      ['efileCheck', 'disposalCheck', 'form365Check'].forEach(id => {
+        document.getElementById(id).checked = false;
+      });
+
+      updateSendButtonState();
+      document.getElementById('formPreviewDialog').style.display = 'flex';
+    }
+
+    function closeDialog() {
+      document.getElementById('formPreviewDialog').style.display = 'none';
+    }
+
+    // Open IT form review for HOD-approved forms
+    function openITFormReview(formId) {
+      const url = `/it-form-review.html?formId=${encodeURIComponent(formId)}`;
+      const windowFeatures = 'width=1400,height=900,scrollbars=yes,resizable=yes';
+      const reviewWindow = window.open(url, '_blank', windowFeatures);
+
+      if (!reviewWindow) {
+        alert('Please allow popups for this site to open the review window.');
+      } else {
+        // Refresh data when the review window is closed
+        const checkClosed = setInterval(() => {
+          if (reviewWindow.closed) {
+            clearInterval(checkClosed);
+            setTimeout(() => {
+              fetchAllData(); // Refresh all data
+            }, 1000);
+          }
+        }, 1000);
+      }
+    }
+
+    // Enhanced checkbox handling with validation
+    function updateSendButtonState() {
+      const allChecked = [...document.querySelectorAll('#efileCheck, #disposalCheck, #form365Check')]
+        .every(cb => cb.checked);
+
+      const sendBtn = document.getElementById('sendToEmployeeBtn');
+      sendBtn.disabled = !allChecked;
+
+      if (allChecked) {
+        sendBtn.innerHTML = 'Send All Forms to Employee';
+      } else {
+        sendBtn.innerHTML = 'Select All Forms to Continue';
+      }
+    }
+
+    // Enhanced form sending with better error handling
+    async function sendFormsToEmployee() {
+      const sendBtn = document.getElementById('sendToEmployeeBtn');
+      sendBtn.disabled = true;
+      sendBtn.innerHTML = 'Sending Forms...';
+
+      try {
+        const response = await fetch('/api/itadmin/decision', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          },
+          credentials: 'include',
+          body: JSON.stringify({
+            formId: currentFormId,
+            status: 'Approved',
+            remark: 'Forms assigned by IT - All three forms selected'
+          })
+        });
+
+        const data = await response.json();
+
+        if (response.ok && data.success) {
+          alert('Forms successfully assigned to employee!');
+          closeDialog();
+          fetchAllData(); // Refresh all data
+        } else {
+          throw new Error(data.message || 'Failed to assign forms');
+        }
+      } catch (error) {
+        alert('Error while sending forms: ' + error.message);
+        sendBtn.disabled = false;
+        updateSendButtonState();
+      }
+    }
+
+    // Enhanced rejection with better validation
+    async function rejectRequest(formId) {
+      const reason = prompt('Enter rejection reason (required):');
+      if (!reason || reason.trim().length < 5) {
+        alert('Please enter a detailed rejection reason (minimum 5 characters).');
+        return;
+      }
+
+      try {
+        const response = await fetch('/api/itadmin/decision', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          },
+          credentials: 'include',
+          body: JSON.stringify({
+            formId,
+            status: 'Rejected',
+            remark: reason.trim()
+          })
+        });
+
+        const data = await response.json();
+
+        if (response.ok && data.success) {
+          alert('Request rejected successfully.');
+          fetchAllData();
+        } else {
+          throw new Error(data.message || 'Failed to reject request');
+        }
+      } catch (error) {
+        alert('Error while rejecting request: ' + error.message);
+      }
+    }
+
+    // Enhanced data fetching with better error handling
+    async function fetchAllData() {
+      try {
+        await Promise.all([
+          fetchReviewData(),
+          fetchHODApproved(),
+          fetchITCompleted()
+        ]);
+      } catch (error) {
+        // Silent error handling
+      }
+    }
+
+    // Enhanced original function with better error handling
+    async function fetchReviewData() {
+      const pendingBody = document.getElementById('pendingTableBody');
+      const approvedBody = document.getElementById('approvedTableBody');
+      const rejectedBody = document.getElementById('rejectedTableBody');
+
+      // Show loading state
+      pendingBody.innerHTML = '<tr><td colspan="9" class="loading">Loading pending requests...</td></tr>';
+      approvedBody.innerHTML = '<tr><td colspan="8" class="loading">Loading approved requests...</td></tr>';
+      rejectedBody.innerHTML = '<tr><td colspan="8" class="loading">Loading rejected requests...</td></tr>';
+
+      try {
+        const response = await fetch('/api/itadmin/review-requests', {
+          credentials: 'include',
+          headers: { 'Accept': 'application/json' }
+        });
+
+        if (!response.ok) {
+          throw new Error(`Server error: ${response.status}`);
+        }
+
+        const data = await response.json();
+
+        if (data.success && Array.isArray(data.requests)) {
+          populateOriginalTables(data.requests);
+        } else {
+          throw new Error(data.message || 'Invalid response format');
+        }
+      } catch (error) {
+        populateOriginalTables([]);
+      }
+    }
+
+    // Enhanced HOD approved data fetching
+    async function fetchHODApproved() {
+      const tbody = document.getElementById('hodApprovedTableBody');
+      tbody.innerHTML = '<tr><td colspan="7" class="loading">Loading HOD approved forms...</td></tr>';
+
+      try {
+        const response = await fetch('/api/itadmin/pending', {
+          credentials: 'include',
+          headers: { 'Accept': 'application/json' }
+        });
+
+        if (!response.ok) {
+          throw new Error(`Server error: ${response.status}`);
+        }
+
+        const data = await response.json();
+
+        if (data.success && Array.isArray(data.list)) {
+          populateHODApprovedTable(data.list);
+        } else {
+          throw new Error(data.message || 'Invalid response format');
+        }
+      } catch (error) {
+        populateHODApprovedTable([]);
+      }
+    }
+
+    // Enhanced IT completed data fetching
+    async function fetchITCompleted() {
+      const tbody = document.getElementById('completedTableBody');
+      tbody.innerHTML = '<tr><td colspan="7" class="loading">Loading completed forms...</td></tr>';
+
+      try {
+        const response = await fetch('/api/itadmin/completed', {
+          credentials: 'include',
+          headers: { 'Accept': 'application/json' }
+        });
+
+        if (!response.ok) {
+          // Fallback to review-requests and filter
+          const fallbackResponse = await fetch('/api/itadmin/review-requests', {
+            credentials: 'include',
+            headers: { 'Accept': 'application/json' }
+          });
+
+          if (fallbackResponse.ok) {
+            const fallbackData = await fallbackResponse.json();
+            if (fallbackData.success && Array.isArray(fallbackData.requests)) {
+              const completed = fallbackData.requests.filter(f =>
+                f.status === 'Completed by IT' || f.status === 'IT Completed' || f.status === 'Completed'
+              );
+              populateCompletedTable(completed);
+              return;
+            }
+          }
+          throw new Error(`Server error: ${response.status}`);
+        }
+
+        const data = await response.json();
+
+        if (data.success && Array.isArray(data.list)) {
+          populateCompletedTable(data.list);
+        } else {
+          throw new Error(data.message || 'Invalid response format');
+        }
+      } catch (error) {
+        populateCompletedTable([]);
+      }
+    }
+
+    // Enhanced original table population with better formatting
+    function populateOriginalTables(requests) {
+      const pendingBody = document.getElementById('pendingTableBody');
+      const approvedBody = document.getElementById('approvedTableBody');
+      const rejectedBody = document.getElementById('rejectedTableBody');
+
+      pendingBody.innerHTML = '';
+      approvedBody.innerHTML = '';
+      rejectedBody.innerHTML = '';
+
+      if (!requests || requests.length === 0) {
+        pendingBody.innerHTML = '<tr><td colspan="9" class="empty-state">No pending requests</td></tr>';
+        approvedBody.innerHTML = '<tr><td colspan="8" class="empty-state">No approved requests</td></tr>';
+        rejectedBody.innerHTML = '<tr><td colspan="8" class="empty-state">No rejected requests</td></tr>';
+        return;
+      }
+
+      const pending = requests.filter(req => !req.status || req.status.toLowerCase() === 'pending');
+      const approved = requests.filter(req => req.status && req.status.toLowerCase() === 'approved');
+      const rejected = requests.filter(req => req.status && req.status.toLowerCase() === 'rejected');
+
+      // Populate pending requests
+      if (pending.length === 0) {
+        pendingBody.innerHTML = '<tr><td colspan="9" class="empty-state">No pending requests</td></tr>';
+      } else {
+        pending.forEach(req => {
+          const row = createRequestRow(req, 'pending');
+          pendingBody.appendChild(row);
+        });
+      }
+
+      // Populate approved requests
+      if (approved.length === 0) {
+        approvedBody.innerHTML = '<tr><td colspan="8" class="empty-state">No approved requests</td></tr>';
+      } else {
+        approved.forEach(req => {
+          const row = createRequestRow(req, 'approved');
+          approvedBody.appendChild(row);
+        });
+      }
+
+      // Populate rejected requests
+      if (rejected.length === 0) {
+        rejectedBody.innerHTML = '<tr><td colspan="8" class="empty-state">No rejected requests</td></tr>';
+      } else {
+        rejected.forEach(req => {
+          const row = createRequestRow(req, 'rejected');
+          rejectedBody.appendChild(row);
+        });
+      }
+    }
+
+    // Helper function to create request rows
+    function createRequestRow(req, type) {
+      const row = document.createElement('tr');
+      const formId = req.formId || '-';
+      const employeeId = req.employeeId || '-';
+      const name = req.employeeName || req.name || '-';
+      const department = req.department || '-';
+      const noDuesType = req.noDuesType || '-';
+      const submissionDate = req.submissionDate ? new Date(req.submissionDate).toLocaleDateString() : '-';
+      const orderLetter = req.orderLetter ? `<a href="/uploads/${req.orderLetter}" target="_blank" style="color: #0077b6;">View</a>` : '-';
+      const remark = req.remark || '-';
+
+      if (type === 'pending') {
+        row.innerHTML = `
+        <td><strong>${formId}</strong></td>
+        <td>${employeeId}</td>
+        <td>${name}</td>
+        <td>${department}</td>
+        <td><span class="status-badge status-pending">${noDuesType}</span></td>
+        <td>${submissionDate}</td>
+        <td>${orderLetter}</td>
+        <td><span class="status-badge status-pending">Pending</span></td>
+        <td class="actions">
+          <button class="approve-btn" onclick="openFormPreviewDialog('${formId}', '${noDuesType}')" title="Approve and assign forms">
+            Approve
+          </button>
+          <button class="reject-btn" onclick="rejectRequest('${formId}')" title="Reject this request">
+            Reject
+          </button>
+        </td>
+      `;
+      } else if (type === 'approved') {
+        row.innerHTML = `
+        <td><strong>${formId}</strong></td>
+        <td>${employeeId}</td>
+        <td>${name}</td>
+        <td>${department}</td>
+        <td><span class="status-badge status-approved">${noDuesType}</span></td>
+        <td>${submissionDate}</td>
+        <td>${orderLetter}</td>
+        <td>${remark}</td>
+      `;
+      } else if (type === 'rejected') {
+        row.innerHTML = `
+        <td><strong>${formId}</strong></td>
+        <td>${employeeId}</td>
+        <td>${name}</td>
+        <td>${department}</td>
+        <td><span class="status-badge status-rejected">${noDuesType}</span></td>
+        <td>${submissionDate}</td>
+        <td>${orderLetter}</td>
+        <td style="color: #dc3545;">${remark}</td>
+      `;
+      }
+
+      return row;
+    }
+
+    // Enhanced HOD approved table population
+    function populateHODApprovedTable(forms) {
+      const tbody = document.getElementById('hodApprovedTableBody');
+      tbody.innerHTML = '';
+
+      if (!forms || forms.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="7" class="empty-state">No forms from HOD ready for IT review</td></tr>';
+        return;
+      }
+
+      forms.forEach(form => {
+        const row = document.createElement('tr');
+        const hodApprovedDate = form.hodApproval && form.hodApproval.approvedAt
+          ? new Date(form.hodApproval.approvedAt).toLocaleDateString()
+          : '-';
+
+        row.innerHTML = `
+        <td><strong>${form.formId}</strong></td>
+        <td>${form.employeeName || form.name || '-'}</td>
+        <td>${form.department || '-'}</td>
+        <td><span class="status-badge status-submitted">${form.noDuesType || '-'}</span></td>
+        <td>${hodApprovedDate}</td>
+        <td><span class="status-badge status-approved">${form.status || 'Ready for IT'}</span></td>
+        <td class="actions">
+          <button class="review-btn" onclick="openITFormReview('${form.formId}')" title="Review and process this form">
+            Review & Process
+          </button>
+        </td>
+      `;
+        tbody.appendChild(row);
+      });
+    }
+
+    // Enhanced completed table population
+    function populateCompletedTable(forms) {
+      const tbody = document.getElementById('completedTableBody');
+      tbody.innerHTML = '';
+
+      if (!forms || forms.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="7" class="empty-state">No completed forms</td></tr>';
+        return;
+      }
+
+      forms.forEach(form => {
+        const row = document.createElement('tr');
+        const completedDate = form.itProcessing && form.itProcessing.processedAt
+          ? new Date(form.itProcessing.processedAt).toLocaleDateString()
+          : (form.completedDate ? new Date(form.completedDate).toLocaleDateString() : '-');
+
+        const itOfficer = form.itProcessing && form.itProcessing.officerName
+          ? form.itProcessing.officerName
+          : (form.itOfficerName || '-');
+
+        const itRemarks = form.itProcessing && form.itProcessing.remarks
+          ? form.itProcessing.remarks
+          : (form.itRemarks || form.remark || '-');
+
+        row.innerHTML = `
+        <td><strong>${form.formId}</strong></td>
+        <td>${form.employeeName || form.name || '-'}</td>
+        <td>${form.department || '-'}</td>
+        <td><span class="status-badge status-approved">${form.noDuesType || '-'}</span></td>
+        <td>${completedDate}</td>
+        <td>${itOfficer}</td>
+        <td style="color: #28a745;">${itRemarks}</td>
+      `;
+        tbody.appendChild(row);
+      });
+    }
+
+    // Add this function to hide back buttons in iframes
+    function hideBackButtonsInIframes() {
+      const iframes = document.querySelectorAll('iframe');
+
+      iframes.forEach(iframe => {
+        iframe.addEventListener('load', function () {
+          try {
+            // Try to access iframe content (only works for same-origin)
+            const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+            const backButtons = iframeDoc.querySelectorAll('[onclick*="goBack"], [onclick*="window.history.back"], .back-btn, .global-back-button');
+
+            backButtons.forEach(btn => {
+              btn.style.display = 'none';
+            });
+          } catch (error) {
+            // Silent error handling for cross-origin access
+          }
+        });
+      });
+    }
+
+    // Enhanced initialization
+    document.addEventListener('DOMContentLoaded', () => {
+      // Setup search functionality
+      const searchInput = document.getElementById('globalSearch');
+      if (searchInput) {
+        // Real-time search as user types
+        searchInput.addEventListener('input', performSearch);
+
+        // Also support Enter key
+        searchInput.addEventListener('keypress', function (e) {
+          if (e.key === 'Enter') {
+            performSearch();
+          }
+        });
+      }
+
+      // Setup clear button
+      const clearBtn = document.querySelector('.clear-search-btn');
+      if (clearBtn) {
+        clearBtn.addEventListener('click', clearSearch);
+      }
+
+      // Setup search button
+      const searchBtn = document.querySelector('.search-btn');
+      if (searchBtn) {
+        searchBtn.addEventListener('click', performSearch);
+      }
+
+      // Setup checkbox event listeners with enhanced validation
+      document.querySelectorAll('#efileCheck, #disposalCheck, #form365Check').forEach(checkbox => {
+        checkbox.addEventListener('change', updateSendButtonState);
+      });
+
+      // Close logout modal when clicking outside
+      document.getElementById('logoutModal').addEventListener('click', (e) => {
+        if (e.target === document.getElementById('logoutModal')) {
+          hideLogoutConfirmation();
+        }
+      });
+
+      // Initialize iframe back button hiding
+      hideBackButtonsInIframes();
+
+      // Initial data fetch
+      fetchAllData();
+
+      // Auto-refresh every 30 seconds for HOD approved tab
+      setInterval(() => {
+        const activeTab = document.querySelector('.tab.active');
+        if (activeTab && activeTab.id === 'hodApproved') {
+          fetchHODApproved();
+        }
+      }, 30000);
+    });
+
+    // Global error handler
+    window.addEventListener('error', (event) => {
+      // Silent error handling
+    });
+
+    // Handle unhandled promise rejections
+    window.addEventListener('unhandledrejection', (event) => {
+      // Silent error handling
+      event.preventDefault();
+    });
+  </script>
+
+
+
+</body>
+
+</html>

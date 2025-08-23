@@ -1,0 +1,10 @@
+{
+  "c80ecf53c45142f61fcf9494b533dfa2472ffcf7fed0181f99e0c96082a81486": {
+    "employeeId": "EMP1001",
+    "sessionToken": "c80ecf53c45142f61fcf9494b533dfa2472ffcf7fed0181f99e0c96082a81486",
+    "status": "verified",
+    "expiresAt": "2025-08-22T19:46:35.189Z",
+    "createdAt": "2025-08-22T19:36:35.189Z",
+    "otpVerifiedAt": "2025-08-22T19:36:56.607Z"
+  }
+}

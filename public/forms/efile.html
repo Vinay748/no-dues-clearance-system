@@ -1,0 +1,1983 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Official EFile Transfer Form for No-Dues System">
+  <meta name="theme-color" content="#2c5aa0">
+  <title>EFile Transfer Form - No-Dues System</title>
+
+  <!-- Preload critical resources -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Security headers -->
+  <meta http-equiv="X-Content-Type-Options" content="nosniff">
+  <meta http-equiv="X-Frame-Options" content="SAMEORIGIN">
+  <meta http-equiv="X-XSS-Protection" content="1; mode=block">
+
+  <style>
+    /* =========================================
+       PRODUCTION CSS WITH MOBILE-FIRST DESIGN
+       ========================================= */
+
+    /* CSS Reset & Base Styles */
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --primary-color: #2c5aa0;
+      --primary-hover: #1a4480;
+      --success-color: #28a745;
+      --success-hover: #218838;
+      --error-color: #dc3545;
+      --warning-color: #ffc107;
+      --info-color: #17a2b8;
+      --light-bg: #f8f9fa;
+      --border-color: #dee2e6;
+      --text-primary: #2c3e50;
+      --text-secondary: #6c757d;
+      --shadow-sm: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+      --shadow-md: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+      --border-radius: 0.375rem;
+      --transition: all 0.15s ease-in-out;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      font-size: 0.875rem;
+      line-height: 1.6;
+      color: var(--text-primary);
+      background: var(--light-bg);
+      padding: 1rem;
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    /* Loading State */
+    .loading {
+      opacity: 0.7;
+      pointer-events: none;
+    }
+
+    .loading::after {
+      content: '';
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 2rem;
+      height: 2rem;
+      border: 0.125rem solid var(--border-color);
+      border-top: 0.125rem solid var(--primary-color);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      z-index: 9999;
+    }
+
+    @keyframes spin {
+      0% {
+        transform: translate(-50%, -50%) rotate(0deg);
+      }
+
+      100% {
+        transform: translate(-50%, -50%) rotate(360deg);
+      }
+    }
+
+    /* Container */
+    .container {
+      max-width: 64rem;
+      margin: 0 auto;
+      background: white;
+      border-radius: var(--border-radius);
+      box-shadow: var(--shadow-md);
+      overflow: hidden;
+    }
+
+    /* Header */
+    .form-header {
+      background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-hover) 100%);
+      color: white;
+      padding: 1.5rem;
+      text-align: center;
+    }
+
+    .form-header h1 {
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      letter-spacing: -0.025em;
+    }
+
+    .form-subtitle {
+      font-size: 0.875rem;
+      opacity: 0.9;
+      font-weight: 400;
+    }
+
+    /* Form Content */
+    .form-content {
+      padding: 1.5rem;
+    }
+
+    /* Status Banner */
+    .form-status-banner {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.75rem 1rem;
+      border-radius: var(--border-radius);
+      margin-bottom: 1rem;
+      font-size: 0.875rem;
+      font-weight: 500;
+      box-shadow: var(--shadow-sm);
+      transition: var(--transition);
+    }
+
+    .form-status-banner.status-info {
+      background-color: #cce5ff;
+      color: #004085;
+      border: 1px solid #b3d7ff;
+    }
+
+    .form-status-banner.status-warning {
+      background-color: #fff3cd;
+      color: #856404;
+      border: 1px solid #ffeaa7;
+    }
+
+    .form-status-banner.status-success {
+      background-color: #d4edda;
+      color: #155724;
+      border: 1px solid #c3e6cb;
+    }
+
+    .form-status-banner.status-error {
+      background-color: #f8d7da;
+      color: #721c24;
+      border: 1px solid #f1aeb5;
+    }
+
+    .status-content {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .status-icon {
+      font-size: 1.125rem;
+    }
+
+    .close-btn {
+      background: none;
+      border: none;
+      font-size: 1.125rem;
+      cursor: pointer;
+      opacity: 0.7;
+      padding: 0.25rem;
+      border-radius: 50%;
+      transition: var(--transition);
+      width: 1.5rem;
+      height: 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .close-btn:hover {
+      opacity: 1;
+      background: rgba(0, 0, 0, 0.1);
+    }
+
+    /* Note Section */
+    .note-section {
+      background: #e3f2fd;
+      border: 1px solid #bbdefb;
+      border-radius: var(--border-radius);
+      padding: 1rem;
+      margin-bottom: 1.5rem;
+      text-align: center;
+      font-style: italic;
+      color: #1976d2;
+      font-size: 0.875rem;
+    }
+
+    /* Form Sections */
+    .form-section {
+      margin-bottom: 2rem;
+      padding: 1.5rem;
+      background: white;
+      border: 1px solid var(--border-color);
+      border-radius: var(--border-radius);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .section-title {
+      font-size: 1.125rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 2px solid #e9ecef;
+    }
+
+    /* Recipient Information */
+    .recipient-info {
+      background: var(--light-bg);
+      padding: 1rem;
+      border-radius: var(--border-radius);
+      margin-bottom: 1.5rem;
+      border-left: 4px solid var(--primary-color);
+    }
+
+    .recipient-title {
+      font-weight: 600;
+      color: var(--primary-color);
+      margin-bottom: 0.5rem;
+    }
+
+    .recipient-details {
+      color: var(--text-secondary);
+      line-height: 1.5;
+    }
+
+    /* Form Fields */
+    .field-group {
+      margin-bottom: 1.5rem;
+    }
+
+    .field-paragraph {
+      line-height: 1.8;
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+      margin-bottom: 1rem;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    /* Enhanced Form Inputs */
+    .field-input,
+    .field-select {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.875rem;
+      padding: 0.5rem 0.75rem;
+      border: 1px solid var(--border-color);
+      border-radius: var(--border-radius);
+      transition: var(--transition);
+      background: white;
+      min-width: 120px;
+      flex: 1;
+      max-width: 200px;
+    }
+
+    .field-input:focus,
+    .field-select:focus {
+      outline: none;
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 0.2rem rgba(44, 90, 160, 0.25);
+    }
+
+    .field-input.wide {
+      min-width: 180px;
+      max-width: 250px;
+    }
+
+    .field-input.short {
+      min-width: 80px;
+      max-width: 120px;
+    }
+
+    .field-select {
+      cursor: pointer;
+      background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+      background-position: right 0.5rem center;
+      background-repeat: no-repeat;
+      background-size: 1.5rem 1.5rem;
+      padding-right: 2.5rem;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      appearance: none;
+    }
+
+    /* Table Styling */
+    .table-section {
+      margin: 1.5rem 0;
+    }
+
+    .table-header {
+      font-weight: 600;
+      color: var(--text-secondary);
+      margin-bottom: 1rem;
+      font-size: 0.875rem;
+    }
+
+    .table-container {
+      overflow-x: auto;
+      border: 1px solid var(--border-color);
+      border-radius: var(--border-radius);
+      box-shadow: var(--shadow-sm);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+      font-size: 0.875rem;
+    }
+
+    th,
+    td {
+      padding: 0.75rem;
+      text-align: center;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    th {
+      background: var(--primary-color);
+      color: white;
+      font-weight: 600;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    td input {
+      border: none;
+      background: transparent;
+      text-align: center;
+      width: 100%;
+      padding: 0.5rem;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.875rem;
+    }
+
+    td input:focus {
+      outline: none;
+      background: var(--light-bg);
+      border-radius: var(--border-radius);
+    }
+
+    .add-row-btn {
+      background: var(--success-color);
+      color: white;
+      border: none;
+      padding: 0.625rem 1rem;
+      border-radius: var(--border-radius);
+      cursor: pointer;
+      font-size: 0.875rem;
+      font-weight: 500;
+      margin-top: 0.75rem;
+      transition: var(--transition);
+      font-family: 'Inter', sans-serif;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .add-row-btn:hover {
+      background: var(--success-hover);
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .add-row-btn:active {
+      transform: translateY(0);
+    }
+
+    /* HOD Section */
+    .hod-section {
+      background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+      border-left: 4px solid var(--primary-color);
+    }
+
+    .hod-grid {
+      display: grid;
+      grid-template-columns: 1fr 250px;
+      gap: 2rem;
+      align-items: start;
+    }
+
+    .hod-details {
+      display: grid;
+      gap: 1rem;
+    }
+
+    .input-group {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .input-group label {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      margin-bottom: 0.25rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .input-group input {
+      padding: 0.625rem 0.75rem;
+      border: 1px solid var(--border-color);
+      border-radius: var(--border-radius);
+      background: white;
+      color: var(--text-primary);
+      font-size: 0.875rem;
+      font-family: 'Inter', sans-serif;
+      transition: var(--transition);
+    }
+
+    .input-group input:focus {
+      outline: none;
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 0.2rem rgba(44, 90, 160, 0.25);
+    }
+
+    .auto-filled {
+      background: #d4edda !important;
+      border-color: var(--success-color) !important;
+      color: #155724;
+    }
+
+    /* Signature Area */
+    .signature-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .signature-area {
+      width: 100%;
+      height: 80px;
+      border: 2px dashed var(--border-color);
+      border-radius: var(--border-radius);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      margin-bottom: 0.75rem;
+      transition: var(--transition);
+      background: white;
+    }
+
+    .signature-area:hover {
+      border-color: var(--primary-color);
+      background: #f8f9ff;
+    }
+
+    .signature-area.has-signature {
+      border-color: var(--success-color);
+      background: #f8fff8;
+    }
+
+    .signature-placeholder {
+      color: var(--text-secondary);
+      font-size: 0.875rem;
+      text-align: center;
+      font-weight: 500;
+    }
+
+    .signature-note {
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      text-align: center;
+      font-style: italic;
+    }
+
+    /* IT Footer Section */
+    .it-footer {
+      background: var(--light-bg);
+      border-left: 4px solid var(--text-secondary);
+    }
+
+    .it-title {
+      font-weight: 600;
+      color: var(--text-secondary);
+      margin-bottom: 0.25rem;
+    }
+
+    /* Action Buttons */
+    .action-section {
+      padding: 1.5rem;
+      background: var(--light-bg);
+      border-top: 1px solid var(--border-color);
+      text-align: center;
+    }
+
+    .save-button {
+      background: var(--primary-color);
+      color: white;
+      border: none;
+      padding: 0.75rem 2rem;
+      border-radius: var(--border-radius);
+      cursor: pointer;
+      font-size: 0.875rem;
+      font-weight: 600;
+      font-family: 'Inter', sans-serif;
+      transition: var(--transition);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      min-width: 160px;
+    }
+
+    .save-button:hover {
+      background: var(--primary-hover);
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .save-button:active {
+      transform: translateY(0);
+    }
+
+    .save-button:disabled {
+      background: var(--text-secondary);
+      cursor: not-allowed;
+      opacity: 0.6;
+      transform: none;
+    }
+
+    /* Messages */
+    .save-message {
+      margin-top: 1rem;
+      padding: 0.75rem 1rem;
+      border-radius: var(--border-radius);
+      font-weight: 500;
+      text-align: center;
+      display: none;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .save-message.success {
+      background: #d4edda;
+      color: #155724;
+      border: 1px solid #c3e6cb;
+    }
+
+    .save-message.error {
+      background: #f8d7da;
+      color: #721c24;
+      border: 1px solid #f1aeb5;
+    }
+
+    .save-message.info {
+      background: #cce5ff;
+      color: #004085;
+      border: 1px solid #b3d7ff;
+    }
+
+    /* Read-only styles */
+    .readonly-section {
+      opacity: 0.7;
+      pointer-events: none;
+    }
+
+    .read-only {
+      background-color: var(--light-bg) !important;
+      color: var(--text-secondary) !important;
+      border-color: var(--border-color) !important;
+      cursor: not-allowed !important;
+    }
+
+    /* Accessibility */
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    /* Focus indicators */
+    button:focus,
+    input:focus,
+    select:focus,
+    .signature-area:focus {
+      outline: 2px solid var(--primary-color);
+      outline-offset: 2px;
+    }
+
+    /* Print styles */
+    @media print {
+      body {
+        padding: 0;
+        background: white;
+      }
+
+      .container {
+        box-shadow: none;
+        border: none;
+      }
+
+      .action-section,
+      .add-row-btn,
+      .save-button {
+        display: none;
+      }
+    }
+
+    /* =========================================
+       RESPONSIVE DESIGN - MOBILE FIRST
+       ========================================= */
+
+    /* Mobile styles (default) */
+    @media (max-width: 768px) {
+      body {
+        padding: 0.5rem;
+        font-size: 0.875rem;
+      }
+
+      .container {
+        border-radius: 0;
+        box-shadow: none;
+        border: none;
+      }
+
+      .form-header {
+        padding: 1rem;
+      }
+
+      .form-header h1 {
+        font-size: 1.25rem;
+      }
+
+      .form-subtitle {
+        font-size: 0.8125rem;
+      }
+
+      .form-content {
+        padding: 1rem;
+      }
+
+      .form-section {
+        padding: 1rem;
+        margin-bottom: 1rem;
+      }
+
+      .section-title {
+        font-size: 1rem;
+      }
+
+      .field-paragraph {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.5rem;
+      }
+
+      .field-input,
+      .field-select {
+        width: 100%;
+        max-width: none;
+        min-width: auto;
+        margin: 0.25rem 0;
+      }
+
+      /* HOD Grid - Stack on mobile */
+      .hod-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+      }
+
+      /* Mobile table transformation */
+      .table-container {
+        font-size: 0.75rem;
+      }
+
+      /* Stack table rows on mobile */
+      @media (max-width: 640px) {
+
+        table,
+        thead,
+        tbody,
+        th,
+        td,
+        tr {
+          display: block;
+        }
+
+        thead tr {
+          position: absolute;
+          top: -9999px;
+          left: -9999px;
+        }
+
+        tr {
+          border: 1px solid var(--border-color);
+          border-radius: var(--border-radius);
+          margin-bottom: 1rem;
+          padding: 0.75rem;
+          background: white;
+        }
+
+        td {
+          border: none;
+          border-bottom: 1px solid #eee;
+          position: relative;
+          padding-left: 50%;
+          text-align: left;
+          padding-top: 0.75rem;
+          padding-bottom: 0.75rem;
+        }
+
+        td:before {
+          content: attr(data-label);
+          position: absolute;
+          left: 0.75rem;
+          width: 45%;
+          padding-right: 0.75rem;
+          white-space: nowrap;
+          font-weight: 600;
+          color: var(--text-primary);
+          font-size: 0.75rem;
+          text-transform: uppercase;
+          letter-spacing: 0.05em;
+        }
+
+        td input {
+          text-align: left;
+          width: 100%;
+        }
+      }
+
+      .add-row-btn {
+        width: 100%;
+        padding: 1rem;
+        font-size: 0.875rem;
+      }
+
+      .action-section {
+        padding: 1rem;
+      }
+
+      .save-button {
+        width: 100%;
+        padding: 1rem;
+        font-size: 0.875rem;
+      }
+
+      /* Mobile-specific signature area */
+      .signature-area {
+        height: 100px;
+      }
+    }
+
+    /* Tablet styles */
+    @media (min-width: 769px) and (max-width: 1024px) {
+      .container {
+        margin: 1rem;
+      }
+
+      .hod-grid {
+        grid-template-columns: 1fr 280px;
+      }
+
+      .field-input,
+      .field-select {
+        max-width: 180px;
+      }
+    }
+
+    /* Desktop styles */
+    @media (min-width: 1025px) {
+      body {
+        padding: 2rem;
+      }
+
+      .form-header h1 {
+        font-size: 1.75rem;
+      }
+
+      .form-content {
+        padding: 2rem;
+      }
+
+      .form-section {
+        padding: 2rem;
+      }
+
+      .hod-grid {
+        grid-template-columns: 1fr 300px;
+        gap: 2.5rem;
+      }
+    }
+
+    /* Large desktop styles */
+    @media (min-width: 1400px) {
+      .container {
+        max-width: 72rem;
+      }
+    }
+
+    /* High DPI displays */
+    @media (-webkit-min-device-pixel-ratio: 2),
+    (min-resolution: 192dpi) {
+      .signature-area {
+        border-width: 1px;
+      }
+    }
+
+    /* Dark mode support */
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --light-bg: #1a1a1a;
+        --text-primary: #e9ecef;
+        --text-secondary: #adb5bd;
+        --border-color: #495057;
+      }
+
+      body {
+        background: #121212;
+        color: var(--text-primary);
+      }
+
+      .container,
+      .form-section,
+      .field-input,
+      .field-select,
+      table {
+        background: #1e1e1e;
+      }
+
+      .note-section {
+        background: #0d47a1;
+        color: #bbdefb;
+      }
+    }
+
+    /* Motion preferences */
+    @media (prefers-reduced-motion: reduce) {
+
+      *,
+      *::before,
+      *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+
+    /* Hidden utility */
+    .hidden {
+      display: none !important;
+    }
+  </style>
+
+  <!-- Enhanced Navigation System -->
+  <link rel="stylesheet" href="../css/navigationStyles.css">
+  <script src="../js/navigationManager.js" defer></script>
+  <script src="../js/formNavigationIntegration.js" defer></script>
+  <script src="/js/formStatusManager.js" defer></script>
+</head>
+
+<body>
+  <div class="container">
+    <!-- Professional Header -->
+    <header class="form-header">
+      <h1>Transfer of E-Files in EOffice</h1>
+      <div class="form-subtitle">Official Format for E-File Transfer Request</div>
+    </header>
+
+    <!-- Form Content -->
+    <main class="form-content">
+      <!-- Status Banner (Hidden by default) -->
+      <div id="statusBanner" class="form-status-banner hidden" role="alert" aria-live="polite">
+        <div class="status-content">
+          <span class="status-icon" aria-hidden="true"></span>
+          <div class="status-text">
+            <strong id="statusTitle"></strong>
+            <div id="statusMessage"></div>
+          </div>
+        </div>
+        <button class="close-btn" aria-label="Close notification" onclick="hideStatusBanner()">×</button>
+      </div>
+
+      <!-- Note Section -->
+      <section class="note-section" role="note">
+        <div class="note-text">To be sent to local IT Head by concerned HOD</div>
+      </section>
+
+      <!-- Recipient Information -->
+      <section class="form-section" data-role="employee">
+        <h2 class="section-title">Recipient Information</h2>
+        <div class="recipient-info">
+          <div class="recipient-title">To</div>
+          <div class="recipient-details">
+            Head of Department<br>
+            IT Department<br>
+            <input type="text" class="field-input wide" id="customField" name="customField"
+              placeholder="Additional recipient information (optional)" aria-label="Additional recipient information">
+          </div>
+        </div>
+      </section>
+
+      <!-- Transfer Request Details -->
+      <section class="form-section" data-role="employee">
+        <h2 class="section-title">Transfer Request Details</h2>
+
+        <div class="field-group">
+          <div class="field-paragraph">
+            <span>Due to the</span>
+            <label for="reason" class="sr-only">Reason for transfer</label>
+            <select id="reason" name="reason" class="field-select" required aria-required="true">
+              <option value="">Select Reason</option>
+              <option value="Transfer">Transfer</option>
+              <option value="Superannuation">Superannuation</option>
+              <option value="Resignation">Resignation (Leaving the Company)</option>
+              <option value="Death">Death</option>
+              <option value="Dry-Lien">Dry-Lien</option>
+              <option value="Deputation">Deputation</option>
+            </select>
+            <span>of</span>
+            <label for="salutation" class="sr-only">Salutation</label>
+            <select id="salutation" name="salutation" class="field-select" required aria-required="true">
+              <option value="">Salutation</option>
+              <option value="Mr.">Mr.</option>
+              <option value="Ms.">Ms.</option>
+              <option value="Mrs.">Mrs.</option>
+            </select>
+            <label for="empName" class="sr-only">Employee name</label>
+            <input type="text" class="field-input" id="empName" name="empName" placeholder="Employee Name" required
+              aria-required="true" aria-label="Employee name">
+          </div>
+
+          <div class="field-paragraph">
+            <span>Designation</span>
+            <label for="designation" class="sr-only">Designation</label>
+            <input type="text" class="field-input" id="designation" name="designation" placeholder="Designation"
+              required aria-required="true" aria-label="Employee designation">
+            <span>Employee No.</span>
+            <label for="empNo" class="sr-only">Employee number</label>
+            <input type="text" class="field-input short" id="empNo" name="empNo" placeholder="Employee No." required
+              aria-required="true" aria-label="Employee number">
+          </div>
+
+          <div class="field-paragraph">
+            <span>please transfer the E-Files in his/her EOffice Id</span>
+            <label for="fromEoffice" class="sr-only">From EOffice ID</label>
+            <input type="text" class="field-input wide" id="fromEoffice" name="fromEoffice"
+              placeholder="From EOffice ID" required aria-required="true" aria-label="Source EOffice ID">
+            <span>to EOffice Id</span>
+            <label for="toEoffice" class="sr-only">To EOffice ID</label>
+            <input type="text" class="field-input wide" id="toEoffice" name="toEoffice" placeholder="To EOffice ID"
+              required aria-required="true" aria-label="Destination EOffice ID">
+          </div>
+
+          <div class="field-paragraph">
+            <span>of</span>
+            <label for="tosalutation" class="sr-only">Recipient salutation</label>
+            <select id="tosalutation" name="tosalutation" class="field-select" required aria-required="true">
+              <option value="">Salutation</option>
+              <option value="Mr.">Mr.</option>
+              <option value="Ms.">Ms.</option>
+              <option value="Mrs.">Mrs.</option>
+            </select>
+            <label for="toName" class="sr-only">Recipient name</label>
+            <input type="text" class="field-input" id="toName" name="toName" placeholder="Recipient Name" required
+              aria-required="true" aria-label="Recipient name">
+            <span>Designation</span>
+            <label for="toDesignation" class="sr-only">Recipient designation</label>
+            <input type="text" class="field-input" id="toDesignation" name="toDesignation" placeholder="Designation"
+              required aria-required="true" aria-label="Recipient designation">
+            <span>Employee No.</span>
+            <label for="toEmpNo" class="sr-only">Recipient employee number</label>
+            <input type="text" class="field-input short" id="toEmpNo" name="toEmpNo" placeholder="Employee No." required
+              aria-required="true" aria-label="Recipient employee number">
+          </div>
+        </div>
+      </section>
+
+      <!-- Multiple Transfer Table -->
+      <section class="form-section" data-role="employee">
+        <h2 class="section-title">Multiple Transfer Details</h2>
+
+        <div class="table-section">
+          <div class="table-header">
+            OR as per following details (if E-Files are required to be transferred to more than one person)
+          </div>
+
+          <div class="table-container">
+            <table id="efileTable" role="table" aria-label="Multiple transfer details">
+              <thead>
+                <tr>
+                  <th scope="col">Sl. No.</th>
+                  <th scope="col">Transfer from EOffice Id</th>
+                  <th scope="col">Transfer to EOffice Id</th>
+                  <th scope="col">Electronic File No.</th>
+                </tr>
+              </thead>
+              <tbody id="efileBody">
+                <tr>
+                  <td data-label="Sl. No.">
+                    <input type="number" name="sl1" value="1" min="1" aria-label="Serial number 1">
+                  </td>
+                  <td data-label="Transfer from EOffice Id">
+                    <input type="text" name="from1" aria-label="Transfer from EOffice ID row 1"
+                      placeholder="From EOffice ID">
+                  </td>
+                  <td data-label="Transfer to EOffice Id">
+                    <input type="text" name="to1" aria-label="Transfer to EOffice ID row 1" placeholder="To EOffice ID">
+                  </td>
+                  <td data-label="Electronic File No.">
+                    <input type="text" name="file1" aria-label="Electronic file number row 1" placeholder="File Number">
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <button type="button" class="add-row-btn" onclick="addRow()" aria-label="Add new row to transfer table">
+            <span aria-hidden="true">+</span> Add Row
+          </button>
+        </div>
+      </section>
+
+      <!-- HOD Approval Section -->
+      <section class="form-section hod-section" data-role="hod">
+        <h2 class="section-title">HOD Approval Section</h2>
+
+        <div class="hod-grid">
+          <div class="hod-details">
+            <div class="input-group">
+              <label for="hodName">Name of HOD</label>
+              <input type="text" name="hodName" id="hodName" readonly aria-readonly="true"
+                aria-describedby="hodNameHelp">
+              <small id="hodNameHelp" class="sr-only">Auto-filled from HOD session</small>
+            </div>
+            <div class="input-group">
+              <label for="hodEmpNo">Employee No.</label>
+              <input type="text" name="hodEmpNo" id="hodEmpNo" readonly aria-readonly="true"
+                aria-describedby="hodEmpNoHelp">
+              <small id="hodEmpNoHelp" class="sr-only">Auto-filled from HOD session</small>
+            </div>
+            <div class="input-group">
+              <label for="hodEmail">Email</label>
+              <input type="email" name="hodEmail" id="hodEmail" readonly aria-readonly="true"
+                aria-describedby="hodEmailHelp">
+              <small id="hodEmailHelp" class="sr-only">Auto-filled from HOD session</small>
+            </div>
+          </div>
+
+          <div class="signature-container">
+            <div class="signature-area" id="hodSignatureArea" tabindex="0" role="button"
+              aria-label="Upload HOD signature" aria-describedby="signatureHelp">
+              <div class="signature-placeholder">Click to Upload HOD Signature</div>
+            </div>
+            <div class="signature-note" id="signatureHelp">
+              HOD details are auto-filled from your session
+            </div>
+            <input type="file" id="hodSignatureInput" style="display:none;" accept="image/*" aria-hidden="true">
+          </div>
+        </div>
+      </section>
+
+      <!-- IT Department Section -->
+      <section class="form-section it-footer" data-role="it">
+        <h2 class="section-title">For Office Use in IT Department</h2>
+        <div class="it-title">DGM (IT) / EOffice Administrator</div>
+      </section>
+    </main>
+
+    <!-- Action Section -->
+    <footer class="action-section">
+      <button class="save-button" onclick="saveEFileForm()" aria-describedby="saveHelp">
+        Save EFile Form
+      </button>
+      <div id="saveMessage" class="save-message" role="alert" aria-live="polite"></div>
+      <small id="saveHelp" class="sr-only">
+        Save your form data. You can continue editing later.
+      </small>
+    </footer>
+  </div>
+
+  <!-- Production JavaScript -->
+  <script>
+    // =========================================
+    // PRODUCTION JAVASCRIPT WITH ERROR HANDLING
+    // =========================================
+
+    // Global variables
+    let currentUserRole = '';
+    let formId = '';
+    let rowCount = 1;
+    let isFormLoading = false;
+
+    // Initialize form when DOM is ready
+    document.addEventListener('DOMContentLoaded', async () => {
+      try {
+        setLoadingState(true);
+        await initializeForm();
+      } catch (error) {
+        console.error('Form initialization failed:', error);
+        showMessage('Failed to initialize form. Please refresh the page.', 'error');
+      } finally {
+        setLoadingState(false);
+      }
+    });
+
+    // Set loading state
+    function setLoadingState(loading) {
+      isFormLoading = loading;
+      const container = document.querySelector('.container');
+      if (loading) {
+        container.classList.add('loading');
+      } else {
+        container.classList.remove('loading');
+      }
+    }
+
+    // Show status banner
+    function showStatusBanner(title, message, type = 'info') {
+      const banner = document.getElementById('statusBanner');
+      const titleEl = document.getElementById('statusTitle');
+      const messageEl = document.getElementById('statusMessage');
+      const iconEl = banner.querySelector('.status-icon');
+
+      titleEl.textContent = title;
+      messageEl.textContent = message;
+
+      // Set icon based on type
+      const icons = {
+        info: 'ℹ️',
+        success: '✅',
+        warning: '⚠️',
+        error: '❌'
+      };
+      iconEl.textContent = icons[type] || icons.info;
+
+      // Set banner class
+      banner.className = `form-status-banner status-${type}`;
+      banner.classList.remove('hidden');
+
+      // Auto-hide success messages
+      if (type === 'success') {
+        setTimeout(hideStatusBanner, 5000);
+      }
+    }
+
+    // Hide status banner
+    function hideStatusBanner() {
+      const banner = document.getElementById('statusBanner');
+      banner.classList.add('hidden');
+    }
+
+    // Check if this is HOD review mode
+    function isHODReview() {
+      const urlParams = new URLSearchParams(window.location.search);
+      return urlParams.get('role') === 'hod';
+    }
+
+    // Auto-fill HOD details when accessed by HOD
+    async function autoFillHODDetailsInForm() {
+      if (!isHODReview()) return;
+
+      try {
+        console.log('Auto-filling HOD details in employee form...');
+        showStatusBanner('Loading', 'Loading HOD details for form review...', 'info');
+
+        const response = await fetchWithTimeout('/api/hod/my-details', {
+          credentials: 'include'
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          if (data.success && data.hodDetails) {
+            const hodDetails = data.hodDetails;
+
+            // Map HOD details to form fields with validation
+            const hodFieldMappings = {
+              'hodName': sanitizeInput(hodDetails.name),
+              'hodEmpNo': sanitizeInput(hodDetails.employeeId),
+              'hodEmail': sanitizeInput(hodDetails.email)
+            };
+
+            // Fill all matching fields
+            Object.entries(hodFieldMappings).forEach(([fieldId, value]) => {
+              const field = document.getElementById(fieldId);
+              if (field && !field.value && value) {
+                field.value = value;
+                field.classList.add('auto-filled');
+                field.setAttribute('title', 'Auto-filled from HOD session');
+                field.readOnly = true;
+              }
+            });
+
+            // Auto-load HOD signature
+            await autoFillHODSignatureInForm();
+
+            showStatusBanner('Success', 'HOD details auto-filled successfully!', 'success');
+
+            // Update signature note
+            const signatureNote = document.querySelector('.signature-note');
+            if (signatureNote) {
+              signatureNote.textContent = `HOD details auto-filled for ${hodDetails.name}`;
+            }
+          }
+        } else {
+          throw new Error('Failed to load HOD details');
+        }
+      } catch (error) {
+        console.error('Error auto-filling HOD details:', error);
+        showStatusBanner('Error', 'Failed to auto-fill HOD details', 'error');
+      }
+    }
+
+    // Auto-fill HOD signature in form
+    async function autoFillHODSignatureInForm() {
+      try {
+        const response = await fetchWithTimeout('/api/hod/get-signature', {
+          credentials: 'include'
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          if (data.success && data.signatureUrl) {
+            const sigArea = document.getElementById('hodSignatureArea');
+            if (sigArea) {
+              sigArea.innerHTML = `<img src="${data.signatureUrl}" alt="HOD Signature" style="max-height: 60px; max-width: 100%; border-radius: 4px;">`;
+              sigArea.classList.add('has-signature');
+              sigArea.setAttribute('title', 'HOD signature auto-loaded');
+            }
+          }
+        }
+      } catch (error) {
+        console.error('Error loading HOD signature:', error);
+      }
+    }
+
+    // Initialize form with enhanced error handling
+    async function initializeForm() {
+      try {
+        // Get form ID from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        formId = urlParams.get("formId") || "";
+
+        // Get user role from session
+        await getUserRole();
+
+        // Auto-fill HOD details if in HOD review mode
+        if (isHODReview()) {
+          console.log('Form opened in HOD review mode - auto-filling HOD details...');
+          setTimeout(autoFillHODDetailsInForm, 1000);
+        }
+
+        // Load HOD profile if user is HOD
+        if (currentUserRole === 'hod') {
+          await loadHODProfile();
+          await loadHODSignature();
+        }
+
+        // Load existing form data
+        await loadFormData();
+
+        // Set up role-based permissions
+        setupRoleBasedAccess();
+
+        // Initialize signature handling
+        initializeSignatureHandling();
+
+        // Initialize form validation
+        initializeFormValidation();
+
+        // Initialize accessibility features
+        initializeAccessibility();
+
+      } catch (error) {
+        console.error('Error initializing form:', error);
+        showStatusBanner('Error', 'Error loading form. Please refresh the page.', 'error');
+      }
+    }
+
+    // Fetch with timeout wrapper
+    async function fetchWithTimeout(url, options = {}, timeout = 10000) {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), timeout);
+
+      try {
+        const response = await fetch(url, {
+          ...options,
+          signal: controller.signal
+        });
+        clearTimeout(timeoutId);
+        return response;
+      } catch (error) {
+        clearTimeout(timeoutId);
+        if (error.name === 'AbortError') {
+          throw new Error('Request timeout');
+        }
+        throw error;
+      }
+    }
+
+    // Sanitize input to prevent XSS
+    function sanitizeInput(input) {
+      if (typeof input !== 'string') return input;
+
+      const div = document.createElement('div');
+      div.textContent = input;
+      return div.innerHTML;
+    }
+
+    // Get user role from session with caching
+    async function getUserRole() {
+      if (currentUserRole) return currentUserRole;
+
+      try {
+        const response = await fetchWithTimeout('/api/auth/check-session', {
+          credentials: 'include'
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          currentUserRole = data.role || 'employee';
+          console.log('User role:', currentUserRole);
+        } else {
+          currentUserRole = 'employee'; // Default fallback
+        }
+      } catch (error) {
+        console.error('Error getting user role:', error);
+        currentUserRole = 'employee'; // Default fallback
+      }
+
+      return currentUserRole;
+    }
+
+    // Load HOD profile and auto-fill fields
+    async function loadHODProfile() {
+      try {
+        console.log('Loading HOD profile for auto-fill...');
+
+        const response = await fetchWithTimeout('/api/hod/profile', {
+          credentials: 'include'
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          if (data.success) {
+            // Auto-fill HOD fields with validation
+            const hodFields = [
+              { id: 'hodName', value: data.hodData.name },
+              { id: 'hodEmpNo', value: data.hodData.employeeId },
+              { id: 'hodEmail', value: data.hodData.email }
+            ];
+
+            hodFields.forEach(field => {
+              const element = document.getElementById(field.id);
+              if (element && field.value) {
+                element.value = sanitizeInput(field.value);
+                element.classList.add('auto-filled');
+                element.setAttribute('title', 'Auto-filled from HOD profile');
+              }
+            });
+
+            console.log('HOD profile auto-filled successfully');
+          }
+        }
+      } catch (error) {
+        console.error('Error loading HOD profile:', error);
+      }
+    }
+
+    // Load existing HOD signature
+    async function loadHODSignature() {
+      try {
+        const response = await fetchWithTimeout('/api/hod/get-signature', {
+          credentials: 'include'
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          if (data.success && data.signatureUrl) {
+            const sigArea = document.getElementById('hodSignatureArea');
+            if (sigArea) {
+              sigArea.innerHTML = `<img src="${data.signatureUrl}" alt="HOD Signature" style="max-height: 60px; max-width: 100%; border-radius: 4px;">`;
+              sigArea.classList.add('has-signature');
+            }
+            console.log('Existing HOD signature loaded');
+          }
+        }
+      } catch (error) {
+        console.error('Error loading HOD signature:', error);
+      }
+    }
+
+    // Initialize signature upload handling
+    function initializeSignatureHandling() {
+      const hodSignatureArea = document.getElementById('hodSignatureArea');
+      const hodSignatureInput = document.getElementById('hodSignatureInput');
+
+      if (hodSignatureArea && hodSignatureInput) {
+        // Click handler
+        hodSignatureArea.addEventListener('click', () => {
+          if (currentUserRole === 'hod') {
+            hodSignatureInput.click();
+          }
+        });
+
+        // Keyboard handler for accessibility
+        hodSignatureArea.addEventListener('keydown', (e) => {
+          if ((e.key === 'Enter' || e.key === ' ') && currentUserRole === 'hod') {
+            e.preventDefault();
+            hodSignatureInput.click();
+          }
+        });
+
+        hodSignatureInput.addEventListener('change', handleSignatureUpload);
+      }
+    }
+
+    // Handle signature file upload with validation
+    async function handleSignatureUpload(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      // Validate file
+      const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif'];
+      const maxSize = 2 * 1024 * 1024; // 2MB
+
+      if (!validTypes.includes(file.type)) {
+        showStatusBanner('Error', 'Please select a valid image file (JPEG, PNG, GIF)', 'error');
+        return;
+      }
+
+      if (file.size > maxSize) {
+        showStatusBanner('Error', 'File size must be less than 2MB', 'error');
+        return;
+      }
+
+      try {
+        // Preview signature
+        const reader = new FileReader();
+        reader.onload = function (e) {
+          const sigArea = document.getElementById('hodSignatureArea');
+          if (sigArea) {
+            sigArea.innerHTML = `<img src="${e.target.result}" alt="HOD Signature" style="max-height: 60px; max-width: 100%; border-radius: 4px;">`;
+            sigArea.classList.add('has-signature');
+          }
+        };
+        reader.readAsDataURL(file);
+
+        // Upload to server
+        const formData = new FormData();
+        formData.append('signature', file);
+
+        const response = await fetchWithTimeout('/api/hod/upload-signature', {
+          method: 'POST',
+          body: formData,
+          credentials: 'include'
+        });
+
+        if (response.ok) {
+          console.log('Signature uploaded successfully');
+          showStatusBanner('Success', 'Signature uploaded successfully', 'success');
+        } else {
+          throw new Error('Failed to upload signature');
+        }
+
+      } catch (error) {
+        console.error('Error uploading signature:', error);
+        showStatusBanner('Error', 'Failed to upload signature', 'error');
+      }
+    }
+
+    // Set up role-based access control
+    function setupRoleBasedAccess() {
+      document.querySelectorAll('[data-role]').forEach(section => {
+        const roleType = section.getAttribute('data-role');
+        const shouldBeEditable = (
+          (roleType === 'employee' && currentUserRole === 'employee') ||
+          (roleType === 'hod' && currentUserRole === 'hod') ||
+          (roleType === 'it' && currentUserRole === 'it')
+        );
+
+        if (!shouldBeEditable) {
+          section.classList.add('readonly-section');
+        }
+      });
+
+      // Lock form fields for HOD except HOD-specific fields
+      if (currentUserRole === 'hod') {
+        document.querySelectorAll('input:not([id^="hod"]), select').forEach(input => {
+          input.setAttribute('readonly', 'true');
+          input.classList.add('read-only');
+        });
+      }
+    }
+
+    // Add table row function with validation
+    function addRow() {
+      if (currentUserRole === 'hod') {
+        showStatusBanner('Warning', 'HOD users cannot add new rows', 'warning');
+        return;
+      }
+
+      try {
+        rowCount++;
+        const tbody = document.getElementById("efileBody");
+        const row = document.createElement("tr");
+
+        row.innerHTML = `
+          <td data-label="Sl. No.">
+            <input type="number" name="sl${rowCount}" value="${rowCount}" min="1" 
+                   aria-label="Serial number ${rowCount}">
+          </td>
+          <td data-label="Transfer from EOffice Id">
+            <input type="text" name="from${rowCount}" 
+                   aria-label="Transfer from EOffice ID row ${rowCount}"
+                   placeholder="From EOffice ID">
+          </td>
+          <td data-label="Transfer to EOffice Id">
+            <input type="text" name="to${rowCount}" 
+                   aria-label="Transfer to EOffice ID row ${rowCount}"
+                   placeholder="To EOffice ID">
+          </td>
+          <td data-label="Electronic File No.">
+            <input type="text" name="file${rowCount}" 
+                   aria-label="Electronic file number row ${rowCount}"
+                   placeholder="File Number">
+          </td>
+        `;
+
+        tbody.appendChild(row);
+
+        // Focus on first input of new row
+        const firstInput = row.querySelector('input');
+        if (firstInput) {
+          firstInput.focus();
+        }
+
+        console.log(`Added row ${rowCount}`);
+      } catch (error) {
+        console.error('Error adding row:', error);
+        showStatusBanner('Error', 'Failed to add new row', 'error');
+      }
+    }
+
+    // Enhanced save function with validation
+    async function saveEFileForm() {
+      if (isFormLoading) return;
+
+      try {
+        setLoadingState(true);
+        showMessage('Saving form...', 'info');
+
+        // Validate form before saving
+        const validation = validateForm();
+        if (!validation.isValid) {
+          showStatusBanner('Validation Error', validation.message, 'error');
+          return;
+        }
+
+        const formData = collectFormData();
+        console.log('Saving e-file form data:', formData);
+
+        // Save to server
+        const response = await fetchWithTimeout('/api/employee/save-efile', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({ efileForm: formData })
+        });
+
+        const result = await response.json();
+
+        if (response.ok && result.success) {
+          // Save to localStorage for dashboard access
+          try {
+            localStorage.setItem('efileFormData', JSON.stringify(formData));
+            console.log('E-file form saved to localStorage');
+          } catch (storageError) {
+            console.warn('Failed to save to localStorage:', storageError);
+          }
+
+          showStatusBanner('Success', result.message || 'Form saved successfully!', 'success');
+          showMessage(result.message || 'Form saved successfully!', 'success');
+        } else {
+          throw new Error(result.message || 'Failed to save form');
+        }
+
+      } catch (error) {
+        console.error('Error saving form:', error);
+        const message = error.message === 'Request timeout'
+          ? 'Save operation timed out. Please try again.'
+          : `Failed to save form: ${error.message}`;
+
+        showStatusBanner('Error', message, 'error');
+        showMessage(message, 'error');
+      } finally {
+        setLoadingState(false);
+      }
+    }
+
+    // Form validation
+    function validateForm() {
+      const requiredFields = [
+        { id: 'reason', name: 'Reason' },
+        { id: 'salutation', name: 'Salutation' },
+        { id: 'empName', name: 'Employee Name' },
+        { id: 'designation', name: 'Designation' },
+        { id: 'empNo', name: 'Employee Number' },
+        { id: 'fromEoffice', name: 'From EOffice ID' },
+        { id: 'toEoffice', name: 'To EOffice ID' },
+        { id: 'tosalutation', name: 'Recipient Salutation' },
+        { id: 'toName', name: 'Recipient Name' },
+        { id: 'toDesignation', name: 'Recipient Designation' },
+        { id: 'toEmpNo', name: 'Recipient Employee Number' }
+      ];
+
+      for (const field of requiredFields) {
+        const element = document.getElementById(field.id);
+        if (element && element.required && !element.value.trim()) {
+          // Highlight the field
+          element.focus();
+          element.style.borderColor = 'var(--error-color)';
+
+          // Remove highlight after a delay
+          setTimeout(() => {
+            element.style.borderColor = '';
+          }, 3000);
+
+          return {
+            isValid: false,
+            message: `Please fill in the ${field.name} field`
+          };
+        }
+      }
+
+      return { isValid: true };
+    }
+
+    // Collect all form data including HOD fields and table data
+    function collectFormData() {
+      const getValue = (id) => {
+        const el = document.getElementById(id);
+        if (!el) return "";
+        return sanitizeInput(el.value || "");
+      };
+
+      const formData = {
+        // Basic form fields
+        reason: getValue("reason"),
+        customField: getValue("customField"),
+        salutation: getValue("salutation"),
+        empName: getValue("empName"),
+        designation: getValue("designation"),
+        empNo: getValue("empNo"),
+        fromEoffice: getValue("fromEoffice"),
+        toEoffice: getValue("toEoffice"),
+        tosalutation: getValue("tosalutation"),
+        toName: getValue("toName"),
+        toDesignation: getValue("toDesignation"),
+        toEmpNo: getValue("toEmpNo"),
+
+        // HOD fields (auto-filled)
+        hodName: getValue("hodName"),
+        hodEmpNo: getValue("hodEmpNo"),
+        hodEmail: getValue("hodEmail"),
+
+        // Table data
+        tableRows: [],
+
+        // Metadata
+        formId: formId,
+        lastUpdated: new Date().toISOString(),
+        userRole: currentUserRole,
+        version: '2.0'
+      };
+
+      // Include signature if present
+      const sigImg = document.querySelector("#hodSignatureArea img");
+      if (sigImg && sigImg.src) {
+        formData.hodSignature = sigImg.src;
+      }
+
+      // Collect table data with validation
+      const tableBody = document.getElementById('efileBody');
+      if (tableBody) {
+        const rows = tableBody.querySelectorAll('tr');
+        rows.forEach((tr, index) => {
+          const slInput = tr.querySelector('input[name^="sl"]');
+          const fromInput = tr.querySelector('input[name^="from"]');
+          const toInput = tr.querySelector('input[name^="to"]');
+          const fileInput = tr.querySelector('input[name^="file"]');
+
+          formData.tableRows.push({
+            sl: slInput ? sanitizeInput(slInput.value) : (index + 1).toString(),
+            from: fromInput ? sanitizeInput(fromInput.value) : "",
+            to: toInput ? sanitizeInput(toInput.value) : "",
+            file: fileInput ? sanitizeInput(fileInput.value) : ""
+          });
+        });
+      }
+
+      return formData;
+    }
+
+    // Load existing form data with error handling
+    async function loadFormData() {
+      try {
+        let formData = null;
+
+        if (formId && (currentUserRole === 'hod' || currentUserRole === 'it')) {
+          // Load from server for HOD/IT review
+          const response = await fetchWithTimeout(`/api/hod/form-details?formId=${encodeURIComponent(formId)}`, {
+            credentials: 'include'
+          });
+
+          if (response.ok) {
+            const data = await response.json();
+            formData = data?.efileFormData;
+          }
+        } else {
+          // Load from server for employee
+          const response = await fetchWithTimeout('/api/employee/form-data?formName=efileForm', {
+            credentials: 'include'
+          });
+
+          if (response.ok) {
+            const data = await response.json();
+            formData = data?.formData;
+          }
+        }
+
+        if (formData) {
+          await populateFormData(formData);
+          console.log('Form data loaded successfully');
+        }
+
+      } catch (error) {
+        console.error('Error loading form data:', error);
+        // Don't show error for missing form data, as it might be a new form
+        if (!error.message.includes('404')) {
+          showStatusBanner('Warning', 'Could not load previous form data', 'warning');
+        }
+      }
+    }
+
+    // Populate form with data
+    async function populateFormData(formData) {
+      try {
+        // Populate basic form fields
+        Object.entries(formData).forEach(([key, value]) => {
+          if (key !== 'tableRows' && key !== 'hodSignature') {
+            const el = document.getElementById(key);
+            if (el && value) {
+              el.value = value;
+            }
+          }
+        });
+
+        // Load table rows
+        if (formData.tableRows && Array.isArray(formData.tableRows) && formData.tableRows.length > 0) {
+          const tbody = document.getElementById("efileBody");
+          if (tbody) {
+            tbody.innerHTML = "";
+            formData.tableRows.forEach((row, index) => {
+              const tr = document.createElement("tr");
+              const isReadonly = currentUserRole === 'hod' ? 'readonly' : '';
+
+              tr.innerHTML = `
+                <td data-label="Sl. No.">
+                  <input type="number" name="sl${index + 1}" value="${row.sl || index + 1}" 
+                         min="1" ${isReadonly} aria-label="Serial number ${index + 1}">
+                </td>
+                <td data-label="Transfer from EOffice Id">
+                  <input type="text" name="from${index + 1}" value="${row.from || ''}" 
+                         ${isReadonly} aria-label="Transfer from EOffice ID row ${index + 1}"
+                         placeholder="From EOffice ID">
+                </td>
+                <td data-label="Transfer to EOffice Id">
+                  <input type="text" name="to${index + 1}" value="${row.to || ''}" 
+                         ${isReadonly} aria-label="Transfer to EOffice ID row ${index + 1}"
+                         placeholder="To EOffice ID">
+                </td>
+                <td data-label="Electronic File No.">
+                  <input type="text" name="file${index + 1}" value="${row.file || ''}" 
+                         ${isReadonly} aria-label="Electronic file number row ${index + 1}"
+                         placeholder="File Number">
+                </td>
+              `;
+              tbody.appendChild(tr);
+            });
+            rowCount = formData.tableRows.length;
+          }
+        }
+
+        // Show signature if available
+        if (formData.hodSignature) {
+          const sigArea = document.getElementById('hodSignatureArea');
+          if (sigArea) {
+            sigArea.innerHTML = `<img src="${formData.hodSignature}" alt="HOD Signature" style="max-height: 60px; max-width: 100%; border-radius: 4px;">`;
+            sigArea.classList.add('has-signature');
+          }
+        }
+      } catch (error) {
+        console.error('Error populating form data:', error);
+        showStatusBanner('Warning', 'Some form data could not be loaded', 'warning');
+      }
+    }
+
+    // Initialize form validation
+    function initializeFormValidation() {
+      const form = document.querySelector('.container');
+      const inputs = form.querySelectorAll('input[required], select[required]');
+
+      inputs.forEach(input => {
+        input.addEventListener('blur', validateField);
+        input.addEventListener('input', clearFieldError);
+      });
+    }
+
+    // Validate individual field
+    function validateField(event) {
+      const field = event.target;
+      const value = field.value.trim();
+
+      if (field.required && !value) {
+        field.style.borderColor = 'var(--error-color)';
+        field.setAttribute('aria-invalid', 'true');
+      } else {
+        field.style.borderColor = '';
+        field.removeAttribute('aria-invalid');
+      }
+    }
+
+    // Clear field error styling
+    function clearFieldError(event) {
+      const field = event.target;
+      field.style.borderColor = '';
+      field.removeAttribute('aria-invalid');
+    }
+
+    // Initialize accessibility features
+    function initializeAccessibility() {
+      // Add aria-live region for form status
+      const liveRegion = document.createElement('div');
+      liveRegion.setAttribute('aria-live', 'polite');
+      liveRegion.setAttribute('aria-atomic', 'true');
+      liveRegion.className = 'sr-only';
+      liveRegion.id = 'status-live-region';
+      document.body.appendChild(liveRegion);
+
+      // Add skip link
+      const skipLink = document.createElement('a');
+      skipLink.href = '#main-content';
+      skipLink.className = 'sr-only';
+      skipLink.textContent = 'Skip to main content';
+      skipLink.addEventListener('focus', () => skipLink.classList.remove('sr-only'));
+      skipLink.addEventListener('blur', () => skipLink.classList.add('sr-only'));
+      document.body.insertBefore(skipLink, document.body.firstChild);
+
+      // Add main landmark
+      const main = document.querySelector('.form-content');
+      if (main) {
+        main.id = 'main-content';
+        main.setAttribute('role', 'main');
+      }
+    }
+
+    // Show status messages (legacy compatibility)
+    function showMessage(message, type) {
+      const messageEl = document.getElementById('saveMessage');
+      if (messageEl) {
+        messageEl.textContent = message;
+        messageEl.className = `save-message ${type}`;
+        messageEl.style.display = 'block';
+
+        // Update live region for screen readers
+        const liveRegion = document.getElementById('status-live-region');
+        if (liveRegion) {
+          liveRegion.textContent = message;
+        }
+
+        // Auto-hide success messages
+        if (type === 'success') {
+          setTimeout(() => {
+            messageEl.style.display = 'none';
+          }, 5000);
+        }
+      }
+    }
+
+    // Handle window message events for iframe integration
+    window.addEventListener('message', function (event) {
+      console.log('Message received in iframe:', event.data);
+
+      if (event.data && event.data.action === 'populateForm') {
+        console.log('Populating form with data:', event.data.data);
+        populateFormData(event.data.data);
+
+        if (event.data.isReadOnly) {
+          setFormReadOnly(true);
+        }
+      }
+
+      if (event.data && event.data.action === 'setMode') {
+        if (event.data.isReadOnly) {
+          setFormReadOnly(true);
+        }
+      }
+    });
+
+    // Set form to read-only mode
+    function setFormReadOnly(readonly) {
+      const inputs = document.querySelectorAll('input, select, textarea, button');
+      inputs.forEach(el => {
+        el.disabled = readonly;
+        if (readonly) {
+          el.classList.add('read-only');
+        } else {
+          el.classList.remove('read-only');
+        }
+      });
+
+      if (readonly) {
+        showStatusBanner('Info', 'Form is in read-only mode', 'info');
+      }
+    }
+
+    // Error boundary for unhandled errors
+    window.addEventListener('error', function (event) {
+      console.error('Unhandled error:', event.error);
+      showStatusBanner('Error', 'An unexpected error occurred', 'error');
+    });
+
+    // Unhandled promise rejections
+    window.addEventListener('unhandledrejection', function (event) {
+      console.error('Unhandled promise rejection:', event.reason);
+      showStatusBanner('Error', 'An unexpected error occurred', 'error');
+    });
+
+    // Performance monitoring
+    if ('performance' in window) {
+      window.addEventListener('load', function () {
+        setTimeout(() => {
+          const perfData = performance.getEntriesByType('navigation')[0];
+          console.log('Page load performance:', {
+            loadTime: perfData.loadEventEnd - perfData.fetchStart,
+            domContentLoaded: perfData.domContentLoadedEventEnd - perfData.fetchStart
+          });
+        }, 0);
+      });
+    }
+  </script>
+</body>
+
+</html>

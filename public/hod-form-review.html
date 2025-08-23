@@ -1,0 +1,1386 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>HOD Form Review</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #f8f9fa;
+      color: #2c3e50;
+      line-height: 1.6;
+      padding: 20px;
+      font-weight: 400;
+    }
+
+    /* Professional Header */
+    .header {
+      background: #fff;
+      border: 1px solid #e9ecef;
+      border-radius: 8px;
+      padding: 25px;
+      margin-bottom: 25px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .header h1 {
+      color: #2c3e50;
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin-bottom: 10px;
+      letter-spacing: -0.025em;
+    }
+
+    /* Improved Form ID Font */
+    .form-id {
+      color: #495057;
+      font-size: 0.85rem;
+      font-family: 'Inter', system-ui, sans-serif;
+      font-weight: 600;
+      background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+      padding: 6px 12px;
+      border-radius: 20px;
+      display: inline-block;
+      border: 1px solid #dee2e6;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    /* Form Status Badge */
+    .form-status {
+      display: inline-block;
+      margin-left: 15px;
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .status-approved {
+      background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+      color: #155724;
+      border: 1px solid #28a745;
+    }
+
+    .status-rejected {
+      background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
+      color: #721c24;
+      border: 1px solid #dc3545;
+    }
+
+    .status-pending {
+      background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
+      color: #856404;
+      border: 1px solid #ffc107;
+    }
+
+    /* HOD Profile Section */
+    .hod-profile {
+      background: #fff;
+      border: 1px solid #e9ecef;
+      border-radius: 8px;
+      padding: 25px;
+      margin-bottom: 25px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .profile-header {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+
+    .profile-icon {
+      width: 50px;
+      height: 50px;
+      background: linear-gradient(135deg, #495057 0%, #6c757d 100%);
+      color: #fff;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      font-weight: 600;
+      font-family: 'Inter', sans-serif;
+      box-shadow: 0 2px 8px rgba(73, 80, 87, 0.2);
+    }
+
+    .profile-info h3 {
+      color: #2c3e50;
+      font-size: 1.1rem;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+    }
+
+    .profile-subtitle {
+      color: #6c757d;
+      font-size: 0.9rem;
+      font-weight: 400;
+    }
+
+    .profile-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 15px;
+    }
+
+    .profile-field {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .profile-field label {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #495057;
+      margin-bottom: 5px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .profile-field input {
+      padding: 8px 12px;
+      border: 1px solid #ced4da;
+      border-radius: 4px;
+      background: #f8f9fa;
+      color: #495057;
+      font-size: 0.9rem;
+      font-weight: 500;
+      font-family: 'Inter', sans-serif;
+      transition: all 0.3s ease;
+    }
+
+    /* Enhanced Auto-filled Styling */
+    .auto-filled {
+      background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%) !important;
+      border-color: #28a745 !important;
+      color: #155724 !important;
+      box-shadow: 0 0 0 2px rgba(40, 167, 69, 0.1);
+    }
+
+    .hod-prefilled {
+      background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%) !important;
+      border-color: #28a745 !important;
+      color: #155724 !important;
+      position: relative;
+    }
+
+    .hod-prefilled::after {
+      content: 'Auto-filled';
+      position: absolute;
+      right: 8px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 0.7rem;
+      color: #1976d2;
+      font-weight: 600;
+    }
+
+    /* Enhanced Signature Section */
+    .signature-section {
+      margin-top: 20px;
+      padding: 20px;
+      background: #f8f9fa;
+      border: 1px solid #e9ecef;
+      border-radius: 6px;
+    }
+
+    .signature-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .signature-label {
+      font-weight: 600;
+      color: #495057;
+      font-size: 0.9rem;
+    }
+
+    .change-signature-btn {
+      background: #6c757d;
+      color: white;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 4px;
+      font-size: 0.8rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: none;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .change-signature-btn:hover {
+      background: #5a6268;
+      transform: translateY(-1px);
+    }
+
+    .signature-area {
+      min-height: 80px;
+      border: 2px dashed #ced4da;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #fff;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      position: relative;
+    }
+
+    .signature-area:hover {
+      border-color: #6c757d;
+      background: #f8f9fa;
+    }
+
+    .signature-area.has-signature {
+      border-color: #28a745;
+      background: #f8fff8;
+    }
+
+    .signature-area.changing {
+      border-color: #007bff;
+      background: #f8f9ff;
+    }
+
+    .signature-placeholder {
+      color: #6c757d;
+      font-size: 0.9rem;
+      text-align: center;
+      font-weight: 400;
+    }
+
+    .signature-status {
+      position: absolute;
+      bottom: 5px;
+      right: 10px;
+      font-size: 0.75rem;
+      color: #28a745;
+      font-weight: 600;
+    }
+
+    .signature-actions {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 10px;
+      display: none;
+    }
+
+    .signature-actions.show {
+      display: flex;
+    }
+
+    .signature-action-btn {
+      padding: 6px 12px;
+      border: none;
+      border-radius: 4px;
+      font-size: 0.8rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .btn-confirm {
+      background: #28a745;
+      color: white;
+    }
+
+    .btn-confirm:hover {
+      background: #218838;
+    }
+
+    .btn-cancel {
+      background: #6c757d;
+      color: white;
+    }
+
+    .btn-cancel:hover {
+      background: #5a6268;
+    }
+
+    /* View-only section styling */
+    .view-only-notice {
+      background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+      border: 1px solid #2196f3;
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 25px;
+      text-align: center;
+    }
+
+    .view-only-notice h3 {
+      color: #1976d2;
+      margin-bottom: 10px;
+      font-size: 1.1rem;
+    }
+
+    .view-only-notice p {
+      color: #0d47a1;
+      margin: 0;
+    }
+
+    /* Form Container */
+    .form-container {
+      background: #fff;
+      border: 1px solid #e9ecef;
+      border-radius: 8px;
+      margin-bottom: 25px;
+      overflow: hidden;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .form-header {
+      background: #f8f9fa;
+      border-bottom: 1px solid #e9ecef;
+      padding: 15px 20px;
+    }
+
+    .form-header h3 {
+      color: #495057;
+      font-size: 1rem;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+    }
+
+    iframe {
+      width: 100%;
+      height: 600px;
+      border: none;
+      display: block;
+    }
+
+    /* Approval Section */
+    .approval-section {
+      background: #fff;
+      border: 1px solid #e9ecef;
+      border-radius: 8px;
+      padding: 30px;
+      text-align: center;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .approval-section h3 {
+      color: #2c3e50;
+      font-size: 1.2rem;
+      font-weight: 600;
+      margin-bottom: 25px;
+      letter-spacing: -0.025em;
+    }
+
+    .remarks-section {
+      text-align: left;
+      margin-bottom: 25px;
+    }
+
+    .remarks-section label {
+      display: block;
+      font-weight: 600;
+      color: #495057;
+      margin-bottom: 8px;
+      font-size: 0.9rem;
+    }
+
+    .remarks-section textarea {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #ced4da;
+      border-radius: 6px;
+      resize: vertical;
+      min-height: 80px;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.9rem;
+      font-weight: 400;
+    }
+
+    .remarks-section textarea:focus {
+      outline: none;
+      border-color: #495057;
+      box-shadow: 0 0 0 2px rgba(73, 80, 87, 0.1);
+    }
+
+    /* Action Buttons */
+    .action-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      margin-top: 20px;
+    }
+
+    .btn {
+      padding: 12px 24px;
+      border: none;
+      border-radius: 6px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      min-width: 150px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .btn-approve {
+      background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+      color: #fff;
+    }
+
+    .btn-approve:hover:not(:disabled) {
+      background: linear-gradient(135deg, #218838 0%, #1ea486 100%);
+      transform: translateY(-1px);
+    }
+
+    .btn-reject {
+      background: linear-gradient(135deg, #dc3545 0%, #e74c3c 100%);
+      color: #fff;
+    }
+
+    .btn-reject:hover:not(:disabled) {
+      background: linear-gradient(135deg, #c82333 0%, #c0392b 100%);
+      transform: translateY(-1px);
+    }
+
+    .btn:disabled {
+      background: #6c757d !important;
+      cursor: not-allowed !important;
+      opacity: 0.6;
+      transform: none !important;
+    }
+
+    /* Status Messages */
+    .status-message {
+      padding: 15px;
+      border-radius: 6px;
+      font-weight: 500;
+      text-align: center;
+      margin: 15px 0;
+      border: 1px solid;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .status-loading {
+      background: #cce5ff;
+      color: #004085;
+      border-color: #b3d7ff;
+    }
+
+    .status-success {
+      background: #d4edda;
+      color: #155724;
+      border-color: #c3e6cb;
+    }
+
+    .status-error {
+      background: #f8d7da;
+      color: #721c24;
+      border-color: #f5c6cb;
+    }
+
+    /* Notification */
+    .notification {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 1000;
+      padding: 15px 20px;
+      border-radius: 6px;
+      font-weight: 600;
+      max-width: 350px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      display: none;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .notification.status-success {
+      background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+      color: #155724;
+      border-left: 4px solid #28a745;
+    }
+
+    .notification.status-info {
+      background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+      color: #1976d2;
+      border-left: 4px solid #2196f3;
+    }
+
+    .notification.status-error {
+      background: linear-gradient(135deg, #ffebee 0%, #ffcdd2 100%);
+      color: #c62828;
+      border-left: 4px solid #f44336;
+    }
+
+    /* Mobile Responsive */
+    @media (max-width: 768px) {
+      body {
+        padding: 15px;
+      }
+
+      .profile-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .action-buttons {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .btn {
+        width: 100%;
+        max-width: 250px;
+      }
+
+      iframe {
+        height: 500px;
+      }
+
+      .signature-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+      }
+
+      .change-signature-btn {
+        align-self: flex-end;
+      }
+
+      .profile-field input.hod-prefilled::after {
+        display: none;
+      }
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    /* Loading Spinner for Auto-fill */
+    .prefill-loader {
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      border: 2px solid #e9ecef;
+      border-radius: 50%;
+      border-top-color: #007bff;
+      animation: spin 0.8s ease-in-out infinite;
+      margin-left: 8px;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    /* Final Action Modal */
+    .final-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 2000;
+    }
+
+    .final-modal-content {
+      background: white;
+      padding: 30px;
+      border-radius: 8px;
+      text-align: center;
+      max-width: 400px;
+      margin: 20px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    }
+
+    .final-modal h3 {
+      color: #28a745;
+      margin-bottom: 15px;
+      font-size: 1.2rem;
+    }
+
+    .final-modal p {
+      margin-bottom: 20px;
+      color: #495057;
+    }
+
+    .final-modal button {
+      background: #007bff;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: 600;
+      margin: 0 5px;
+    }
+
+    .final-modal button:hover {
+      background: #0056b3;
+    }
+
+    .final-modal .btn-danger {
+      background: #dc3545;
+    }
+
+    .final-modal .btn-danger:hover {
+      background: #c82333;
+    }
+
+    /* Green styling for HOD details fields */
+    .green-details {
+      color: #155724 !important;
+      background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%) !important;
+      border-color: #28a745 !important;
+      font-weight: 600 !important;
+      box-shadow: 0 0 0 2px rgba(40, 167, 69, 0.1) !important;
+    }
+
+    .signature-status-indicator {
+      font-size: 14px;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-weight: bold;
+    }
+
+    .signature-loaded {
+      background: #d4edda;
+      color: #155724;
+    }
+
+    .signature-missing {
+      background: #f8d7da;
+      color: #721c24;
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Professional Header -->
+  <div class="header">
+    <h1>HOD Form Review</h1>
+    <div class="form-id">Form ID: <span id="formIdLbl">Loading...</span></div>
+    <!-- Form Status Badge -->
+    <div class="form-status hidden" id="formStatusBadge">
+      <span id="formStatusText">Processing...</span>
+    </div>
+    <div id="statusMessage" class="status-message hidden"></div>
+  </div>
+
+  <!-- View-only notice for approved/rejected forms -->
+  <div class="view-only-notice hidden" id="viewOnlyNotice">
+    <h3 id="viewOnlyTitle">View-Only Mode</h3>
+    <p id="viewOnlyMessage">This form has been processed and cannot be modified.</p>
+  </div>
+
+  <!-- Enhanced HOD Profile Section with Auto-fill -->
+  <div class="hod-profile">
+    <div class="profile-header">
+      <div class="profile-icon" id="profileIcon">H</div>
+      <div class="profile-info">
+        <h3 id="profileName">Loading HOD Profile...</h3>
+        <div class="profile-subtitle" id="profileSubtitle">Head of Department - Reviewing Application</div>
+      </div>
+    </div>
+
+    <div class="profile-grid">
+      <div class="profile-field">
+        <label>HOD Name</label>
+        <input type="text" id="hodName" readonly>
+      </div>
+      <div class="profile-field">
+        <label>HOD ID</label>
+        <input type="text" id="hodId" readonly>
+      </div>
+      <div class="profile-field">
+        <label>Email</label>
+        <input type="email" id="hodEmail" readonly>
+      </div>
+      <div class="profile-field">
+        <label>Department</label>
+        <input type="text" id="hodDepartment" readonly>
+      </div>
+      <div class="profile-field">
+        <label>Review Date</label>
+        <input type="text" id="reviewDate" readonly>
+      </div>
+    </div>
+
+    <!-- Enhanced HOD Signature Section - AUTO-FILLED -->
+    <div class="signature-section" id="signatureSection">
+      <div class="signature-header">
+        <span class="signature-label">HOD Digital Signature (Auto-filled)</span>
+        <span id="signatureStatus" class="signature-status-indicator">Loading...</span>
+      </div>
+
+      <div class="signature-area" id="hodSignatureArea">
+        <div class="signature-placeholder">
+          <div>Loading signature... <span class="prefill-loader"></span></div>
+          <small style="color: #6c757d;">Signature will auto-load from your profile</small>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Form Container -->
+  <div id="formContainer"></div>
+
+  <!-- Professional Approval Section -->
+  <div class="approval-section" id="approvalSection">
+    <h3 id="approvalSectionTitle">Final Review Decision</h3>
+
+    <div class="remarks-section">
+      <label for="approvalRemarks" id="remarksLabel">Review Comments (Optional)</label>
+      <textarea id="approvalRemarks"
+        placeholder="Enter your review comments, feedback, or specific instructions for the employee or IT department..."></textarea>
+    </div>
+
+    <div class="action-buttons">
+      <button id="finalApproveBtn" class="btn btn-approve" disabled>Loading...</button>
+      <button id="rejectBtn" class="btn btn-reject" disabled>Loading...</button>
+    </div>
+  </div>
+
+  <!-- Normal Back Button -->
+  <div style="text-align: center; margin: 30px 0;">
+    <button type="button" onclick="window.history.back()" style="
+      background: #6c757d;
+      color: white;
+      border: none;
+      padding: 12px 30px;
+      border-radius: 6px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    " onmouseover="this.style.background='#5a6268'" onmouseout="this.style.background='#6c757d'">
+      Back
+    </button>
+  </div>
+
+  <!-- Notification Container -->
+  <div id="notification" class="notification"></div>
+
+  <!-- Final Action Modal -->
+  <div id="finalModal" class="final-modal">
+    <div class="final-modal-content">
+      <h3 id="modalTitle">Action Completed</h3>
+      <p id="modalMessage">The action has been completed successfully.</p>
+      <button id="stayButton" onclick="stayOnPage()">Stay on Page</button>
+      <button id="backButton" onclick="goBackToHODDashboard()">Back to HOD Dashboard</button>
+    </div>
+  </div>
+
+
+
+
+  <script>
+    // Global variables with mode detection
+    let currentUserRole = 'hod';
+    let formId = '';
+    let autoFilledSignatureData = null;
+    let formStatus = 'pending';
+    let isViewOnlyMode = false;
+    let formData = null;
+    let collectedEfileTableData = {};
+
+    // Initialize with mode detection
+    const qs = new URLSearchParams(location.search);
+    formId = qs.get('formId');
+    const mode = qs.get('mode') || 'pending';
+    formStatus = mode;
+    isViewOnlyMode = (mode === 'approved' || mode === 'rejected');
+
+    const $ = id => document.getElementById(id);
+
+    // Update form ID display
+    $('formIdLbl').textContent = formId || 'Unknown';
+
+    // Initialize page based on mode
+    function initializePageMode() {
+      if (isViewOnlyMode) {
+        $('viewOnlyNotice').classList.remove('hidden');
+
+        if (formStatus === 'approved') {
+          $('viewOnlyTitle').textContent = 'Form Approved - View Only';
+          $('viewOnlyMessage').textContent = 'This form has been approved and sent to IT. No further action can be taken.';
+          $('formStatusBadge').className = 'form-status status-approved';
+          $('formStatusText').textContent = 'Approved';
+          $('profileSubtitle').textContent = 'Head of Department - Viewing Approved Form';
+          $('approvalSectionTitle').textContent = 'Form Completion Details';
+          $('remarksLabel').textContent = 'HOD Review Comments (Read-Only)';
+        } else if (formStatus === 'rejected') {
+          $('viewOnlyTitle').textContent = 'Form Rejected - View Only';
+          $('viewOnlyMessage').textContent = 'This form has been rejected and returned to employee. No further action can be taken.';
+          $('formStatusBadge').className = 'form-status status-rejected';
+          $('formStatusText').textContent = 'Rejected';
+          $('profileSubtitle').textContent = 'Head of Department - Viewing Rejected Form';
+          $('approvalSectionTitle').textContent = 'Form Rejection Details';
+          $('remarksLabel').textContent = 'HOD Rejection Reason (Read-Only)';
+        }
+
+        $('formStatusBadge').classList.remove('hidden');
+        $('signatureSection').style.opacity = '0.6';
+        $('signatureSection').style.pointerEvents = 'none';
+        $('approvalRemarks').readOnly = true;
+        $('approvalRemarks').style.backgroundColor = '#f8f9fa';
+        $('approvalRemarks').style.cursor = 'not-allowed';
+        $('finalApproveBtn').textContent = 'Form Already Processed';
+        $('finalApproveBtn').disabled = true;
+        $('rejectBtn').textContent = 'Form Already Processed';
+        $('rejectBtn').disabled = true;
+      } else {
+        $('formStatusBadge').className = 'form-status status-pending';
+        $('formStatusText').textContent = 'Pending Review';
+        $('formStatusBadge').classList.remove('hidden');
+      }
+    }
+
+    // Enhanced status message function
+    function showStatus(message, type = 'loading') {
+      const statusEl = $('statusMessage');
+      statusEl.textContent = message;
+      statusEl.className = `status-message status-${type}`;
+      statusEl.classList.remove('hidden');
+
+      if (type === 'success') {
+        setTimeout(() => hideStatus(), 5000);
+      }
+    }
+
+    function hideStatus() {
+      $('statusMessage').classList.add('hidden');
+    }
+
+    // Show notifications
+    function showNotification(message, type) {
+      const notification = $('notification');
+      notification.textContent = message;
+      notification.className = `notification status-${type}`;
+      notification.style.display = 'block';
+
+      setTimeout(() => {
+        notification.style.display = 'none';
+      }, 4000);
+    }
+
+    // Final modal functions
+    function showFinalModal(title, message, action) {
+      $('modalTitle').textContent = title;
+      $('modalMessage').textContent = message;
+      $('finalModal').style.display = 'flex';
+    }
+
+    function stayOnPage() {
+      $('finalModal').style.display = 'none';
+      if (!isViewOnlyMode) {
+        $('finalApproveBtn').disabled = false;
+        $('finalApproveBtn').textContent = 'Approve & Send to IT';
+        $('rejectBtn').disabled = false;
+        $('rejectBtn').textContent = 'Reject & Return';
+      }
+    }
+
+    function goBackToHODDashboard() {
+      window.location.href = '/hodreview.html';
+    }
+
+    // Generate initials from name
+    function generateInitials(name) {
+      if (!name) return 'H';
+      const parts = name.split(' ');
+      if (parts.length >= 2) {
+        return (parts[0][0] + parts[11]).toUpperCase();
+      }
+      return name.substring(0, 2).toUpperCase();
+    }
+
+    // Populate form with session data
+    function updateFormWithSessionData(sessionData = {}) {
+      $('profileName').textContent = sessionData.hodID || 'Head of Department';
+      $('hodName').value = sessionData.hodID || '';
+      $('hodId').value = sessionData.employeeID || '';
+      $('hodEmail').value = sessionData.email || '';
+      $('hodDepartment').value = sessionData.department || '';
+      $('reviewDate').value = sessionData.currentDate || '';
+
+      // Set profile icon
+      $('profileIcon').textContent = generateInitials(sessionData.hodID);
+    }
+
+    // Enhanced HOD Profile Loading with AUTO-FILLED signature capture
+    async function loadHODProfile() {
+      try {
+        if (!isViewOnlyMode) {
+          showNotification('Loading HOD profile and auto-filling details...', 'info');
+        }
+
+        const response = await fetch('/api/hod/my-details', {
+          credentials: 'include'
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          if (data.success && data.hodDetails) {
+            const sessionData = {
+              hodID: data.hodDetails.name,
+              employeeID: data.hodDetails.employeeId,
+              email: data.hodDetails.email,
+              department: data.hodDetails.department || 'Academic Department',
+              currentDate: data.hodDetails.currentDate || (new Date().toLocaleDateString('en-IN') + ' ' + new Date().toLocaleTimeString('en-IN'))
+            };
+
+            updateFormWithSessionData(sessionData);
+            await loadAndCaptureHODSignature();
+
+            if (!isViewOnlyMode) {
+              showNotification('HOD details auto-filled successfully!', 'success');
+            }
+          }
+        } else {
+          throw new Error('Failed to fetch HOD details from API');
+        }
+      } catch (error) {
+        const fallbackData = {
+          hodID: 'Sushil Kumar Uniyal',
+          employeeID: '3401234',
+          email: 'sushil.uniyal@company.com',
+          department: 'IT',
+          currentDate: new Date().toLocaleDateString('en-IN') + ' ' + new Date().toLocaleTimeString('en-IN')
+        };
+
+        updateFormWithSessionData(fallbackData);
+
+        if (!isViewOnlyMode) {
+          showNotification('Using fallback HOD details - Check API connection', 'error');
+        }
+      }
+    }
+
+    // Load and capture auto-filled HOD signature
+    async function loadAndCaptureHODSignature() {
+      try {
+        const response = await fetch('/api/hod/get-signature', {
+          credentials: 'include'
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          if (data.success && data.signatureUrl) {
+            autoFilledSignatureData = data.signatureUrl;
+
+            const sigArea = $('hodSignatureArea');
+            sigArea.innerHTML = `
+              <img src="${data.signatureUrl}" 
+                   alt="HOD Signature" 
+                   style="max-height: 70px; max-width: 100%; display: block; margin: 0 auto; 
+                          border: 2px solid #28a745; border-radius: 6px; padding: 5px; background: #f8fff9;">
+              <div style="text-align: center; margin-top: 8px; color: #155724; font-weight: bold; font-size: 12px;">
+                Auto-filled from Profile
+              </div>
+            `;
+            sigArea.classList.add('has-signature');
+
+            $('signatureStatus').textContent = 'Loaded';
+            $('signatureStatus').className = 'signature-status-indicator signature-loaded';
+          } else {
+            autoFilledSignatureData = null;
+            const sigArea = $('hodSignatureArea');
+            sigArea.innerHTML = `
+              <div class="signature-placeholder">
+                <div>No signature found in profile</div>
+                <small style="color: #6c757d;">Please contact admin to add signature to your profile</small>
+              </div>
+            `;
+
+            $('signatureStatus').textContent = 'Missing';
+            $('signatureStatus').className = 'signature-status-indicator signature-missing';
+          }
+        }
+      } catch (error) {
+        autoFilledSignatureData = null;
+
+        const sigArea = $('hodSignatureArea');
+        sigArea.innerHTML = `
+          <div class="signature-placeholder">
+            <div>Unable to load signature</div>
+            <small style="color: #6c757d;">Check your connection and try again</small>
+          </div>
+        `;
+
+        $('signatureStatus').textContent = 'Error';
+        $('signatureStatus').className = 'signature-status-indicator signature-missing';
+      }
+    }
+
+    // Enhanced iframe data collection with e-file table capture
+    function collectEfileTableData(iframe) {
+      try {
+        const doc = iframe.contentDocument || iframe.contentWindow.document;
+        if (!doc) return {};
+
+        const tableData = {};
+
+        // Collect table headers and rows
+        const tables = doc.querySelectorAll('table');
+        tables.forEach((table, index) => {
+          const headers = [];
+          const rows = [];
+
+          // Extract headers
+          const headerCells = table.querySelectorAll('th');
+          headerCells.forEach(th => headers.push(th.textContent.trim()));
+
+          // Extract rows
+          const bodyRows = table.querySelectorAll('tbody tr');
+          bodyRows.forEach(tr => {
+            const rowData = [];
+            const cells = tr.querySelectorAll('td');
+            cells.forEach(td => {
+              const input = td.querySelector('input, select, textarea');
+              if (input) {
+                rowData.push(input.value || '');
+              } else {
+                rowData.push(td.textContent.trim());
+              }
+            });
+            if (rowData.length > 0) rows.push(rowData);
+          });
+
+          if (headers.length > 0 || rows.length > 0) {
+            tableData[`table_${index}`] = { headers, rows };
+          }
+        });
+
+        // Also collect specific e-file fields
+        const efileFields = [
+          'customField', 'reason', 'salutation', 'empName', 'designation', 'empNo',
+          'fromEoffice', 'toEoffice', 'tosalutation', 'toName', 'toDesignation', 'toEmpNo',
+          'efileTable', 'efileBody'
+        ];
+
+        efileFields.forEach(fieldId => {
+          const element = doc.getElementById(fieldId);
+          if (element) {
+            if (['INPUT', 'SELECT', 'TEXTAREA'].includes(element.tagName)) {
+              tableData[fieldId] = element.value || '';
+            } else {
+              tableData[fieldId] = element.textContent.trim() || '';
+            }
+          }
+        });
+
+        return tableData;
+
+      } catch (error) {
+        return {};
+      }
+    }
+
+    // Enhanced form loading with proper iframe handling and data population
+    async function loadFormData() {
+      try {
+        showStatus(`Loading form data...${isViewOnlyMode ? ' (View-Only Mode)' : ''}`, 'loading');
+
+        await loadHODProfile();
+
+        const res = await fetch(`/api/hod/form-details/${formId}`, {
+          credentials: 'include'
+        });
+
+        if (!res.ok) {
+          throw new Error(`Server responded with ${res.status}`);
+        }
+
+        const data = await res.json();
+
+        if (!data.success) {
+          throw new Error(data.message || 'Failed to load form');
+        }
+
+        formData = data;
+
+        if (data.form && isViewOnlyMode) {
+          if (data.form.hodApproval && data.form.hodApproval.remarks) {
+            $('approvalRemarks').value = data.form.hodApproval.remarks;
+          } else if (data.form.hodRejection && data.form.hodRejection.remarks) {
+            $('approvalRemarks').value = data.form.hodRejection.remarks;
+          } else if (data.form.rejectionReason) {
+            $('approvalRemarks').value = data.form.rejectionReason;
+          }
+        }
+
+        const container = $('formContainer');
+        const framesToLoad = [
+          { key: 'disposalForm', url: 'forms/disposalform.html', title: 'Disposal Form' },
+          { key: 'efileForm', url: 'forms/efile.html', title: 'E-file Form' },
+          {
+            key: data.noDuesType === 'Transfer' ? 'form365Trans' : 'form365Disp',
+            url: data.noDuesType === 'Transfer' ? 'forms/form365transfer.html' : 'forms/form365disposal.html',
+            title: `Form 365 ${data.noDuesType}`
+          }
+        ];
+
+        framesToLoad.forEach(frameInfo => {
+          const frameDiv = document.createElement('div');
+          frameDiv.className = 'form-container';
+
+          const frameUrl = new URL(frameInfo.url, window.location.origin);
+          frameUrl.searchParams.set('role', 'hod');
+          frameUrl.searchParams.set('formId', formId);
+          frameUrl.searchParams.set('mode', formStatus);
+
+          let existingDataForFrame = {};
+          if (isViewOnlyMode && data.form && data.form.formResponses && data.form.formResponses[frameInfo.key]) {
+            existingDataForFrame = data.form.formResponses[frameInfo.key];
+          }
+
+          frameDiv.innerHTML = `
+            <div class="form-header">
+              <h3>${frameInfo.title} ${isViewOnlyMode ? '(Read-Only)' : ''}</h3>
+            </div>
+            <iframe src="${frameUrl.toString()}" 
+                    data-form-key="${frameInfo.key}"
+                    data-existing-data='${JSON.stringify(existingDataForFrame)}'
+                    onload="handleFrameLoad(this)"
+                    style="width: 100%; height: 600px; border: none;">
+            </iframe>
+          `;
+          container.appendChild(frameDiv);
+        });
+
+        hideStatus();
+
+        setTimeout(() => {
+          if (isViewOnlyMode) {
+            $('finalApproveBtn').disabled = true;
+            $('rejectBtn').disabled = true;
+            showStatus(`Form loaded in view-only mode. Status: ${formStatus.toUpperCase()}`, 'info');
+          } else {
+            $('finalApproveBtn').disabled = false;
+            $('finalApproveBtn').textContent = 'Approve & Send to IT';
+            $('rejectBtn').disabled = false;
+            $('rejectBtn').textContent = 'Reject & Return';
+            showStatus('Forms loaded successfully. Review and take action below.', 'success');
+          }
+        }, 3000);
+
+      } catch (e) {
+        showStatus(`Failed to load form: ${e.message}`, 'error');
+        $('finalApproveBtn').textContent = 'Load Failed';
+        $('rejectBtn').textContent = 'Load Failed';
+      }
+    }
+
+    // Enhanced frame loading handler with data messaging
+    window.handleFrameLoad = function (frame) {
+      try {
+        if (isViewOnlyMode && frame.dataset.existingData) {
+          const existingData = JSON.parse(frame.dataset.existingData);
+          if (Object.keys(existingData).length > 0) {
+            setTimeout(() => {
+              frame.contentWindow.postMessage({
+                action: 'populateForm',
+                data: existingData,
+                mode: formStatus,
+                isReadOnly: true
+              }, '*');
+            }, 500);
+          }
+        }
+
+        setTimeout(() => {
+          frame.contentWindow.postMessage({
+            action: 'setMode',
+            mode: formStatus,
+            isReadOnly: isViewOnlyMode
+          }, '*');
+        }, 500);
+
+      } catch (error) {
+        // Silent error handling
+      }
+    };
+
+    // Enhanced approval processing with auto-filled signature and e-file table storage
+    async function processApproval(action) {
+      if (isViewOnlyMode) {
+        showNotification('This form cannot be modified - it has already been processed.', 'error');
+        return;
+      }
+
+      const button = action === 'approved' ? $('finalApproveBtn') : $('rejectBtn');
+      const remarks = $('approvalRemarks').value.trim();
+
+      if (action === 'rejected' && !remarks) {
+        showNotification('Please provide remarks when rejecting a form.', 'error');
+        return;
+      }
+
+      // Check for auto-filled signature (required for approval)
+      if (action === 'approved' && !autoFilledSignatureData) {
+        showNotification('HOD signature is missing from your profile. Please contact admin to add your signature.', 'error');
+        return;
+      }
+
+      const confirmMessage = action === 'approved'
+        ? 'Are you sure you want to approve this form and send it to IT?'
+        : 'Are you sure you want to reject this form and return it to the employee?';
+
+      if (!confirm(confirmMessage)) return;
+
+      $('finalApproveBtn').disabled = true;
+      $('rejectBtn').disabled = true;
+      button.textContent = 'Processing...';
+
+      const statusMessage = action === 'approved'
+        ? 'Collecting form data and submitting for approval...'
+        : 'Processing rejection and preparing feedback...';
+      showStatus(statusMessage, 'loading');
+
+      try {
+        // Collect comprehensive HOD data including auto-filled signature
+        const hodData = {
+          hodId: $('hodId').value,
+          name: $('hodName').value,
+          email: $('hodEmail').value,
+          department: $('hodDepartment').value,
+          reviewDate: $('reviewDate').value,
+          designation: 'HOD'
+        };
+
+        // Include auto-filled signature
+        if (autoFilledSignatureData) {
+          hodData.signature = autoFilledSignatureData;
+        }
+
+        const payload = {
+          formId,
+          action,
+          remarks,
+          reviewedBy: hodData.name,
+          hodDetails: hodData,
+          formResponses: {},
+          signature: autoFilledSignatureData
+        };
+
+        // Enhanced form data collection with e-file table data
+        if (action === 'approved') {
+          const iframes = document.querySelectorAll('iframe[data-form-key]');
+
+          for (const iframe of iframes) {
+            const key = iframe.dataset.formKey;
+            const doc = iframe.contentDocument || iframe.contentWindow.document;
+            const formDataForKey = {};
+
+            if (doc) {
+              doc.querySelectorAll('[id]').forEach(el => {
+                if (['INPUT', 'SELECT', 'TEXTAREA'].includes(el.tagName)) {
+                  formDataForKey[el.id] = el.value;
+                } else if (el.tagName === 'IMG') {
+                  formDataForKey[el.id] = el.src;
+                } else {
+                  formDataForKey[el.id] = el.textContent.trim();
+                }
+              });
+            }
+
+            // Add auto-filled signature to each form
+            if (autoFilledSignatureData) {
+              formDataForKey.hodSignatureArea = autoFilledSignatureData;
+              formDataForKey.hodSignature = autoFilledSignatureData;
+            }
+
+            // Special handling for e-file form - collect table data
+            if (key === 'efileForm') {
+              const efileTableData = collectEfileTableData(iframe);
+              Object.assign(formDataForKey, efileTableData);
+              collectedEfileTableData = efileTableData;
+            }
+
+            payload.formResponses[key] = formDataForKey;
+          }
+        }
+
+        const endpoint = action === 'approved' ? '/api/hod/final-approve' : '/api/hod/approve-form';
+        const response = await fetch(endpoint, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify(payload)
+        });
+
+        const result = await response.json();
+
+        if (response.ok && result.success) {
+          const successMessage = action === 'approved'
+            ? 'Form approved and sent to IT successfully!'
+            : 'Form rejected and returned to employee successfully!';
+
+          showStatus(successMessage, 'success');
+          showNotification(successMessage, 'success');
+
+          button.textContent = action === 'approved' ? 'Approved' : 'Rejected';
+
+          const modalTitle = action === 'approved' ? 'Form Approved' : 'Form Rejected';
+          const modalMessage = action === 'approved'
+            ? 'The form has been approved and sent to IT successfully. What would you like to do next?'
+            : 'The form has been rejected and returned to the employee successfully. What would you like to do next?';
+
+          setTimeout(() => {
+            showFinalModal(modalTitle, modalMessage, action);
+          }, 1500);
+
+        } else {
+          throw new Error(result.message || 'Server rejected the submission');
+        }
+
+      } catch (error) {
+        showStatus(`Error: ${error.message}`, 'error');
+        showNotification(`Error: ${error.message}`, 'error');
+
+        if (!isViewOnlyMode) {
+          $('finalApproveBtn').disabled = false;
+          $('finalApproveBtn').textContent = 'Approve & Send to IT';
+          $('rejectBtn').disabled = false;
+          $('rejectBtn').textContent = 'Reject & Return';
+        }
+      }
+    }
+
+    // Initialize everything with mode support
+    document.addEventListener('DOMContentLoaded', () => {
+      initializePageMode();
+      loadFormData();
+
+      if (!isViewOnlyMode) {
+        $('finalApproveBtn').onclick = () => processApproval('approved');
+        $('rejectBtn').onclick = () => processApproval('rejected');
+      } else {
+        $('finalApproveBtn').onclick = () => showNotification('This form has already been processed and cannot be modified.', 'info');
+        $('rejectBtn').onclick = () => showNotification('This form has already been processed and cannot be modified.', 'info');
+      }
+    });
+  </script>
+
+</body>
+
+
+
+</html>
