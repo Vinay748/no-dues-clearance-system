@@ -20,7 +20,7 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage });
 
-// âœ… NEW: Helper function to move completed form to history
+// Helper function to move completed form to history
 async function moveCompletedFormToHistory(employeeId, formData) {
   try {
     let history = [];
@@ -49,7 +49,7 @@ async function moveCompletedFormToHistory(employeeId, formData) {
     history.push(historyEntry);
     saveJSON(FORM_HISTORY, history);
 
-    console.log(`ðŸ“š Moved form ${formData.formId} to history for employee ${employeeId}`);
+    console.log(`📚 Moved form ${formData.formId} to history for employee ${employeeId}`);
     return true;
   } catch (error) {
     console.error('Error moving form to history:', error);
@@ -59,7 +59,7 @@ async function moveCompletedFormToHistory(employeeId, formData) {
 
 // Helper function to get latest form for employee
 function getLatestFormForEmployee(allForms, employeeId, allowedStatuses = null) {
-  let employeeForms = allForms.filter(f => f && f.employeeId === employeeId);  // âœ… FIXED: let instead of const
+  let employeeForms = allForms.filter(f => f && f.employeeId === employeeId);
 
   if (allowedStatuses) {
     employeeForms = employeeForms.filter(f => allowedStatuses.includes(f.status));
@@ -77,7 +77,7 @@ router.post('/verify-otp', roleAuth('employee'), (req, res) => {
 
 // --------------------- No Dues Form Submission ---------------------
 router.post('/submit-no-dues', roleAuth('employee'), upload.single('orderLetter'), (req, res) => {
-  console.log('ðŸ” === Form Submission Debug ===');
+  console.log('📋 === Form Submission Debug ===');
 
   try {
     // Basic validation
@@ -107,10 +107,10 @@ router.post('/submit-no-dues', roleAuth('employee'), upload.single('orderLetter'
       const loadedData = loadJSON(PENDING_FORMS);
       if (Array.isArray(loadedData)) {
         pendingForms = loadedData;
-        console.log('  âœ… Successfully loaded', pendingForms.length, 'forms');
+        console.log('  ✅ Successfully loaded', pendingForms.length, 'forms');
       }
     } catch (loadError) {
-      console.error('  âŒ Error loading JSON:', loadError.message);
+      console.error('  ❌ Error loading JSON:', loadError.message);
       pendingForms = [];
     }
 
@@ -153,7 +153,7 @@ router.post('/submit-no-dues', roleAuth('employee'), upload.single('orderLetter'
     req.session.user.formId = formId;
     req.session.user.applicationStatus = 'pending';
 
-    console.log('ðŸŽ‰ Success! Form', formId, 'created');
+    console.log('🎉 Success! Form', formId, 'created');
 
     res.json({
       success: true,
@@ -163,7 +163,7 @@ router.post('/submit-no-dues', roleAuth('employee'), upload.single('orderLetter'
     });
 
   } catch (error) {
-    console.error('ðŸ’¥ FATAL ERROR in submit-no-dues:', error);
+    console.error('💥 FATAL ERROR in submit-no-dues:', error);
     res.status(500).json({
       success: false,
       message: 'Internal server error: ' + error.message
@@ -204,7 +204,7 @@ router.get('/previous-application', roleAuth('employee'), (req, res) => {
 // --------------------- Detailed Tracking Endpoint ---------------------
 router.get('/tracking-details', roleAuth('employee'), (req, res) => {
   try {
-    console.log('ðŸŽ¯ Fetching detailed tracking information...');
+    console.log('🎯 Fetching detailed tracking information...');
 
     const sessionUser = req.session?.user;
     if (!sessionUser) return res.status(401).json({ success: false, message: 'Not authenticated' });
@@ -241,8 +241,8 @@ router.get('/tracking-details', roleAuth('employee'), (req, res) => {
     const timeline = buildTimelineData(employeeForm);
     const formsStatus = getFormsCompletionStatus(employeeForm);
 
-    console.log(`âœ… Found application ${employeeForm.formId} for employee ${employeeId}`);
-    console.log(`ðŸ“Š Timeline has ${timeline.length} events, ${formsStatus.length} forms`);
+    console.log(`✅ Found application ${employeeForm.formId} for employee ${employeeId}`);
+    console.log(`📊 Timeline has ${timeline.length} events, ${formsStatus.length} forms`);
 
     res.json({
       success: true,
@@ -259,7 +259,7 @@ router.get('/tracking-details', roleAuth('employee'), (req, res) => {
     });
 
   } catch (error) {
-    console.error('âŒ Error getting tracking details:', error);
+    console.error('❌ Error getting tracking details:', error);
     res.status(500).json({ success: false, message: error.message });
   }
 });
@@ -379,7 +379,7 @@ function getFormsCompletionStatus(formData) {
 const savePartialForm = (reqKey, storageKey) => {
   return async (req, res) => {
     try {
-      console.log(`ðŸ’¾ Saving ${storageKey}...`);
+      console.log(`💾 Saving ${storageKey}...`);
 
       const sessionUser = req.session?.user;
       if (!sessionUser) return res.status(401).json({ success: false, message: "Session expired" });
@@ -456,7 +456,7 @@ const savePartialForm = (reqKey, storageKey) => {
         });
       }
 
-      console.log(`âœ… ${storageKey} saved successfully for employee ${employeeId}`);
+      console.log(`✅ ${storageKey} saved successfully for employee ${employeeId}`);
       res.json({
         success: true,
         message: `${storageKey} saved successfully`,
@@ -465,7 +465,7 @@ const savePartialForm = (reqKey, storageKey) => {
       });
 
     } catch (err) {
-      console.error(`âŒ Error saving ${storageKey}:`, err);
+      console.error(`❌ Error saving ${storageKey}:`, err);
       res.status(500).json({
         success: false,
         message: 'Internal Server Error: ' + err.message
@@ -482,7 +482,7 @@ router.post('/save-form365-disposal', roleAuth('employee'), savePartialForm('for
 // --------------------- Final Submit ---------------------
 router.post('/final-submit', roleAuth('employee'), (req, res) => {
   try {
-    console.log('ðŸ“¤ Employee final submit request...');
+    console.log('📤 Employee final submit request...');
 
     const sessionUser = req.session?.user;
     if (!sessionUser) return res.status(401).json({ success: false, message: 'Session expired' });
@@ -554,7 +554,7 @@ router.post('/final-submit', roleAuth('employee'), (req, res) => {
       return res.status(500).json({ success: false, message: 'Failed to save form submission' });
     }
 
-    console.log(`âœ… Form ${form.formId} submitted to HOD successfully`);
+    console.log(`✅ Form ${form.formId} submitted to HOD successfully`);
 
     res.json({
       success: true,
@@ -564,15 +564,15 @@ router.post('/final-submit', roleAuth('employee'), (req, res) => {
     });
 
   } catch (err) {
-    console.error('âŒ Final Submit Error:', err);
+    console.error('❌ Final Submit Error:', err);
     res.status(500).json({ success: false, message: 'Internal Server Error: ' + err.message });
   }
 });
 
-// âœ… ENHANCED: Certificate Endpoints with History Support
+// Enhanced Certificate Endpoints with History Support
 router.get('/certificates', roleAuth('employee'), (req, res) => {
   try {
-    console.log('ðŸ“œ Fetching certificates for employee (including history)...');
+    console.log('📜 Fetching certificates for employee (including history)...');
 
     const sessionUser = req.session?.user;
     if (!sessionUser) return res.status(401).json({ success: false, message: 'Not authenticated' });
@@ -598,7 +598,7 @@ router.get('/certificates', roleAuth('employee'), (req, res) => {
       console.log('No active certificates file found');
     }
 
-    // âœ… NEW: Get historical certificates
+    // Get historical certificates
     try {
       const historyData = loadJSON(FORM_HISTORY);
       if (Array.isArray(historyData)) {
@@ -618,7 +618,7 @@ router.get('/certificates', roleAuth('employee'), (req, res) => {
                   source: 'history',
                   status: 'Completed',
                   completedAt: historyEntry.completedAt,
-                  filepath: cert.filepath // âœ… Preserve file path for downloads
+                  filepath: cert.filepath // Preserve file path for downloads
                 });
               });
             }
@@ -631,17 +631,17 @@ router.get('/certificates', roleAuth('employee'), (req, res) => {
     // Sort certificates by generation date (newest first)
     allCertificates.sort((a, b) => new Date(b.generatedAt || b.completedAt) - new Date(a.generatedAt || a.completedAt));
 
-    console.log(`âœ… Found ${allCertificates.length} total certificates for employee ${employeeId} (${allCertificates.filter(c => c.source === 'active').length} active, ${allCertificates.filter(c => c.source === 'history').length} historical)`);
+    console.log(`✅ Found ${allCertificates.length} total certificates for employee ${employeeId} (${allCertificates.filter(c => c.source === 'active').length} active, ${allCertificates.filter(c => c.source === 'history').length} historical)`);
 
     res.json({ success: true, certificates: allCertificates });
 
   } catch (error) {
-    console.error('âŒ Error fetching certificates:', error);
+    console.error('❌ Error fetching certificates:', error);
     res.status(500).json({ success: false, message: error.message });
   }
 });
 
-// âœ… ENHANCED: Certificate download with history support
+// Enhanced Certificate download with history support
 router.get('/certificates/:certId/download', roleAuth('employee'), (req, res) => {
   try {
     const { certId } = req.params;
@@ -703,7 +703,7 @@ router.get('/certificates/:certId/download', roleAuth('employee'), (req, res) =>
       return res.status(404).json({ success: false, message: 'Certificate file not found on server' });
     }
 
-    console.log(`ðŸ“¥ Downloading certificate: ${certificate.filename} for employee ${employeeId} (${certificate.source || 'active'})`);
+    console.log(`📥 Downloading certificate: ${certificate.filename} for employee ${employeeId} (${certificate.source || 'active'})`);
 
     res.setHeader('Content-Type', 'application/pdf');
     res.setHeader('Content-Disposition', `attachment; filename="${certificate.filename}"`);
@@ -721,12 +721,12 @@ router.get('/certificates/:certId/download', roleAuth('employee'), (req, res) =>
     fileStream.pipe(res);
 
   } catch (error) {
-    console.error('âŒ Error downloading certificate:', error);
+    console.error('❌ Error downloading certificate:', error);
     res.status(500).json({ success: false, message: error.message });
   }
 });
 
-// âœ… ENHANCED: Dashboard Status with Certificate Preservation
+// Enhanced Dashboard Status with Certificate Preservation
 router.get('/dashboard-status', roleAuth('employee'), async (req, res) => {
   try {
     const sessionUser = req.session?.user;
@@ -749,7 +749,7 @@ router.get('/dashboard-status', roleAuth('employee'), async (req, res) => {
       req.session.user.formId = form.formId;
     }
 
-    // âœ… ENHANCED: Get certificates from ALL sources (active + history)
+    // Enhanced: Get certificates from ALL sources (active + history)
     let allCertificates = [];
 
     // Get active certificates
@@ -789,7 +789,7 @@ router.get('/dashboard-status', roleAuth('employee'), async (req, res) => {
         rejectionReason: form.rejectionReason || 'No reason given',
         rejectedAt: form.rejectedAt || null,
         lastUpdated: form?.lastUpdated || null,
-        certificatesAvailable: certificateCount, // âœ… Include ALL certificates
+        certificatesAvailable: certificateCount, // Include ALL certificates
         canSubmitNew: true,
         sessionCleanup: !!sessionUser.cleanupPerformed
       });
@@ -809,12 +809,12 @@ router.get('/dashboard-status', roleAuth('employee'), async (req, res) => {
       formId: form?.formId || null,
       applicationStatus: form?.status || 'Not Submitted',
       lastUpdated: form?.lastUpdated || null,
-      certificatesAvailable: certificateCount, // âœ… Include ALL certificates
+      certificatesAvailable: certificateCount, // Include ALL certificates
       sessionCleanup: !!sessionUser.cleanupPerformed
     });
 
   } catch (err) {
-    console.error('âŒ /dashboard-status error:', err);
+    console.error('❌ /dashboard-status error:', err);
     res.status(500).json({
       success: false,
       message: 'Error fetching dashboard status: ' + err.message
@@ -839,13 +839,13 @@ router.get('/assigned-forms', roleAuth('employee'), (req, res) => {
       return res.status(500).json({ success: false, message: 'Database error: Unable to load forms data' });
     }
 
-    console.log(`ðŸ” All forms for employee ${employeeId}:`,
+    console.log(`🔍 All forms for employee ${employeeId}:`,
       allForms.filter(f => f && f.employeeId === employeeId)
         .map(f => ({ formId: f.formId, status: f.status, submissionDate: f.submissionDate }))
     );
 
-    // âœ… CRITICAL FIX: Filter only NON-COMPLETED forms for assigned forms display
-    const allowedStatuses = ['approved', 'Submitted to HOD', 'pending', 'Pending'];  // âŒ Removed 'IT Completed'
+    // CRITICAL FIX: Filter only NON-COMPLETED forms for assigned forms display
+    const allowedStatuses = ['approved', 'Submitted to HOD', 'pending', 'Pending'];  // Removed 'IT Completed'
     const myForms = allForms.filter(f => {
       return f &&
         f.employeeId === employeeId &&
@@ -853,7 +853,7 @@ router.get('/assigned-forms', roleAuth('employee'), (req, res) => {
         allowedStatuses.includes(f.status);
     });
 
-    console.log(`ðŸ“‹ Filtered forms for employee ${employeeId}:`,
+    console.log(`📋 Filtered forms for employee ${employeeId}:`,
       myForms.map(f => ({ formId: f.formId, status: f.status, assignedFormsCount: f.assignedForms?.length || 0 }))
     );
 
@@ -874,7 +874,7 @@ router.get('/assigned-forms', roleAuth('employee'), (req, res) => {
       return dateB - dateA;
     })[0];
 
-    console.log(`âœ… Selected form for ${employeeId}: ${myForm.formId} (${myForm.status}) - ${myForm.assignedForms?.length || 0} assigned forms`);
+    console.log(`✅ Selected form for ${employeeId}: ${myForm.formId} (${myForm.status}) - ${myForm.assignedForms?.length || 0} assigned forms`);
 
     // Update session formId if needed
     if (req.session.user.formId !== myForm.formId) {
@@ -902,7 +902,7 @@ router.get('/assigned-forms', roleAuth('employee'), (req, res) => {
     });
 
   } catch (error) {
-    console.error('ðŸ’¥ Unexpected error in /assigned-forms:', error);
+    console.error('💥 Unexpected error in /assigned-forms:', error);
     res.status(500).json({ success: false, message: 'Internal Server Error' });
   }
 });
@@ -963,7 +963,7 @@ router.get('/form-data', roleAuth('employee'), (req, res) => {
 
     const formData = formEntry.formResponses?.[formKey] || null;
 
-    console.log(`ðŸ“„ Returning form data for ${formName}:`, formData ? 'Found' : 'Not found');
+    console.log(`📄 Returning form data for ${formName}:`, formData ? 'Found' : 'Not found');
 
     res.json({
       success: true,
@@ -972,7 +972,7 @@ router.get('/form-data', roleAuth('employee'), (req, res) => {
     });
 
   } catch (error) {
-    console.error('âŒ Error fetching form data:', error);
+    console.error('❌ Error fetching form data:', error);
     res.status(500).json({
       success: false,
       message: 'Internal server error: ' + error.message
@@ -1047,7 +1047,7 @@ router.get('/track', roleAuth('employee'), (req, res) => {
 
     res.json({ success: true, forms: myForms });
   } catch (err) {
-    console.error('âŒ /track error:', err);
+    console.error('❌ /track error:', err);
     res.status(500).json({
       success: false,
       message: 'Failed to retrieve track data: ' + err.message
@@ -1055,7 +1055,7 @@ router.get('/track', roleAuth('employee'), (req, res) => {
   }
 });
 
-// âœ… ENHANCED: History with Comprehensive Data
+// Enhanced History with Comprehensive Data
 router.get('/history', roleAuth('employee'), (req, res) => {
   try {
     const sessionUser = req.session?.user;
@@ -1071,7 +1071,7 @@ router.get('/history', roleAuth('employee'), (req, res) => {
       history = [];
     }
 
-    // âœ… Get comprehensive history for employee
+    // Get comprehensive history for employee
     const myHistory = history
       .filter(f => f && f.employeeId === employeeId)
       .map(form => ({
@@ -1101,7 +1101,7 @@ router.get('/history', roleAuth('employee'), (req, res) => {
       }
     });
   } catch (err) {
-    console.error('âŒ /history error:', err);
+    console.error('❌ /history error:', err);
     res.status(500).json({
       success: false,
       message: 'Failed to retrieve form history: ' + err.message
@@ -1145,7 +1145,7 @@ router.get('/confirmation', roleAuth('employee'), (req, res) => {
 
     res.json({ success: true, data: form });
   } catch (err) {
-    console.error('âŒ /confirmation error:', err);
+    console.error('❌ /confirmation error:', err);
     res.status(500).json({
       success: false,
       message: 'Internal Server Error: ' + err.message
@@ -1203,7 +1203,7 @@ router.get('/employee-info', roleAuth('employee'), (req, res) => {
       }
     });
   } catch (err) {
-    console.error('âŒ /employee-info error:', err);
+    console.error('❌ /employee-info error:', err);
     res.status(500).json({
       success: false,
       message: 'Failed to retrieve employee info: ' + err.message

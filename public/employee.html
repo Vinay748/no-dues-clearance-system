@@ -1,14 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 
-
 <head>
-   
   <meta charset="UTF-8" />
-    <title>Employee No Dues Form</title>
-   
+  <title>Employee No Dues Form</title>
   <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-    <style>
+  <style>
     body {
       font-family: Arial, sans-serif;
       background-color: #f4f6f9;
@@ -20,20 +17,17 @@
       align-items: center;
     }
 
-
     .container {
       width: 100%;
       max-width: 700px;
       padding: 30px;
     }
 
-
     h2 {
       color: #004080;
       text-align: center;
       margin-bottom: 20px;
     }
-
 
     form {
       background: #fff;
@@ -42,13 +36,11 @@
       box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     }
 
-
     label {
       display: block;
       margin-top: 15px;
       font-weight: bold;
     }
-
 
     input,
     select {
@@ -59,17 +51,14 @@
       border-radius: 4px;
     }
 
-
     .select2-container {
       width: 100% !important;
     }
-
 
     .button-group {
       margin-top: 20px;
       text-align: center;
     }
-
 
     button {
       padding: 10px 15px;
@@ -81,11 +70,9 @@
       margin-right: 10px;
     }
 
-
     button:hover {
       background: #003366;
     }
-
 
     #preview {
       margin-top: 10px;
@@ -93,12 +80,10 @@
       color: #333;
     }
 
-
     .track-link {
       text-align: center;
       margin-top: 20px;
     }
-
 
     .track-link a {
       color: #004080;
@@ -106,17 +91,14 @@
       font-weight: bold;
     }
 
-
     .track-link a:hover {
       text-decoration: underline;
     }
-
 
     .loading {
       opacity: 0.6;
       pointer-events: none;
     }
-
 
     .success-message {
       background: #d4edda;
@@ -126,7 +108,6 @@
       margin-top: 10px;
       display: none;
     }
-
 
     .error-message {
       background: #f8d7da;
@@ -139,116 +120,96 @@
   </style>
 </head>
 
-
 <body>
+  <div class="container">
+    <h2>Employee No Dues Clearance Form</h2>
 
+    <div id="successMessage" class="success-message"></div>
+    <div id="errorMessage" class="error-message"></div>
 
-    <div class="container">
-        <h2>Employee No Dues Clearance Form</h2>
+    <form id="noDuesForm" enctype="multipart/form-data">
+      <label for="name">Name:</label>
+      <input type="text" name="name" id="name" readonly required />
 
+      <label for="employeeId">Employee ID:</label>
+      <input type="text" name="employeeId" id="employeeId" readonly required />
 
-        <div id="successMessage" class="success-message"></div>
-        <div id="errorMessage" class="error-message"></div>
+      <label for="department">Department:</label>
+      <select name="department" id="department" required>
+        <option value="">Select Department</option>
+        <option>C&RRSW</option>
+        <option>Central Store</option>
+        <option>CISF</option>
+        <option>CSR</option>
+        <option>Dam and Spillway</option>
+        <option>EDTC</option>
+        <option>Electrical</option>
+        <option>Environment</option>
+        <option>Estates</option>
+        <option>F&A</option>
+        <option>G&G</option>
+        <option>Guesthouse</option>
+        <option>Hospital</option>
+        <option>HR&A</option>
+        <option>Hydromechanical</option>
+        <option>IT</option>
+        <option>ITStock</option>
+        <option>L&RC</option>
+        <option>Mechanical</option>
+        <option>O&M</option>
+        <option>Planning</option>
+        <option>PowerhouseCivil</option>
+        <option>PSD</option>
+        <option>PSP</option>
+        <option>QC&CMTL</option>
+        <option>RecordOffice</option>
+        <option>Safety</option>
+        <option>Vigilance</option>
+      </select>
 
+      <label for="noDuesType">No Dues Type:</label>
+      <select name="noDuesType" id="noDuesType" required>
+        <option value="">Select Type</option>
+        <option value="Resignation">Resignation</option>
+        <option value="Retirement">Retirement</option>
+        <option value="Transfer">Transfer</option>
+      </select>
 
-        <form id="noDuesForm" enctype="multipart/form-data">
-            <label for="name">Name:</label>
-            <input type="text" name="name" id="name" readonly required />
+      <label for="email">Email:</label>
+      <input type="email" name="email" id="email" required />
 
+      <label for="reason">Reason (Optional):</label>
+      <input type="text" name="reason" id="reason" placeholder="Brief reason for no dues clearance" />
 
-            <label for="employeeId">Employee ID:</label>
-            <input type="text" name="employeeId" id="employeeId" readonly required />
-
-
-            <label for="department">Department:</label>
-            <select name="department" id="department" required>
-                <option value="">Select Department</option>
-                <option>C&amp;RRSW</option>
-                <option>Central Store</option>
-                <option>CISF</option>
-                <option>CSR</option>
-                <option>Dam and Spillway</option>
-                <option>EDTC</option>
-                <option>Electrical</option>
-                <option>Environment</option>
-                <option>Estates</option>
-                <option>F&amp;A</option>
-                <option>G&amp;G</option>
-                <option>Guesthouse</option>
-                <option>Hospital</option>
-                <option>HR&amp;A</option>
-                <option>Hydromechanical</option>
-                <option>IT</option>
-                <option>ITStock</option>
-                <option>L&amp;RC</option>
-                <option>Mechanical</option>
-                <option>O&amp;M</option>
-                <option>Planning</option>
-                <option>PowerhouseCivil</option>
-                <option>PSD</option>
-                <option>PSP</option>
-                <option>QC&amp;CMTL</option>
-                <option>RecordOffice</option>
-                <option>Safety</option>
-                <option>Vigilance</option>
-              </select>
-
-
-            <label for="noDuesType">No Dues Type:</label>
-            <select name="noDuesType" id="noDuesType" required>
-                <option value="">Select Type</option>
-                <option value="Resignation">Resignation</option>
-                <option value="Retirement">Retirement</option>
-                <option value="Transfer">Transfer</option>
-              </select>
-
-
-            <label for="email">Email:</label>
-            <input type="email" name="email" id="email" required />
-
-
-            <label for="reason">Reason (Optional):</label>
-            <input type="text" name="reason" id="reason" placeholder="Brief reason for no dues clearance" />
-
-
-            <label for="orderLetter">Upload Order Letter:</label>
-            <input type="file" name="orderLetter" id="orderLetter" accept=".pdf,.png,.jpg" required        
+      <label for="orderLetter">Upload Order Letter:</label>
+      <input type="file" name="orderLetter" id="orderLetter" accept=".pdf,.png,.jpg" required
         onchange="previewFile()" />
-            <div id="preview"></div>
+      <div id="preview"></div>
 
+      <div class="button-group">
+        <button type="submit" id="submitBtn">Submit Application</button>
+        <button type="button" onclick="window.location.href='/dashboard.html'">Back to Dashboard</button>
+      </div>
+    </form>
 
-            <div class="button-group">
-                <button type="submit" id="submitBtn">Submit Application</button>
-                <button type="button" onclick="window.location.href='/dashboard.html'">Back to Dashboard</button>
-              </div>
-          </form>
+    <div class="track-link">
+      <p>Already submitted? <a href="/track.html">Track your application here</a></p>
+    </div>
+  </div>
 
-
-        <div class="track-link">
-            <p>Already submitted? <a href="/track.html">Track your application here</a></p>
-          </div>
-      </div>
-
-
-    <!-- Scripts -->
-   
+  <!-- Scripts -->
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-   
   <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
-
-   
   <script>
     // Show message function
     function showMessage(message, type = 'success') {
       const successMsg = document.getElementById('successMessage');
       const errorMsg = document.getElementById('errorMessage');
 
-
       // Hide both messages first
       successMsg.style.display = 'none';
       errorMsg.style.display = 'none';
-
 
       if (type === 'success') {
         successMsg.textContent = message;
@@ -258,7 +219,6 @@
         errorMsg.style.display = 'block';
       }
 
-
       // Auto-hide after 5 seconds
       setTimeout(() => {
         successMsg.style.display = 'none';
@@ -266,22 +226,19 @@
       }, 5000);
     }
 
-
     // File preview function
     function previewFile() {
       const fileInput = document.getElementById('orderLetter');
       const preview = document.getElementById('preview');
       const file = fileInput.files[0];
 
-
       if (file) {
         const fileSize = (file.size / 1024 / 1024).toFixed(2); // Size in MB
         preview.innerHTML = `
-          <strong>Selected file:</strong> ${file.name}<br>
-          <strong>Size:</strong> ${fileSize} MB<br>
-          <strong>Type:</strong> ${file.type}
-        `;
-
+          <strong>Selected file:</strong> ${file.name}<br>
+          <strong>Size:</strong> ${fileSize} MB<br>
+          <strong>Type:</strong> ${file.type}
+        `;
 
         // Validate file size (max 10MB)
         if (file.size > 10 * 1024 * 1024) {
@@ -294,7 +251,6 @@
       }
     }
 
-
     // Form validation
     function validateForm() {
       const name = document.getElementById('name').value.trim();
@@ -304,36 +260,30 @@
       const email = document.getElementById('email').value.trim();
       const orderLetter = document.getElementById('orderLetter').files[0];
 
-
       if (!name) {
         showMessage('Name is required', 'error');
         return false;
       }
-
 
       if (!employeeId) {
         showMessage('Employee ID is required', 'error');
         return false;
       }
 
-
       if (!department) {
         showMessage('Please select a department', 'error');
         return false;
       }
-
 
       if (!noDuesType) {
         showMessage('Please select no dues type', 'error');
         return false;
       }
 
-
       if (!email) {
         showMessage('Email is required', 'error');
         return false;
       }
-
 
       // Email validation
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -342,31 +292,25 @@
         return false;
       }
 
-
       if (!orderLetter) {
         showMessage('Please upload the Order Letter', 'error');
         return false;
       }
 
-
       return true;
     }
-
 
     // Form submission handler
     document.getElementById('noDuesForm').addEventListener('submit', async function (e) {
       e.preventDefault();
-
 
       // Validate form
       if (!validateForm()) {
         return;
       }
 
-
       const submitBtn = document.getElementById('submitBtn');
       const form = document.getElementById('noDuesForm');
-
 
       try {
         // Show loading state
@@ -374,10 +318,8 @@
         submitBtn.disabled = true;
         form.classList.add('loading');
 
-
         // Prepare form data
         const formData = new FormData(this);
-
 
         // Submit form
         const response = await fetch('/api/employee/submit-no-dues', {
@@ -386,13 +328,10 @@
           credentials: 'include'
         });
 
-
         const result = await response.json();
-
 
         if (result.success) {
           showMessage('Application submitted successfully! Redirecting...', 'success');
-
 
           // Redirect after 2 seconds
           setTimeout(() => {
@@ -401,7 +340,6 @@
         } else {
           showMessage(result.message || "Submission failed. Please try again.", 'error');
         }
-
 
       } catch (err) {
         console.error("Form submission failed:", err);
@@ -414,7 +352,6 @@
       }
     });
 
-
     // Page initialization
     window.addEventListener("DOMContentLoaded", async () => {
       // Initialize Select2
@@ -423,23 +360,19 @@
         allowClear: true
       });
 
-
       $('#noDuesType').select2({
         placeholder: 'Select No Dues Type',
         allowClear: true
       });
-
 
       try {
         // Check session
         const res = await fetch("/api/auth/check-session", { credentials: 'include' });
         const session = await res.json();
 
-
         if (!res.ok || session.role !== 'employee') {
           throw new Error("Not logged in as employee");
         }
-
 
         // Auto-fill fields from session
         if (session.user) {
@@ -447,21 +380,17 @@
           document.getElementById("employeeId").value = session.user.employeeId || session.user.id || '';
           document.getElementById("email").value = session.user.email || '';
 
-
           // Set department with delay to ensure Select2 is initialized
           setTimeout(() => {
             $('#department').val(session.user.department || '').trigger('change');
           }, 100);
         }
 
-
         console.log('✅ Session validated and form initialized');
-
 
       } catch (err) {
         console.error("Session check failed:", err);
         showMessage("Session expired. Please login again.", 'error');
-
 
         // Redirect to login after 3 seconds
         setTimeout(() => {
@@ -469,17 +398,14 @@
         }, 3000);
       }
 
-
       try {
         // Check for existing applications
         const dashboardRes = await fetch('/api/employee/previous-application', { credentials: 'include' });
         const dashboardData = await dashboardRes.json();
 
-
         if (dashboardData.success && dashboardData.hasApplication) {
           const app = dashboardData.application;
           showMessage(`You have an existing application (${app.formId}) with status: ${app.status}`, 'error');
-
 
           // Optionally disable form or redirect
           if (['pending', 'Pending', 'Submitted to HOD', 'Submitted to IT'].includes(app.status)) {
@@ -493,14 +419,12 @@
       }
     });
 
-
     // Add keyboard shortcuts
     document.addEventListener('keydown', function (e) {
       // Ctrl+Enter to submit form
       if (e.ctrlKey && e.key === 'Enter') {
         document.getElementById('noDuesForm').dispatchEvent(new Event('submit'));
       }
-
 
       // Escape to go back to dashboard
       if (e.key === 'Escape') {
@@ -511,8 +435,6 @@
     });
   </script>
 
-
 </body>
-
 
 </html>

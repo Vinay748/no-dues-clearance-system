@@ -1,0 +1,11 @@
+{
+  "fd422781746e6f66e5b693c581c39fba94af151df719a2b7c499e864c1e4957d": {
+    "employeeId": "EMP1001",
+    "sessionToken": "fd422781746e6f66e5b693c581c39fba94af151df719a2b7c499e864c1e4957d",
+    "status": "pending_otp",
+    "expiresAt": "2025-08-25T20:01:50.424Z",
+    "createdAt": "2025-08-25T19:51:50.424Z",
+    "otpVerifiedAt": null,
+    "clientInfo": {}
+  }
+}

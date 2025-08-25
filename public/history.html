@@ -2,12 +2,10 @@
 <html lang="en">
 
 <head>
-   
   <meta charset="UTF-8">
-    <title>Application History</title>
-   
+  <title>Application History</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <style>
+  <style>
     body {
       font-family: Arial, sans-serif;
       margin: 0;
@@ -65,7 +63,6 @@
       margin-top: 1rem;
     }
 
-
     .btn-download {
       margin-top: 10px;
       padding: 8px 12px;
@@ -79,35 +76,32 @@
 </head>
 
 <body>
-    <nav>
-        <div class="left">
-            <strong>History</strong>
-            <a href="dashboard.html" style="color: white;">Home</a>
-            <a href="employee.html" style="color: white;">Apply</a>
-            <a href="track.html" style="color: white;">Track</a>
-            <a href="history.html" style="color: white;">History</a>
-          </div>
-        <div class="right">
-            <span id="welcomeUser">Welcome</span>
-            <select onchange="handleProfileOption(this)">
-                <option hidden selected>Profile</option>
-                <option value="change">Change Password</option>
-                <option value="logout">Logout</option>
-              </select>
-          </div>
-      </nav>
+  <nav>
+    <div class="left">
+      <strong>History</strong>
+      <a href="dashboard.html" style="color: white;">Home</a>
+      <a href="employee.html" style="color: white;">Apply</a>
+      <a href="track.html" style="color: white;">Track</a>
+      <a href="history.html" style="color: white;">History</a>
+    </div>
+    <div class="right">
+      <span id="welcomeUser">Welcome</span>
+      <select onchange="handleProfileOption(this)">
+        <option hidden selected>Profile</option>
+        <option value="change">Change Password</option>
+        <option value="logout">Logout</option>
+      </select>
+    </div>
+  </nav>
 
+  <div class="container">
+    <div class="card">
+      <h2>Your Application History</h2>
+      <div id="historyList">Loading...</div>
+      <div id="formDetails" class="application-details hidden"></div>
+    </div>
+  </div>
 
-    <div class="container">
-        <div class="card">
-            <h2>Your Application History</h2>
-            <div id="historyList">Loading...</div>
-            <div id="formDetails" class="application-details hidden"></div>
-          </div>
-      </div>
-
-
-   
   <script>
     const employeeId = localStorage.getItem('employeeId');
     if (!employeeId) {
@@ -115,9 +109,7 @@
       window.location.href = 'login.html';
     }
 
-
     document.getElementById('welcomeUser').textContent = `Welcome, ${employeeId}`;
-
 
     function handleProfileOption(select) {
       const choice = select.value;
@@ -129,19 +121,16 @@
       }
     }
 
-
     async function loadHistory() {
       try {
         const res = await fetch(`/api/history?employeeId=${employeeId}`);
         const data = await res.json();
-
 
         const historyList = document.getElementById('historyList');
         if (data.length === 0) {
           historyList.textContent = "No previous applications found.";
           return;
         }
-
 
         historyList.innerHTML = '';
         data.forEach(item => {
@@ -152,43 +141,37 @@
           historyList.appendChild(link);
         });
 
-
       } catch (err) {
         document.getElementById('historyList').textContent = "Failed to load history.";
       }
     }
-
 
     async function loadDetails(formId) {
       try {
         const res = await fetch(`/api/history/form/${formId}`);
         const data = await res.json();
 
-
         const details = document.getElementById('formDetails');
         details.classList.remove('hidden');
 
-
         details.innerHTML = `
-          <h3>Application Details (Form ID: ${formId})</h3>
-          <p><strong>Name:</strong> ${data.name}</p>
-          <p><strong>Employee ID:</strong> ${data.empId}</p>
-          <p><strong>Department:</strong> ${data.department}</p>
-          <p><strong>No Dues Type:</strong> ${data.noDuesType}</p>
-          <p><strong>Email:</strong> ${data.email}</p>
-          <p><strong>Submission Date:</strong> ${data.submissionDate || 'N/A'}</p>
-          <button class="btn-download" onclick="downloadPDF('${formId}')">Download PDF</button>
-        `;
+          <h3>Application Details (Form ID: ${formId})</h3>
+          <p><strong>Name:</strong> ${data.name}</p>
+          <p><strong>Employee ID:</strong> ${data.empId}</p>
+          <p><strong>Department:</strong> ${data.department}</p>
+          <p><strong>No Dues Type:</strong> ${data.noDuesType}</p>
+          <p><strong>Email:</strong> ${data.email}</p>
+          <p><strong>Submission Date:</strong> ${data.submissionDate || 'N/A'}</p>
+          <button class="btn-download" onclick="downloadPDF('${formId}')">Download PDF</button>
+        `;
       } catch (err) {
         alert("Failed to load application details.");
       }
     }
 
-
     function downloadPDF(formId) {
       window.open(`/download-pdf/${formId}`, '_blank');
     }
-
 
     loadHistory();
   </script>

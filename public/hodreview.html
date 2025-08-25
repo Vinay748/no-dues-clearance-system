@@ -1,20 +1,16 @@
-now this
 <!DOCTYPE html>
 <html lang="en">
 
-
 <head>
-   
   <meta charset="UTF-8" />
-    <title>HOD Review Dashboard</title>
-    <style>
+  <title>HOD Review Dashboard</title>
+  <style>
     body {
       font-family: Arial, sans-serif;
       margin: 0;
       background: #f0f0f0;
       color: #333;
     }
-
 
     /* Header */
     .header {
@@ -26,12 +22,10 @@ now this
       align-items: center;
     }
 
-
     .header h1 {
       margin: 0;
       font-size: 20px;
     }
-
 
     .header-right {
       display: flex;
@@ -39,11 +33,9 @@ now this
       gap: 15px;
     }
 
-
     .header span {
       font-size: 14px;
     }
-
 
     /* Hamburger Menu Button */
     .menu-button {
@@ -55,7 +47,6 @@ now this
       position: relative;
     }
 
-
     .hamburger {
       display: flex;
       flex-direction: column;
@@ -64,7 +55,6 @@ now this
       justify-content: space-between;
     }
 
-
     .hamburger span {
       display: block;
       height: 2px;
@@ -72,7 +62,6 @@ now this
       background: white;
       border-radius: 1px;
     }
-
 
     /* Dropdown Menu */
     .menu-dropdown {
@@ -89,11 +78,9 @@ now this
       overflow: hidden;
     }
 
-
     .menu-dropdown.show {
       display: block;
     }
-
 
     .menu-item {
       padding: 12px 16px;
@@ -105,22 +92,18 @@ now this
       font-size: 13px;
     }
 
-
     .menu-item:last-child {
       border-bottom: none;
     }
-
 
     .menu-item:hover {
       background: #f5f5f5;
     }
 
-
     .menu-item.logout:hover {
       background: #ffe6e6;
       color: #d32f2f;
     }
-
 
     /* Main */
     .main {
@@ -128,7 +111,6 @@ now this
       margin: 20px auto;
       padding: 0 20px;
     }
-
 
     /* Profile */
     .profile {
@@ -140,7 +122,6 @@ now this
       align-items: center;
       gap: 15px;
     }
-
 
     .profile-icon {
       width: 40px;
@@ -155,7 +136,6 @@ now this
       cursor: pointer;
       position: relative;
     }
-
 
     /* Profile Dropdown */
     .profile-dropdown {
@@ -172,11 +152,9 @@ now this
       display: none;
     }
 
-
     .profile-dropdown.show {
       display: block;
     }
-
 
     .profile-dropdown p {
       margin: 5px 0;
@@ -184,12 +162,10 @@ now this
       color: #666;
     }
 
-
     .profile-info h3 {
       margin: 0;
       font-size: 16px;
     }
-
 
     /* Enhanced Stats Tabs with Numbers on Top */
     .stats {
@@ -198,12 +174,10 @@ now this
       margin-bottom: 20px;
     }
 
-
     .stats-tabs {
       display: flex;
       border-bottom: 1px solid #ccc;
     }
-
 
     .stats-tabs button {
       flex: 1;
@@ -219,17 +193,14 @@ now this
       transition: background-color 0.3s ease;
     }
 
-
     .stats-tabs button:hover {
       background: #f0f0f0;
     }
-
 
     .stats-tabs button.active {
       background: #e0e0e0;
       border-bottom: 3px solid #336699;
     }
-
 
     /* Numbers on TOP of words */
     .tab-count {
@@ -239,45 +210,37 @@ now this
       order: 1;
     }
 
-
     .tab-label {
       font-weight: bold;
       order: 2;
     }
 
-
     .stats-tabs button.active .tab-count {
       color: #336699;
     }
-
 
     /* Different colors for different tab counts */
     .stats-tabs button[data-type="pending"] .tab-count {
       color: #ff9800;
     }
 
-
     .stats-tabs button[data-type="approved"] .tab-count {
       color: #4caf50;
     }
-
 
     .stats-tabs button[data-type="rejected"] .tab-count {
       color: #f44336;
     }
 
-
     .stats-tabs button[data-type="total"] .tab-count {
       color: #2196f3;
     }
-
 
     /* Table */
     .table-section {
       background: white;
       border: 1px solid #ccc;
     }
-
 
     .table-header {
       padding: 15px 20px;
@@ -287,12 +250,10 @@ now this
       justify-content: space-between;
     }
 
-
     .table-header h2 {
       margin: 0;
       font-size: 16px;
     }
-
 
     .refresh-btn {
       background: #336699;
@@ -304,17 +265,14 @@ now this
       border-radius: 3px;
     }
 
-
     .refresh-btn:hover {
       background: #2c5282;
     }
-
 
     table {
       width: 100%;
       border-collapse: collapse;
     }
-
 
     th,
     td {
@@ -323,18 +281,15 @@ now this
       border-bottom: 1px solid #eee;
     }
 
-
     th {
       background: #f0f0f0;
       font-size: 12px;
       font-weight: bold;
     }
 
-
     tr:hover {
       background: #f9f9f9;
     }
-
 
     .btn {
       padding: 4px 8px;
@@ -345,18 +300,15 @@ now this
       border-radius: 3px;
     }
 
-
     /* Dark Blue Review Button */
     .btn-review {
       background: #1a365d;
       color: white;
     }
 
-
     .btn-review:hover {
       background: #2c5282;
     }
-
 
     .btn-reject {
       background: white;
@@ -364,26 +316,22 @@ now this
       border: 1px solid #f44336;
     }
 
-
     .btn-reject:hover {
       background: #f44336;
       color: white;
     }
 
-
-    /* ✅ View-only button for approved/rejected forms */
+    /* View-only button for approved/rejected forms */
     .btn-view {
       background: #17a2b8;
       color: white;
       border: 1px solid #17a2b8;
     }
 
-
     .btn-view:hover {
       background: #138496;
       border-color: #138496;
     }
-
 
     /* Status badges */
     .status-badge {
@@ -394,32 +342,27 @@ now this
       text-transform: uppercase;
     }
 
-
     .status-pending {
       background: #fff3cd;
       color: #856404;
     }
-
 
     .status-approved {
       background: #d4edda;
       color: #155724;
     }
 
-
     .status-rejected {
       background: #f8d7da;
       color: #721c24;
     }
 
-
-    /* ✅ Status completion indicators */
+    /* Status completion indicators */
     .status-completed {
       background: #e7f3ff;
       color: #0056b3;
       border: 1px solid #0056b3;
     }
-
 
     /* Modal */
     .modal-overlay {
@@ -433,7 +376,6 @@ now this
       z-index: 2000;
     }
 
-
     .modal {
       position: fixed;
       top: 50%;
@@ -446,7 +388,6 @@ now this
       box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
     }
 
-
     .modal h3 {
       margin: 0;
       padding: 15px 20px;
@@ -456,11 +397,9 @@ now this
       border-radius: 8px 8px 0 0;
     }
 
-
     .modal-body {
       padding: 20px;
     }
-
 
     .modal textarea {
       width: 100%;
@@ -472,7 +411,6 @@ now this
       resize: vertical;
     }
 
-
     .modal-footer {
       padding: 15px 20px;
       text-align: right;
@@ -480,7 +418,6 @@ now this
       border-top: 1px solid #ccc;
       border-radius: 0 0 8px 8px;
     }
-
 
     .modal-footer button {
       padding: 6px 12px;
@@ -490,33 +427,27 @@ now this
       border-radius: 4px;
     }
 
-
     .modal-cancel {
       background: #ccc;
       color: #333;
     }
 
-
     .modal-cancel:hover {
       background: #bbb;
     }
-
 
     .modal-submit {
       background: #f44336;
       color: white;
     }
 
-
     .modal-submit:hover {
       background: #d32f2f;
     }
 
-
     .hidden {
       display: none;
     }
-
 
     /* Empty state */
     .empty-state {
@@ -525,7 +456,6 @@ now this
       color: #666;
     }
 
-
     /* Mobile */
     @media (max-width: 600px) {
       .header {
@@ -533,49 +463,40 @@ now this
         gap: 10px;
       }
 
-
       .header-right {
         align-self: flex-end;
       }
-
 
       .stats-tabs {
         flex-wrap: wrap;
       }
 
-
       .stats-tabs button {
         flex: 1 1 50%;
       }
 
-
       table {
         font-size: 12px;
       }
-
 
       th,
       td {
         padding: 6px;
       }
 
-
       .tab-count {
         font-size: 16px;
       }
-
 
       .profile-dropdown {
         right: -10px;
         width: 180px;
       }
 
-
       .menu-dropdown {
         right: 0;
         min-width: 140px;
       }
-
 
       .modal {
         width: 90%;
@@ -585,118 +506,109 @@ now this
   </style>
 </head>
 
-
 <body>
-    <!-- Header with Hamburger Menu -->
-    <div class="header">
-        <h1>HOD Dashboard</h1>
-        <div class="header-right">
-            <span id="currentTime"></span>
-            <div class="menu-button" onclick="toggleMenu()">
-                <div class="hamburger">
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                  </div>
-                <div class="menu-dropdown" id="menuDropdown">
-                    <a href="#" class="menu-item" onclick="changePassword()">Change Password</a>
-                    <a href="#" class="menu-item" onclick="openSettings()">Settings</a>
-                    <a href="#" class="menu-item logout" onclick="logout()">Logout</a>
-                  </div>
-              </div>
-          </div>
-      </div>
+  <!-- Header with Hamburger Menu -->
+  <div class="header">
+    <h1>HOD Dashboard</h1>
+    <div class="header-right">
+      <span id="currentTime"></span>
+      <div class="menu-button" onclick="toggleMenu()">
+        <div class="hamburger">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+        <div class="menu-dropdown" id="menuDropdown">
+          <a href="#" class="menu-item" onclick="changePassword()">Change Password</a>
+          <a href="#" class="menu-item" onclick="openSettings()">Settings</a>
+          <a href="#" class="menu-item logout" onclick="logout()">Logout</a>
+        </div>
+      </div>
+    </div>
+  </div>
 
+  <div class="main">
+    <!-- Profile with Clickable Icon -->
+    <div class="profile">
+      <div class="profile-icon" id="profileIcon" onclick="toggleProfileDropdown()">
+        S
+        <div class="profile-dropdown" id="profileDropdown">
+          <p><strong>Password:</strong> <span id="profilePassword">••••••••</span></p>
+          <p><strong>Email:</strong> <span id="profileEmail">Loading...</span></p>
+        </div>
+      </div>
+      <div class="profile-info">
+        <h3 id="profileName">Sushil Kumar Uniyal</h3>
+      </div>
+    </div>
 
-    <div class="main">
-        <!-- Profile with Clickable Icon -->
-        <div class="profile">
-            <div class="profile-icon" id="profileIcon" onclick="toggleProfileDropdown()">
-                S
-                <div class="profile-dropdown" id="profileDropdown">
-                    <p><strong>Password:</strong> <span id="profilePassword">••••••••</span></p>
-                    <p><strong>Email:</strong> <span id="profileEmail">Loading...</span></p>
-                  </div>
-              </div>
-            <div class="profile-info">
-                <h3 id="profileName">Sushil Kumar Uniyal</h3>
-              </div>
-          </div>
+    <!-- Enhanced Stats with Numbers on TOP and WORKING TABS -->
+    <div class="stats">
+      <div class="stats-tabs">
+        <button class="active" data-type="pending" onclick="switchTab('pending', this)">
+          <span class="tab-count" id="pendingTabCount">0</span>
+          <span class="tab-label">Pending</span>
+        </button>
+        <button data-type="approved" onclick="switchTab('approved', this)">
+          <span class="tab-count" id="approvedTabCount">0</span>
+          <span class="tab-label">Approved</span>
+        </button>
+        <button data-type="rejected" onclick="switchTab('rejected', this)">
+          <span class="tab-count" id="rejectedTabCount">0</span>
+          <span class="tab-label">Rejected</span>
+        </button>
+        <button data-type="total" onclick="switchTab('total', this)">
+          <span class="tab-count" id="totalTabCount">0</span>
+          <span class="tab-label">Total</span>
+        </button>
+      </div>
+    </div>
 
+    <!-- Table with Name instead of Form ID -->
+    <div class="table-section">
+      <div class="table-header">
+        <h2 id="tableTitle">Pending Applications</h2>
+        <button class="refresh-btn" onclick="loadData()">Refresh</button>
+      </div>
 
-        <!-- Enhanced Stats with Numbers on TOP and WORKING TABS -->
-        <div class="stats">
-            <div class="stats-tabs">
-                <button class="active" data-type="pending" onclick="switchTab('pending', this)">
-                    <span class="tab-count" id="pendingTabCount">0</span>
-                    <span class="tab-label">Pending</span>
-                  </button>
-                <button data-type="approved" onclick="switchTab('approved', this)">
-                    <span class="tab-count" id="approvedTabCount">0</span>
-                    <span class="tab-label">Approved</span>
-                  </button>
-                <button data-type="rejected" onclick="switchTab('rejected', this)">
-                    <span class="tab-count" id="rejectedTabCount">0</span>
-                    <span class="tab-label">Rejected</span>
-                  </button>
-                <button data-type="total" onclick="switchTab('total', this)">
-                    <span class="tab-count" id="totalTabCount">0</span>
-                    <span class="tab-label">Total</span>
-                  </button>
-              </div>
-          </div>
+      <table>
+        <thead>
+          <tr>
+            <th>Employee Name</th>
+            <th>Form ID</th>
+            <th>Department</th>
+            <th>Date</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="tableBody">
+          <tr>
+            <td colspan="6" style="text-align: center; padding: 40px;">Loading...</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
 
+  <!-- Modal -->
+  <div class="modal-overlay" id="modalOverlay" onclick="closeModalOnOverlay(event)">
+    <div class="modal">
+      <h3>Reject Application</h3>
+      <div class="modal-body">
+        <textarea id="rejectReason" placeholder="Enter detailed reason for rejection..."></textarea>
+      </div>
+      <div class="modal-footer">
+        <button class="modal-cancel" onclick="closeModal()">Cancel</button>
+        <button class="modal-submit" onclick="submitReject()">Submit Rejection</button>
+      </div>
+    </div>
+  </div>
 
-        <!-- Table with Name instead of Form ID -->
-        <div class="table-section">
-            <div class="table-header">
-                <h2 id="tableTitle">Pending Applications</h2>
-                <button class="refresh-btn" onclick="loadData()">Refresh</button>
-              </div>
-
-
-            <table>
-                <thead>
-                    <tr>
-                        <th>Employee Name</th>
-                        <th>Form ID</th>
-                        <th>Department</th>
-                        <th>Date</th>
-                        <th>Status</th>
-                        <th>Actions</th>
-                      </tr>
-                  </thead>
-                <tbody id="tableBody">
-                    <tr>
-                        <td colspan="6" style="text-align: center; padding: 40px;">Loading...</td>
-                      </tr>
-                  </tbody>
-              </table>
-          </div>
-      </div>
-
-
-    <!-- Modal -->
-    <div class="modal-overlay" id="modalOverlay" onclick="closeModalOnOverlay(event)">
-        <div class="modal">
-            <h3>Reject Application</h3>
-            <div class="modal-body">
-                <textarea id="rejectReason" placeholder="Enter detailed reason for rejection..."></textarea>
-              </div>
-            <div class="modal-footer">
-                <button class="modal-cancel" onclick="closeModal()">Cancel</button>
-                <button class="modal-submit" onclick="submitReject()">Submit Rejection</button>
-              </div>
-          </div>
-      </div>
-
-
-   
   <script>
     let selectedForm = null;
     let applications = [];
     let currentTab = 'pending';
-
 
     // Initialize
     window.onload = function () {
@@ -704,7 +616,6 @@ now this
       loadData();
       updateTime();
       setInterval(updateTime, 1000);
-
 
       // Close dropdowns when clicking outside
       document.addEventListener('click', function (event) {
@@ -717,21 +628,17 @@ now this
       });
     };
 
-
     // Tab switching functionality
     function switchTab(tabType, buttonElement) {
       currentTab = tabType;
-
 
       // Remove active class from all tabs
       document.querySelectorAll('.stats-tabs button').forEach(btn => {
         btn.classList.remove('active');
       });
 
-
       // Add active class to clicked tab
       buttonElement.classList.add('active');
-
 
       // Update table title
       const titles = {
@@ -741,18 +648,14 @@ now this
         'total': 'All Applications'
       };
 
-
       document.getElementById('tableTitle').textContent = titles[tabType] || 'Applications';
-
 
       filterAndDisplayApplications(tabType);
     }
 
-
     // Filter applications by status
     function filterAndDisplayApplications(tabType) {
       let filteredApps = [];
-
 
       switch (tabType) {
         case 'pending':
@@ -768,7 +671,6 @@ now this
           });
           break;
 
-
         case 'approved':
           filteredApps = applications.filter(app => {
             const status = (app.status || '').toLowerCase();
@@ -779,7 +681,6 @@ now this
           });
           break;
 
-
         case 'rejected':
           filteredApps = applications.filter(app => {
             const status = (app.status || '').toLowerCase();
@@ -789,40 +690,34 @@ now this
           });
           break;
 
-
         case 'total':
         default:
           filteredApps = applications;
           break;
       }
 
-
       updateTableWithData(filteredApps, tabType);
     }
 
-
-    // ✅ UPDATED: Table with status-based action controls
+    // Table with status-based action controls
     function updateTableWithData(apps, tabType) {
       const tbody = document.getElementById('tableBody');
       tbody.innerHTML = '';
 
-
       if (!apps || apps.length === 0) {
         tbody.innerHTML = `
-          <tr>
-            <td colspan="6" class="empty-state">
-              📭 No ${tabType === 'total' ? '' : tabType} applications found
-            </td>
-          </tr>
-        `;
+          <tr>
+            <td colspan="6" class="empty-state">
+              📭 No ${tabType === 'total' ? '' : tabType} applications found
+            </td>
+          </tr>
+        `;
         return;
       }
-
 
       apps.forEach(app => {
         const status = app.status || 'Pending';
         const statusLower = status.toLowerCase();
-
 
         let statusClass = 'status-pending';
         if (statusLower === 'approved' || statusLower.includes('approved') || statusLower === 'submitted to it') {
@@ -831,8 +726,7 @@ now this
           statusClass = 'status-rejected';
         }
 
-
-        // ✅ UPDATED: Determine if form is actionable (pending) or view-only (approved/rejected)
+        // Determine if form is actionable (pending) or view-only (approved/rejected)
         const isPending = statusLower === 'submitted to hod' ||
           statusLower === 'pending' ||
           statusLower === 'submitted' ||
@@ -841,74 +735,66 @@ now this
           statusLower === '' ||
           !app.status;
 
-
         const isApproved = statusLower.includes('approved') || statusLower === 'submitted to it';
         const isRejected = statusLower.includes('rejected');
 
-
-        // ✅ UPDATED: Action buttons based on status
+        // Action buttons based on status
         let actionButtons = '';
         if (isPending) {
           // Pending forms: Full action buttons (Review + Reject)
           actionButtons = `
-            <button class="btn btn-review" onclick="reviewApp('${app.formId}', 'pending')" title="Review and take action">Review</button>
-            <button class="btn btn-reject" onclick="openModal('${app.formId}')" title="Reject application">Reject</button>
-          `;
+            <button class="btn btn-review" onclick="reviewApp('${app.formId}', 'pending')" title="Review and take action">Review</button>
+            <button class="btn btn-reject" onclick="openModal('${app.formId}')" title="Reject application">Reject</button>
+          `;
         } else if (isApproved) {
           // Approved forms: View-only button
           actionButtons = `
-            <button class="btn btn-view" onclick="reviewApp('${app.formId}', 'approved')" title="View approved form (read-only)">View Details</button>
-          `;
+            <button class="btn btn-view" onclick="reviewApp('${app.formId}', 'approved')" title="View approved form (read-only)">View Details</button>
+          `;
         } else if (isRejected) {
           // Rejected forms: View-only button
           actionButtons = `
-            <button class="btn btn-view" onclick="reviewApp('${app.formId}', 'rejected')" title="View rejected form (read-only)">View Details</button>
-          `;
+            <button class="btn btn-view" onclick="reviewApp('${app.formId}', 'rejected')" title="View rejected form (read-only)">View Details</button>
+          `;
         } else {
           // Default: View button
           actionButtons = `
-            <button class="btn btn-view" onclick="reviewApp('${app.formId}', 'view')" title="View form details">View</button>
-          `;
+            <button class="btn btn-view" onclick="reviewApp('${app.formId}', 'view')" title="View form details">View</button>
+          `;
         }
-
 
         const row = document.createElement('tr');
         row.innerHTML = `
-          <td><strong>${app.name || app.employeeName || 'N/A'}</strong></td>
-          <td>${app.formId}</td>
-          <td>${app.department || 'N/A'}</td>
-          <td>${app.submissionDate ? new Date(app.submissionDate).toLocaleDateString() :
+          <td><strong>${app.name || app.employeeName || 'N/A'}</strong></td>
+          <td>${app.formId}</td>
+          <td>${app.department || 'N/A'}</td>
+          <td>${app.submissionDate ? new Date(app.submissionDate).toLocaleDateString() :
             app.lastUpdated ? new Date(app.lastUpdated).toLocaleDateString() : 'N/A'}</td>
-          <td><span class="status-badge ${statusClass}">${status}</span></td>
-          <td>${actionButtons}</td>
-        `;
+          <td><span class="status-badge ${statusClass}">${status}</span></td>
+          <td>${actionButtons}</td>
+        `;
         tbody.appendChild(row);
       });
     }
 
-
     function updateTime() {
       document.getElementById('currentTime').textContent = new Date().toLocaleTimeString();
     }
-
 
     function toggleMenu() {
       const dropdown = document.getElementById('menuDropdown');
       dropdown.classList.toggle('show');
     }
 
-
     function changePassword() {
       document.getElementById('menuDropdown').classList.remove('show');
       alert('Change Password feature - This would open a password change dialog');
     }
 
-
     function openSettings() {
       document.getElementById('menuDropdown').classList.remove('show');
       alert('Settings feature - This would open a settings page');
     }
-
 
     function logout() {
       document.getElementById('menuDropdown').classList.remove('show');
@@ -924,18 +810,15 @@ now this
       }
     }
 
-
     function toggleProfileDropdown() {
       const dropdown = document.getElementById('profileDropdown');
       dropdown.classList.toggle('show');
     }
 
-
     async function loadProfile() {
       try {
         const response = await fetch('/api/hod/profile', { credentials: 'include' });
         const data = await response.json();
-
 
         if (data.success) {
           document.getElementById('profileName').textContent = 'Sushil Kumar Uniyal';
@@ -947,7 +830,6 @@ now this
       }
     }
 
-
     // Load data from API with correct endpoint priority
     async function loadData() {
       try {
@@ -958,10 +840,8 @@ now this
           '/api/hod/pending'
         ];
 
-
         let data = null;
         let response = null;
-
 
         // Try each endpoint until one works
         for (const endpoint of endpoints) {
@@ -974,7 +854,6 @@ now this
               }
             });
 
-
             if (response.ok) {
               data = await response.json();
               console.log(`✅ Successfully loaded data from: ${endpoint}`);
@@ -986,11 +865,9 @@ now this
           }
         }
 
-
         if (!data) {
           throw new Error('All API endpoints failed');
         }
-
 
         // Handle different response formats
         let responseData = null;
@@ -1010,24 +887,20 @@ now this
           responseData = [];
         }
 
-
         applications = responseData || [];
-
 
         updateTabCounts();
         filterAndDisplayApplications(currentTab);
-
 
       } catch (e) {
         applications = [];
         updateTabCounts();
         document.getElementById('tableBody').innerHTML =
           `<tr><td colspan="6" class="empty-state">
-             ❌ Error loading data. Please refresh the page.
-           </td></tr>`;
+             ❌ Error loading data. Please refresh the page.
+           </td></tr>`;
       }
     }
-
 
     // Tab counts with improved status detection
     function updateTabCounts() {
@@ -1042,7 +915,6 @@ now this
           !app.status;
       }).length;
 
-
       const approved = applications.filter(app => {
         const status = (app.status || '').toLowerCase();
         return status === 'approved' ||
@@ -1050,16 +922,13 @@ now this
           status.includes('approved');
       }).length;
 
-
       const rejected = applications.filter(app => {
         const status = (app.status || '').toLowerCase();
         return status === 'rejected' ||
           status.includes('rejected');
       }).length;
 
-
       const total = applications.length;
-
 
       // Update tab counts
       document.getElementById('pendingTabCount').textContent = pending;
@@ -1068,13 +937,11 @@ now this
       document.getElementById('totalTabCount').textContent = total;
     }
 
-
-    // ✅ UPDATED: Review function with mode parameter
+    // Review function with mode parameter
     function reviewApp(formId, mode = 'pending') {
       // Add mode parameter to URL so hod-form-review.html knows the status
       window.location.href = `/hod-form-review.html?formId=${formId}&mode=${mode}`;
     }
-
 
     function openModal(formId) {
       selectedForm = formId;
@@ -1082,20 +949,17 @@ now this
       document.getElementById('rejectReason').focus();
     }
 
-
     function closeModal() {
       selectedForm = null;
       document.getElementById('rejectReason').value = '';
       document.getElementById('modalOverlay').style.display = 'none';
     }
 
-
     function closeModalOnOverlay(event) {
       if (event.target === event.currentTarget) {
         closeModal();
       }
     }
-
 
     async function submitReject() {
       const reason = document.getElementById('rejectReason').value.trim();
@@ -1104,12 +968,10 @@ now this
         return;
       }
 
-
       if (reason.length < 10) {
         alert('Please provide a more detailed reason (minimum 10 characters)');
         return;
       }
-
 
       try {
         const response = await fetch('/api/hod/approve-form', {
@@ -1122,7 +984,6 @@ now this
             remarks: reason
           })
         });
-
 
         const result = await response.json();
         if (result.success) {
@@ -1137,10 +998,8 @@ now this
       }
     }
 
-
     // Auto refresh every 2 minutes
     setInterval(loadData, 120000);
-
 
     // Keyboard shortcuts
     document.addEventListener('keydown', function (e) {
@@ -1152,8 +1011,6 @@ now this
     });
   </script>
 
-
 </body>
-
 
 </html>

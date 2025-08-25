@@ -1,0 +1,13 @@
+[
+  {
+    "timestamp": "2025-08-24T19:50:30.128Z",
+    "action": "OTP_GENERATED",
+    "employeeId": "EMP1001",
+    "ip": "unknown",
+    "userAgent": "unknown",
+    "success": true,
+    "details": {
+      "email": "vs23cs92@thdcihet.ac.in"
+    }
+  }
+]

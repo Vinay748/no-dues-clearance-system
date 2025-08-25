@@ -3,21 +3,34 @@ const multer = require('multer');
 const { loadJSON, saveJSON } = require('../utils/fileUtils');
 const { roleAuth } = require('../middlewares/sessionAuth');
 
-
 const router = express.Router();
-
 
 const PENDING_FORMS = './data/pending_forms.json';
 const HOD_SIGNATURES = './data/hod_signatures.json';
 
-
-// Multer setup for signature uploads
+// Multer setup for signature uploads with enhanced validation
 const storage = multer.diskStorage({
   destination: (req, file, cb) => cb(null, 'uploads/'),
   filename: (req, file, cb) => cb(null, Date.now() + '-' + file.originalname)
 });
-const upload = multer({ storage });
 
+// Enhanced file upload validation
+const upload = multer({
+  storage,
+  limits: {
+    fileSize: 5 * 1024 * 1024, // 5MB limit
+    files: 1 // Only one file at a time
+  },
+  fileFilter: (req, file, cb) => {
+    // Only allow image files for signatures
+    const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif'];
+    if (allowedTypes.includes(file.mimetype)) {
+      cb(null, true);
+    } else {
+      cb(new Error('Only image files (JPEG, PNG, GIF) are allowed for signatures'));
+    }
+  }
+});
 
 // Helper to get latest form with allowed statuses (for consistency with employee.js)
 function getLatestFormForEmployee(allForms, employeeId, allowedStatuses = []) {
@@ -28,12 +41,10 @@ function getLatestFormForEmployee(allForms, employeeId, allowedStatuses = []) {
   return forms.sort((a, b) => new Date(b.submissionDate || b.lastUpdated) - new Date(a.submissionDate || a.lastUpdated))[0] || null;
 }
 
-
 // GET HOD's own details for prefilling forms
 router.get('/my-details', roleAuth('hod'), (req, res) => {
   try {
     const sessionUser = req.session?.user;
-
 
     if (!sessionUser || sessionUser.role !== 'hod') {
       return res.status(401).json({
@@ -42,9 +53,7 @@ router.get('/my-details', roleAuth('hod'), (req, res) => {
       });
     }
 
-
     console.log('✅ Providing HOD details for prefilling:', sessionUser.name);
-
 
     // Return HOD's own details for prefilling
     res.json({
@@ -61,7 +70,6 @@ router.get('/my-details', roleAuth('hod'), (req, res) => {
       }
     });
 
-
   } catch (error) {
     console.error('Error getting HOD details:', error);
     res.status(500).json({
@@ -71,7 +79,6 @@ router.get('/my-details', roleAuth('hod'), (req, res) => {
   }
 });
 
-
 // HOD Profile endpoint
 router.get('/profile', roleAuth('hod'), (req, res) => {
   try {
@@ -79,7 +86,6 @@ router.get('/profile', roleAuth('hod'), (req, res) => {
     if (!sessionUser) {
       return res.status(401).json({ success: false, message: 'Session expired' });
     }
-
 
     res.json({
       success: true,
@@ -96,7 +102,6 @@ router.get('/profile', roleAuth('hod'), (req, res) => {
     res.status(500).json({ success: false, message: 'Error fetching profile' });
   }
 });
-
 
 // HOD signature endpoint
 router.get('/get-signature', roleAuth('hod'), (req, res) => {
@@ -127,27 +132,22 @@ router.get('/get-signature', roleAuth('hod'), (req, res) => {
   }
 });
 
-
 // Form details route (backward compatibility)
 router.get('/form-details', roleAuth('hod'), (req, res) => {
   const { formId } = req.query;
   if (!formId) return res.status(400).json({ success: false, message: 'Missing formId' });
-
 
   try {
     const pendingForms = loadJSON(PENDING_FORMS);
     const form = pendingForms.find(f => f.formId === formId);
     const sessionUser = req.session?.user;
 
-
     if (!form) {
       console.log(`Form ${formId} not found`);
       return res.status(404).json({ success: false, message: 'Form not found' });
     }
 
-
     console.log(`✅ Found form ${formId}, status: ${form.status}`);
-
 
     // Include HOD details in response
     const response = {
@@ -171,7 +171,6 @@ router.get('/form-details', roleAuth('hod'), (req, res) => {
       form365Data: form.formResponses?.form365Data || form.formResponses?.form365Disposal
     };
 
-
     res.json(response);
   } catch (err) {
     console.error('Error loading form details:', err);
@@ -179,24 +178,19 @@ router.get('/form-details', roleAuth('hod'), (req, res) => {
   }
 });
 
-
 // Form details route for hod-form-review.html with HOD prefill
 router.get('/form-details/:formId', roleAuth('hod'), (req, res) => {
   const { formId } = req.params;
   if (!formId) return res.status(400).json({ success: false, message: 'Missing formId' });
-
 
   try {
     const pendingForms = loadJSON(PENDING_FORMS);
     const form = pendingForms.find(f => f.formId === formId);
     const sessionUser = req.session?.user;
 
-
     if (!form) return res.status(404).json({ success: false, message: 'Form not found' });
 
-
     console.log(`✅ Providing form ${formId} with HOD details for ${sessionUser.name}`);
-
 
     res.json({
       success: true,
@@ -227,8 +221,7 @@ router.get('/form-details/:formId', roleAuth('hod'), (req, res) => {
   }
 });
 
-
-// ⭐ NEW: Get ALL forms regardless of status (for tab functionality)
+// Get ALL forms regardless of status (for tab functionality)
 router.get('/all', roleAuth('hod'), (req, res) => {
   try {
     const allForms = loadJSON(PENDING_FORMS);
@@ -239,7 +232,6 @@ router.get('/all', roleAuth('hod'), (req, res) => {
     res.status(500).json({ success: false, message: 'Failed to fetch all forms' });
   }
 });
-
 
 // Get pending forms for HOD approval (existing - only returns pending)
 router.get('/pending', roleAuth('hod'), (req, res) => {
@@ -254,22 +246,39 @@ router.get('/pending', roleAuth('hod'), (req, res) => {
   }
 });
 
+// Enhanced form validation middleware
+const validateFormSubmission = (req, res, next) => {
+  const { formId, formResponses } = req.body;
+
+  if (!formId || !formResponses) {
+    return res.status(400).json({
+      success: false,
+      message: 'Missing required fields: formId and formResponses'
+    });
+  }
+
+  // Parse formResponses if it's a string
+  try {
+    if (typeof formResponses === 'string') {
+      req.body.formResponses = JSON.parse(formResponses);
+    }
+  } catch (error) {
+    return res.status(400).json({
+      success: false,
+      message: 'Invalid formResponses format'
+    });
+  }
+
+  next();
+};
 
 // Final approval route with comprehensive HOD data storage
-router.post('/final-approve', roleAuth('hod'), (req, res) => {
+router.post('/final-approve', roleAuth('hod'), validateFormSubmission, (req, res) => {
   try {
     let { formId, formResponses, action, remarks } = req.body;
-    if (!formId || !formResponses) {
-      return res.status(400).json({ success: false, message: 'Missing formId or formResponses' });
-    }
-    if (typeof formResponses === 'string') {
-      formResponses = JSON.parse(formResponses);
-    }
-
 
     console.log('📋 HOD Final Approve - formId:', formId);
     console.log('📋 HOD Final Approve - formResponses keys:', Object.keys(formResponses));
-
 
     const forms = loadJSON(PENDING_FORMS);
     const formIndex = forms.findIndex(f => f.formId === formId);
@@ -277,16 +286,14 @@ router.post('/final-approve', roleAuth('hod'), (req, res) => {
       return res.status(404).json({ success: false, message: 'Form not found' });
     }
 
-
     const form = forms[formIndex];
     const sessionUser = req.session.user;
-
 
     const requiredForms = ['disposalForm', 'efileForm'];
     const form365Key = formResponses.form365Trans ? 'form365Trans' : 'form365Disp';
     requiredForms.push(form365Key);
 
-
+    // Enhanced form validation
     for (const formKey of requiredForms) {
       const formData = formResponses[formKey];
       if (!formData || Object.keys(formData).length === 0) {
@@ -296,14 +303,12 @@ router.post('/final-approve', roleAuth('hod'), (req, res) => {
         });
       }
 
-
       const hasHodData = Object.keys(formData).some(key =>
         key.toLowerCase().includes('hod') ||
         key.includes('hodSignature') ||
         key.includes('hodName') ||
         key.includes('hodEmp')
       );
-
 
       if (!hasHodData) {
         return res.status(400).json({
@@ -313,10 +318,8 @@ router.post('/final-approve', roleAuth('hod'), (req, res) => {
       }
     }
 
-
     form.formResponses = formResponses;
     form.status = 'Submitted to IT';
-
 
     // Store comprehensive HOD details
     form.hodApproval = {
@@ -342,13 +345,10 @@ router.post('/final-approve', roleAuth('hod'), (req, res) => {
       }
     };
 
-
     forms[formIndex] = form;
     saveJSON(PENDING_FORMS, forms);
 
-
     console.log(`✅ Form ${formId} approved by HOD ${sessionUser.name} and forwarded to IT`);
-
 
     res.json({
       success: true,
@@ -367,18 +367,21 @@ router.post('/final-approve', roleAuth('hod'), (req, res) => {
   }
 });
 
-
 // Simple approval endpoint with comprehensive HOD data
 router.post('/approve-form', roleAuth('hod'), (req, res) => {
   try {
     const { formId, action, remarks } = req.body;
     const sessionUser = req.session?.user;
 
-
     if (!formId || !action) {
       return res.status(400).json({ success: false, message: 'Missing formId or action' });
     }
 
+    // Validate action parameter
+    const validActions = ['approved', 'approve', 'rejected', 'reject'];
+    if (!validActions.includes(action)) {
+      return res.status(400).json({ success: false, message: 'Invalid action parameter' });
+    }
 
     const forms = loadJSON(PENDING_FORMS);
     const formIndex = forms.findIndex(f => f.formId === formId);
@@ -386,9 +389,7 @@ router.post('/approve-form', roleAuth('hod'), (req, res) => {
       return res.status(404).json({ success: false, message: 'Form not found' });
     }
 
-
     const form = forms[formIndex];
-
 
     // Comprehensive HOD action data
     const hodActionData = {
@@ -413,7 +414,6 @@ router.post('/approve-form', roleAuth('hod'), (req, res) => {
       }
     };
 
-
     if (action === 'approved' || action === 'approve') {
       form.status = 'Submitted to IT';
       form.hodApproval = hodActionData;
@@ -429,10 +429,8 @@ router.post('/approve-form', roleAuth('hod'), (req, res) => {
       console.log(`Form ${formId} rejected by HOD ${sessionUser.name} - Reason: ${remarks}`);
     }
 
-
     forms[formIndex] = form;
     saveJSON(PENDING_FORMS, forms);
-
 
     res.json({
       success: true,
@@ -451,53 +449,79 @@ router.post('/approve-form', roleAuth('hod'), (req, res) => {
   }
 });
 
-
-// Upload signature
-router.post('/upload-signature', upload.single('signature'), roleAuth('hod'), (req, res) => {
-  try {
-    const file = req.file;
-    const { id: hodId, name } = req.session.user;
-    if (!file) return res.status(400).json({ success: false, message: 'No file uploaded' });
-
-
-    let signatures = [];
-    try {
-      signatures = loadJSON(HOD_SIGNATURES);
-    } catch {
-      console.log('Creating new signatures file');
-    }
-
-
-    const existingIndex = signatures.findIndex(sig => sig.hodId === hodId);
-    if (existingIndex !== -1) {
-      signatures[existingIndex].filename = file.filename;
-      signatures[existingIndex].uploadedAt = new Date().toISOString();
-    } else {
-      signatures.push({
-        hodId,
-        name,
-        filename: file.filename,
-        uploadedAt: new Date().toISOString()
+// Enhanced upload signature with better error handling
+router.post('/upload-signature', roleAuth('hod'), (req, res) => {
+  upload.single('signature')(req, res, (err) => {
+    if (err) {
+      console.error('Multer error:', err);
+      if (err.code === 'LIMIT_FILE_SIZE') {
+        return res.status(400).json({
+          success: false,
+          message: 'File too large. Maximum size allowed is 5MB.'
+        });
+      }
+      return res.status(400).json({
+        success: false,
+        message: err.message || 'File upload error'
       });
     }
 
+    try {
+      const file = req.file;
+      const { id: hodId, name } = req.session.user;
 
-    saveJSON(HOD_SIGNATURES, signatures);
-    console.log(`✅ Signature uploaded for HOD ${name}`);
+      if (!file) {
+        return res.status(400).json({
+          success: false,
+          message: 'No file uploaded'
+        });
+      }
 
+      let signatures = [];
+      try {
+        signatures = loadJSON(HOD_SIGNATURES);
+      } catch {
+        console.log('Creating new signatures file');
+      }
 
-    res.json({
-      success: true,
-      message: 'Signature saved successfully',
-      filename: file.filename,
-      signatureUrl: `/uploads/${file.filename}`
-    });
-  } catch (err) {
-    console.error('Error uploading signature:', err);
-    res.status(500).json({ success: false, message: 'Error uploading signature' });
-  }
+      const existingIndex = signatures.findIndex(sig => sig.hodId === hodId);
+      if (existingIndex !== -1) {
+        signatures[existingIndex].filename = file.filename;
+        signatures[existingIndex].uploadedAt = new Date().toISOString();
+        signatures[existingIndex].fileSize = file.size;
+        signatures[existingIndex].mimeType = file.mimetype;
+      } else {
+        signatures.push({
+          hodId,
+          name,
+          filename: file.filename,
+          originalName: file.originalname,
+          fileSize: file.size,
+          mimeType: file.mimetype,
+          uploadedAt: new Date().toISOString()
+        });
+      }
+
+      saveJSON(HOD_SIGNATURES, signatures);
+      console.log(`✅ Signature uploaded for HOD ${name}`);
+
+      res.json({
+        success: true,
+        message: 'Signature saved successfully',
+        filename: file.filename,
+        signatureUrl: `/uploads/${file.filename}`,
+        fileInfo: {
+          originalName: file.originalname,
+          size: file.size,
+          type: file.mimetype
+        }
+      });
+    } catch (err) {
+      console.error('Error uploading signature:', err);
+      res.status(500).json({ success: false, message: 'Error uploading signature' });
+    }
+  });
 });
-
 
 // Get HOD's own signature
 router.get('/my-signature', roleAuth('hod'), (req, res) => {
@@ -510,18 +534,21 @@ router.get('/my-signature', roleAuth('hod'), (req, res) => {
       return res.status(404).json({ success: false, message: 'No signatures found' });
     }
 
-
     const match = signatures.find(s => s.hodId === hodId);
     if (!match) {
       return res.status(404).json({ success: false, message: 'No saved signature found' });
     }
 
-
     res.json({
       success: true,
       filename: match.filename,
       signatureUrl: `/uploads/${match.filename}`,
-      uploadedAt: match.uploadedAt
+      uploadedAt: match.uploadedAt,
+      fileInfo: {
+        originalName: match.originalName || match.filename,
+        size: match.fileSize || 'Unknown',
+        type: match.mimeType || 'Unknown'
+      }
     });
   } catch (err) {
     console.error('Error retrieving signature:', err);
@@ -529,5 +556,173 @@ router.get('/my-signature', roleAuth('hod'), (req, res) => {
   }
 });
 
+// Enhanced form save endpoints for HOD
+router.post('/save-disposal', roleAuth('hod'), (req, res) => {
+  try {
+    const { formId, disposalFormData } = req.body;
+    if (!formId || !disposalFormData) {
+      return res.status(400).json({
+        success: false,
+        message: 'Missing formId or disposalFormData'
+      });
+    }
+
+    const forms = loadJSON(PENDING_FORMS);
+    const formIndex = forms.findIndex(f => f.formId === formId);
+
+    if (formIndex === -1) {
+      return res.status(404).json({
+        success: false,
+        message: 'Form not found'
+      });
+    }
+
+    if (!forms[formIndex].formResponses) {
+      forms[formIndex].formResponses = {};
+    }
+
+    forms[formIndex].formResponses.disposalFormData = disposalFormData;
+    forms[formIndex].lastUpdated = new Date().toISOString();
+
+    saveJSON(PENDING_FORMS, forms);
+
+    res.json({
+      success: true,
+      message: 'Disposal form data saved successfully'
+    });
+  } catch (error) {
+    console.error('Error saving disposal form:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error saving disposal form data'
+    });
+  }
+});
+
+router.post('/save-efile', roleAuth('hod'), (req, res) => {
+  try {
+    const { formId, efileFormData } = req.body;
+    if (!formId || !efileFormData) {
+      return res.status(400).json({
+        success: false,
+        message: 'Missing formId or efileFormData'
+      });
+    }
+
+    const forms = loadJSON(PENDING_FORMS);
+    const formIndex = forms.findIndex(f => f.formId === formId);
+
+    if (formIndex === -1) {
+      return res.status(404).json({
+        success: false,
+        message: 'Form not found'
+      });
+    }
+
+    if (!forms[formIndex].formResponses) {
+      forms[formIndex].formResponses = {};
+    }
+
+    forms[formIndex].formResponses.efileFormData = efileFormData;
+    forms[formIndex].lastUpdated = new Date().toISOString();
+
+    saveJSON(PENDING_FORMS, forms);
+
+    res.json({
+      success: true,
+      message: 'E-file form data saved successfully'
+    });
+  } catch (error) {
+    console.error('Error saving efile form:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error saving e-file form data'
+    });
+  }
+});
+
+router.post('/save-form365-transfer', roleAuth('hod'), (req, res) => {
+  try {
+    const { formId, form365TransferData } = req.body;
+    if (!formId || !form365TransferData) {
+      return res.status(400).json({
+        success: false,
+        message: 'Missing formId or form365TransferData'
+      });
+    }
+
+    const forms = loadJSON(PENDING_FORMS);
+    const formIndex = forms.findIndex(f => f.formId === formId);
+
+    if (formIndex === -1) {
+      return res.status(404).json({
+        success: false,
+        message: 'Form not found'
+      });
+    }
+
+    if (!forms[formIndex].formResponses) {
+      forms[formIndex].formResponses = {};
+    }
+
+    forms[formIndex].formResponses.form365TransferData = form365TransferData;
+    forms[formIndex].lastUpdated = new Date().toISOString();
+
+    saveJSON(PENDING_FORMS, forms);
+
+    res.json({
+      success: true,
+      message: 'Form 365 Transfer data saved successfully'
+    });
+  } catch (error) {
+    console.error('Error saving form365 transfer:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error saving Form 365 Transfer data'
+    });
+  }
+});
+
+router.post('/save-form365-disposal', roleAuth('hod'), (req, res) => {
+  try {
+    const { formId, form365DisposalData } = req.body;
+    if (!formId || !form365DisposalData) {
+      return res.status(400).json({
+        success: false,
+        message: 'Missing formId or form365DisposalData'
+      });
+    }
+
+    const forms = loadJSON(PENDING_FORMS);
+    const formIndex = forms.findIndex(f => f.formId === formId);
+
+    if (formIndex === -1) {
+      return res.status(404).json({
+        success: false,
+        message: 'Form not found'
+      });
+    }
+
+    if (!forms[formIndex].formResponses) {
+      forms[formIndex].formResponses = {};
+    }
+
+    forms[formIndex].formResponses.form365Data = form365DisposalData;
+    forms[formIndex].lastUpdated = new Date().toISOString();
+
+    saveJSON(PENDING_FORMS, forms);
+
+    res.json({
+      success: true,
+      message: 'Form 365 Disposal data saved successfully'
+    });
+  } catch (error) {
+    console.error('Error saving form365 disposal:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error saving Form 365 Disposal data'
+    });
+  }
+});
 
 module.exports = router;

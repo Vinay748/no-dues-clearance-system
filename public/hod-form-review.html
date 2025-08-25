@@ -5,13 +5,12 @@
   <meta charset="UTF-8">
   <title>HOD Form Review</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  now this   <style>
+  <style>
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
     }
-
 
     body {
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
@@ -21,7 +20,6 @@
       padding: 20px;
       font-weight: 400;
     }
-
 
     /* Professional Header */
     .header {
@@ -33,7 +31,6 @@
       box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     }
 
-
     .header h1 {
       color: #2c3e50;
       font-size: 1.5rem;
@@ -41,7 +38,6 @@
       margin-bottom: 10px;
       letter-spacing: -0.025em;
     }
-
 
     /* Improved Form ID Font */
     .form-id {
@@ -58,7 +54,6 @@
       letter-spacing: 0.5px;
     }
 
-
     /* Form Status Badge */
     .form-status {
       display: inline-block;
@@ -71,13 +66,11 @@
       letter-spacing: 0.5px;
     }
 
-
     .status-approved {
       background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
       color: #155724;
       border: 1px solid #28a745;
     }
-
 
     .status-rejected {
       background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
@@ -85,13 +78,11 @@
       border: 1px solid #dc3545;
     }
 
-
     .status-pending {
       background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
       color: #856404;
       border: 1px solid #ffc107;
     }
-
 
     /* HOD Profile Section */
     .hod-profile {
@@ -103,14 +94,12 @@
       box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     }
 
-
     .profile-header {
       display: flex;
       align-items: center;
       gap: 15px;
       margin-bottom: 20px;
     }
-
 
     .profile-icon {
       width: 50px;
@@ -127,7 +116,6 @@
       box-shadow: 0 2px 8px rgba(73, 80, 87, 0.2);
     }
 
-
     .profile-info h3 {
       color: #2c3e50;
       font-size: 1.1rem;
@@ -135,13 +123,11 @@
       letter-spacing: -0.02em;
     }
 
-
     .profile-subtitle {
       color: #6c757d;
       font-size: 0.9rem;
       font-weight: 400;
     }
-
 
     .profile-grid {
       display: grid;
@@ -149,12 +135,10 @@
       gap: 15px;
     }
 
-
     .profile-field {
       display: flex;
       flex-direction: column;
     }
-
 
     .profile-field label {
       font-size: 0.85rem;
@@ -164,7 +148,6 @@
       text-transform: uppercase;
       letter-spacing: 0.05em;
     }
-
 
     .profile-field input {
       padding: 8px 12px;
@@ -178,7 +161,6 @@
       transition: all 0.3s ease;
     }
 
-
     /* Enhanced Auto-filled Styling */
     .auto-filled {
       background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%) !important;
@@ -187,14 +169,12 @@
       box-shadow: 0 0 0 2px rgba(40, 167, 69, 0.1);
     }
 
-
     .hod-prefilled {
       background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%) !important;
       border-color: #28a745 !important;
       color: #155724 !important;
       position: relative;
     }
-
 
     .hod-prefilled::after {
       content: '✓ Auto-filled';
@@ -207,7 +187,6 @@
       font-weight: 600;
     }
 
-
     /* Enhanced Signature Section */
     .signature-section {
       margin-top: 20px;
@@ -217,7 +196,6 @@
       border-radius: 6px;
     }
 
-
     .signature-header {
       display: flex;
       justify-content: space-between;
@@ -225,13 +203,11 @@
       margin-bottom: 10px;
     }
 
-
     .signature-label {
       font-weight: 600;
       color: #495057;
       font-size: 0.9rem;
     }
-
 
     .change-signature-btn {
       background: #6c757d;
@@ -247,12 +223,10 @@
       font-family: 'Inter', sans-serif;
     }
 
-
     .change-signature-btn:hover {
       background: #5a6268;
       transform: translateY(-1px);
     }
-
 
     .signature-area {
       min-height: 80px;
@@ -267,24 +241,20 @@
       position: relative;
     }
 
-
     .signature-area:hover {
       border-color: #6c757d;
       background: #f8f9fa;
     }
-
 
     .signature-area.has-signature {
       border-color: #28a745;
       background: #f8fff8;
     }
 
-
     .signature-area.changing {
       border-color: #007bff;
       background: #f8f9ff;
     }
-
 
     .signature-placeholder {
       color: #6c757d;
@@ -292,7 +262,6 @@
       text-align: center;
       font-weight: 400;
     }
-
 
     .signature-status {
       position: absolute;
@@ -303,7 +272,6 @@
       font-weight: 600;
     }
 
-
     .signature-actions {
       display: flex;
       justify-content: center;
@@ -312,11 +280,9 @@
       display: none;
     }
 
-
     .signature-actions.show {
       display: flex;
     }
-
 
     .signature-action-btn {
       padding: 6px 12px;
@@ -329,28 +295,23 @@
       font-family: 'Inter', sans-serif;
     }
 
-
     .btn-confirm {
       background: #28a745;
       color: white;
     }
 
-
     .btn-confirm:hover {
       background: #218838;
     }
-
 
     .btn-cancel {
       background: #6c757d;
       color: white;
     }
 
-
     .btn-cancel:hover {
       background: #5a6268;
     }
-
 
     /* View-only section styling */
     .view-only-notice {
@@ -362,19 +323,16 @@
       text-align: center;
     }
 
-
     .view-only-notice h3 {
       color: #1976d2;
       margin-bottom: 10px;
       font-size: 1.1rem;
     }
 
-
     .view-only-notice p {
       color: #0d47a1;
       margin: 0;
     }
-
 
     /* Form Container */
     .form-container {
@@ -386,13 +344,11 @@
       box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     }
 
-
     .form-header {
       background: #f8f9fa;
       border-bottom: 1px solid #e9ecef;
       padding: 15px 20px;
     }
-
 
     .form-header h3 {
       color: #495057;
@@ -401,14 +357,12 @@
       letter-spacing: -0.02em;
     }
 
-
     iframe {
       width: 100%;
       height: 600px;
       border: none;
       display: block;
     }
-
 
     /* Approval Section */
     .approval-section {
@@ -420,7 +374,6 @@
       box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     }
 
-
     .approval-section h3 {
       color: #2c3e50;
       font-size: 1.2rem;
@@ -429,12 +382,10 @@
       letter-spacing: -0.025em;
     }
 
-
     .remarks-section {
       text-align: left;
       margin-bottom: 25px;
     }
-
 
     .remarks-section label {
       display: block;
@@ -443,7 +394,6 @@
       margin-bottom: 8px;
       font-size: 0.9rem;
     }
-
 
     .remarks-section textarea {
       width: 100%;
@@ -457,13 +407,11 @@
       font-weight: 400;
     }
 
-
     .remarks-section textarea:focus {
       outline: none;
       border-color: #495057;
       box-shadow: 0 0 0 2px rgba(73, 80, 87, 0.1);
     }
-
 
     /* Action Buttons */
     .action-buttons {
@@ -472,7 +420,6 @@
       gap: 15px;
       margin-top: 20px;
     }
-
 
     .btn {
       padding: 12px 24px;
@@ -488,30 +435,25 @@
       font-family: 'Inter', sans-serif;
     }
 
-
     .btn-approve {
       background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
       color: #fff;
     }
-
 
     .btn-approve:hover:not(:disabled) {
       background: linear-gradient(135deg, #218838 0%, #1ea486 100%);
       transform: translateY(-1px);
     }
 
-
     .btn-reject {
       background: linear-gradient(135deg, #dc3545 0%, #e74c3c 100%);
       color: #fff;
     }
 
-
     .btn-reject:hover:not(:disabled) {
       background: linear-gradient(135deg, #c82333 0%, #c0392b 100%);
       transform: translateY(-1px);
     }
-
 
     .btn:disabled {
       background: #6c757d !important;
@@ -519,7 +461,6 @@
       opacity: 0.6;
       transform: none !important;
     }
-
 
     /* Status Messages */
     .status-message {
@@ -532,13 +473,11 @@
       font-family: 'Inter', sans-serif;
     }
 
-
     .status-loading {
       background: #cce5ff;
       color: #004085;
       border-color: #b3d7ff;
     }
-
 
     .status-success {
       background: #d4edda;
@@ -546,13 +485,11 @@
       border-color: #c3e6cb;
     }
 
-
     .status-error {
       background: #f8d7da;
       color: #721c24;
       border-color: #f5c6cb;
     }
-
 
     /* Notification */
     .notification {
@@ -569,13 +506,11 @@
       font-family: 'Inter', sans-serif;
     }
 
-
     .notification.status-success {
       background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
       color: #155724;
       border-left: 4px solid #28a745;
     }
-
 
     .notification.status-info {
       background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
@@ -583,13 +518,11 @@
       border-left: 4px solid #2196f3;
     }
 
-
     .notification.status-error {
       background: linear-gradient(135deg, #ffebee 0%, #ffcdd2 100%);
       color: #c62828;
       border-left: 4px solid #f44336;
     }
-
 
     /* Mobile Responsive */
     @media (max-width: 768px) {
@@ -597,28 +530,23 @@
         padding: 15px;
       }
 
-
       .profile-grid {
         grid-template-columns: 1fr;
       }
-
 
       .action-buttons {
         flex-direction: column;
         align-items: center;
       }
 
-
       .btn {
         width: 100%;
         max-width: 250px;
       }
 
-
       iframe {
         height: 500px;
       }
-
 
       .signature-header {
         flex-direction: column;
@@ -626,22 +554,18 @@
         gap: 10px;
       }
 
-
       .change-signature-btn {
         align-self: flex-end;
       }
-
 
       .profile-field input.hod-prefilled::after {
         display: none;
       }
     }
 
-
     .hidden {
       display: none;
     }
-
 
     /* Loading Spinner for Auto-fill */
     .prefill-loader {
@@ -655,13 +579,11 @@
       margin-left: 8px;
     }
 
-
     @keyframes spin {
       to {
         transform: rotate(360deg);
       }
     }
-
 
     /* Final Action Modal */
     .final-modal {
@@ -677,7 +599,6 @@
       z-index: 2000;
     }
 
-
     .final-modal-content {
       background: white;
       padding: 30px;
@@ -688,19 +609,16 @@
       box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
     }
 
-
     .final-modal h3 {
       color: #28a745;
       margin-bottom: 15px;
       font-size: 1.2rem;
     }
 
-
     .final-modal p {
       margin-bottom: 20px;
       color: #495057;
     }
-
 
     .final-modal button {
       background: #007bff;
@@ -713,22 +631,17 @@
       margin: 0 5px;
     }
 
-
     .final-modal button:hover {
       background: #0056b3;
     }
-
 
     .final-modal .btn-danger {
       background: #dc3545;
     }
 
-
     .final-modal .btn-danger:hover {
       background: #c82333;
     }
-
-
 
     /* Green styling for HOD details fields */
     .green-details {
@@ -739,7 +652,6 @@
       box-shadow: 0 0 0 2px rgba(40, 167, 69, 0.1) !important;
     }
 
-
     .signature-status-indicator {
       font-size: 14px;
       padding: 4px 8px;
@@ -747,12 +659,10 @@
       font-weight: bold;
     }
 
-
     .signature-loaded {
       background: #d4edda;
       color: #155724;
     }
-
 
     .signature-missing {
       background: #f8d7da;
@@ -761,134 +671,120 @@
   </style>
 </head>
 
-
 <body>
-    <!-- Professional Header -->
-    <div class="header">
-        <h1>HOD Form Review</h1>
-        <div class="form-id">Form ID: <span id="formIdLbl">Loading...</span></div>
-        <!-- Form Status Badge -->
-        <div class="form-status hidden" id="formStatusBadge">
-            <span id="formStatusText">Processing...</span>
-          </div>
-        <div id="statusMessage" class="status-message hidden"></div>
-      </div>
+  <!-- Professional Header -->
+  <div class="header">
+    <h1>HOD Form Review</h1>
+    <div class="form-id">Form ID: <span id="formIdLbl">Loading...</span></div>
+    <!-- Form Status Badge -->
+    <div class="form-status hidden" id="formStatusBadge">
+      <span id="formStatusText">Processing...</span>
+    </div>
+    <div id="statusMessage" class="status-message hidden"></div>
+  </div>
 
+  <!-- View-only notice for approved/rejected forms -->
+  <div class="view-only-notice hidden" id="viewOnlyNotice">
+    <h3 id="viewOnlyTitle">📋 View-Only Mode</h3>
+    <p id="viewOnlyMessage">This form has been processed and cannot be modified.</p>
+  </div>
 
-    <!-- View-only notice for approved/rejected forms -->
-    <div class="view-only-notice hidden" id="viewOnlyNotice">
-        <h3 id="viewOnlyTitle">📋 View-Only Mode</h3>
-        <p id="viewOnlyMessage">This form has been processed and cannot be modified.</p>
-      </div>
+  <!-- Enhanced HOD Profile Section with Auto-fill -->
+  <div class="hod-profile">
+    <div class="profile-header">
+      <div class="profile-icon" id="profileIcon">H</div>
+      <div class="profile-info">
+        <h3 id="profileName">Loading HOD Profile...</h3>
+        <div class="profile-subtitle" id="profileSubtitle">Head of Department - Reviewing Application</div>
+      </div>
+    </div>
 
+    <div class="profile-grid">
+      <div class="profile-field">
+        <label>HOD Name</label>
+        <input type="text" id="hodName" readonly>
+      </div>
+      <div class="profile-field">
+        <label>HOD ID</label>
+        <input type="text" id="hodId" readonly>
+      </div>
+      <div class="profile-field">
+        <label>Email</label>
+        <input type="email" id="hodEmail" readonly>
+      </div>
+      <div class="profile-field">
+        <label>Department</label>
+        <input type="text" id="hodDepartment" readonly>
+      </div>
+      <div class="profile-field">
+        <label>Review Date</label>
+        <input type="text" id="reviewDate" readonly>
+      </div>
+    </div>
 
-    <!-- Enhanced HOD Profile Section with Auto-fill -->
-    <div class="hod-profile">
-        <div class="profile-header">
-            <div class="profile-icon" id="profileIcon">H</div>
-            <div class="profile-info">
-                <h3 id="profileName">Loading HOD Profile...</h3>
-                <div class="profile-subtitle" id="profileSubtitle">Head of Department - Reviewing Application</div>
-              </div>
-          </div>
+    <!-- Enhanced HOD Signature Section - AUTO-FILLED -->
+    <div class="signature-section" id="signatureSection">
+      <div class="signature-header">
+        <span class="signature-label">HOD Digital Signature (Auto-filled)</span>
+        <span id="signatureStatus" class="signature-status-indicator">⏳ Loading...</span>
+      </div>
 
+      <div class="signature-area" id="hodSignatureArea">
+        <div class="signature-placeholder">
+          <div>Loading signature... <span class="prefill-loader"></span></div>
+          <small style="color: #6c757d;">Signature will auto-load from your profile</small>
+        </div>
+      </div>
+    </div>
+  </div>
 
-        <div class="profile-grid">
-            <div class="profile-field">
-                <label>HOD Name</label>
-                <input type="text" id="hodName" readonly>
-              </div>
-            <div class="profile-field">
-                <label>HOD ID</label>
-                <input type="text" id="hodId" readonly>
-              </div>
-            <div class="profile-field">
-                <label>Email</label>
-                <input type="email" id="hodEmail" readonly>
-              </div>
-            <div class="profile-field">
-                <label>Department</label>
-                <input type="text" id="hodDepartment" readonly>
-              </div>
-            <div class="profile-field">
-                <label>Review Date</label>
-                <input type="text" id="reviewDate" readonly>
-              </div>
-          </div>
+  <!-- Form Container -->
+  <div id="formContainer"></div>
 
+  <!-- Professional Approval Section -->
+  <div class="approval-section" id="approvalSection">
+    <h3 id="approvalSectionTitle">Final Review Decision</h3>
 
-        <!-- Enhanced HOD Signature Section - AUTO-FILLED -->
-        <div class="signature-section" id="signatureSection">
-            <div class="signature-header">
-                <span class="signature-label">HOD Digital Signature (Auto-filled)</span>
-                <span id="signatureStatus" class="signature-status-indicator">⏳ Loading...</span>
-              </div>
-
-
-            <div class="signature-area" id="hodSignatureArea">
-                <div class="signature-placeholder">
-                    <div>Loading signature... <span class="prefill-loader"></span></div>
-                    <small style="color: #6c757d;">Signature will auto-load from your profile</small>
-                  </div>
-              </div>
-          </div>
-      </div>
-
-
-    <!-- Form Container -->
-    <div id="formContainer"></div>
-
-
-    <!-- Professional Approval Section -->
-    <div class="approval-section" id="approvalSection">
-        <h3 id="approvalSectionTitle">Final Review Decision</h3>
-
-
-        <div class="remarks-section">
-            <label for="approvalRemarks" id="remarksLabel">Review Comments (Optional)</label>
-            <textarea id="approvalRemarks"        
+    <div class="remarks-section">
+      <label for="approvalRemarks" id="remarksLabel">Review Comments (Optional)</label>
+      <textarea id="approvalRemarks"
         placeholder="Enter your review comments, feedback, or specific instructions for the employee or IT department..."></textarea>
-          </div>
+    </div>
 
+    <div class="action-buttons">
+      <button id="finalApproveBtn" class="btn btn-approve" disabled>Loading...</button>
+      <button id="rejectBtn" class="btn btn-reject" disabled>Loading...</button>
+    </div>
+  </div>
 
-        <div class="action-buttons">
-            <button id="finalApproveBtn" class="btn btn-approve" disabled>Loading...</button>
-            <button id="rejectBtn" class="btn btn-reject" disabled>Loading...</button>
-          </div>
-      </div>
-
-
-    <!-- Normal Back Button -->
+  <!-- Normal Back Button -->
   <div style="text-align: center; margin: 30px 0;">
     <button type="button" onclick="window.history.back()" style="background: #6c757d;
-                   color: white;
-                   border: none;
-                   padding: 12px 30px;
-                   border-radius: 6px;
-                   font-size: 16px;
-                   font-weight: 600;
-                   cursor: pointer;
-                   transition: all 0.3s ease;" onmouseover="this.style.background='#5a6268'"
+                       color: white;
+                       border: none;
+                       padding: 12px 30px;
+                       border-radius: 6px;
+                       font-size: 16px;
+                       font-weight: 600;
+                       cursor: pointer;
+                       transition: all 0.3s ease;" onmouseover="this.style.background='#5a6268'"
       onmouseout="this.style.background='#6c757d'">
       ← Back
     </button>
   </div>
 
+  <!-- Notification Container -->
+  <div id="notification" class="notification"></div>
 
-
-   <!-- Notification Container -->
-   <div id="notification" class="notification"></div>
-
-
-   <!-- Final Action Modal -->
-   <div id="finalModal" class="final-modal">
-      <div class="final-modal-content">
-         <h3 id="modalTitle">Action Completed</h3>
-         <p id="modalMessage">The action has been completed successfully.</p>
-         <button id="stayButton" onclick="stayOnPage()">Stay on Page</button>
-         <button id="backButton" onclick="goBackToHODDashboard()">Back to HOD Dashboard</button>
-        </div>
-     </div>
+  <!-- Final Action Modal -->
+  <div id="finalModal" class="final-modal">
+    <div class="final-modal-content">
+      <h3 id="modalTitle">Action Completed</h3>
+      <p id="modalMessage">The action has been completed successfully.</p>
+      <button id="stayButton" onclick="stayOnPage()">Stay on Page</button>
+      <button id="backButton" onclick="goBackToHODDashboard()">Back to HOD Dashboard</button>
+    </div>
+  </div>
 
   <style>
     /* Green styling for HOD details fields */
@@ -922,12 +818,11 @@
     // Global variables with mode detection
     let currentUserRole = 'hod';
     let formId = '';
-    let autoFilledSignatureData = null; // ✅ Store auto-filled signature
+    let autoFilledSignatureData = null; // Store auto-filled signature
     let formStatus = 'pending';
     let isViewOnlyMode = false;
     let formData = null;
-    let collectedEfileTableData = {}; // ✅ Store e-file table data
-
+    let collectedEfileTableData = {}; // Store e-file table data
 
     // Initialize with mode detection
     const qs = new URLSearchParams(location.search);
@@ -936,19 +831,15 @@
     formStatus = mode;
     isViewOnlyMode = (mode === 'approved' || mode === 'rejected');
 
-
     const $ = id => document.getElementById(id);
-
 
     // Update form ID display
     $('formIdLbl').textContent = formId || 'Unknown';
-
 
     // Initialize page based on mode
     function initializePageMode() {
       if (isViewOnlyMode) {
         $('viewOnlyNotice').classList.remove('hidden');
-
 
         if (formStatus === 'approved') {
           $('viewOnlyTitle').textContent = '✅ Form Approved - View Only';
@@ -968,7 +859,6 @@
           $('remarksLabel').textContent = 'HOD Rejection Reason (Read-Only)';
         }
 
-
         $('formStatusBadge').classList.remove('hidden');
         $('signatureSection').style.opacity = '0.6';
         $('signatureSection').style.pointerEvents = 'none';
@@ -980,7 +870,6 @@
         $('rejectBtn').textContent = 'Form Already Processed';
         $('rejectBtn').disabled = true;
 
-
         console.log('✅ Initialized in view-only mode:', formStatus);
       } else {
         $('formStatusBadge').className = 'form-status status-pending';
@@ -990,7 +879,6 @@
       }
     }
 
-
     // Enhanced status message function
     function showStatus(message, type = 'loading') {
       const statusEl = $('statusMessage');
@@ -998,17 +886,14 @@
       statusEl.className = `status-message status-${type}`;
       statusEl.classList.remove('hidden');
 
-
       if (type === 'success') {
         setTimeout(() => hideStatus(), 5000);
       }
     }
 
-
     function hideStatus() {
       $('statusMessage').classList.add('hidden');
     }
-
 
     // Show notifications
     function showNotification(message, type) {
@@ -1017,12 +902,10 @@
       notification.className = `notification status-${type}`;
       notification.style.display = 'block';
 
-
       setTimeout(() => {
         notification.style.display = 'none';
       }, 4000);
     }
-
 
     // Final modal functions
     function showFinalModal(title, message, action) {
@@ -1030,7 +913,6 @@
       $('modalMessage').textContent = message;
       $('finalModal').style.display = 'flex';
     }
-
 
     function stayOnPage() {
       $('finalModal').style.display = 'none';
@@ -1042,22 +924,19 @@
       }
     }
 
-
     function goBackToHODDashboard() {
       window.location.href = '/hodreview.html';
     }
-
 
     // Generate initials from name
     function generateInitials(name) {
       if (!name) return 'H';
       const parts = name.split(' ');
       if (parts.length >= 2) {
-        return (parts[0][0] + parts[1]).toUpperCase();
+        return (parts[0] + parts[11]).toUpperCase();
       }
       return name.substring(0, 2).toUpperCase();
     }
-
 
     // Populate form with session data
     function updateFormWithSessionData(sessionData = {}) {
@@ -1068,13 +947,11 @@
       $('hodDepartment').value = sessionData.department || '';
       $('reviewDate').value = sessionData.currentDate || '';
 
-
       // Set profile icon
       $('profileIcon').textContent = generateInitials(sessionData.hodID);
     }
 
-
-    // ✅ FIXED: Enhanced HOD Profile Loading with AUTO-FILLED signature capture
+    // Enhanced HOD Profile Loading with AUTO-FILLED signature capture
     async function loadHODProfile() {
       try {
         console.log('🔄 Loading HOD profile from API for auto-fill...');
@@ -1082,17 +959,14 @@
           showNotification('Loading HOD profile and auto-filling details...', 'info');
         }
 
-
         const response = await fetch('/api/hod/my-details', {
           credentials: 'include'
         });
-
 
         if (response.ok) {
           const data = await response.json();
           if (data.success && data.hodDetails) {
             console.log('✅ HOD details received:', data.hodDetails);
-
 
             const sessionData = {
               hodID: data.hodDetails.name,
@@ -1102,13 +976,10 @@
               currentDate: data.hodDetails.currentDate || (new Date().toLocaleDateString('en-IN') + ' ' + new Date().toLocaleTimeString('en-IN'))
             };
 
-
             updateFormWithSessionData(sessionData);
 
-
-            // ✅ Load and capture auto-filled HOD signature
+            // Load and capture auto-filled HOD signature
             await loadAndCaptureHODSignature();
-
 
             console.log('✅ HOD profile auto-filled successfully');
             if (!isViewOnlyMode) {
@@ -1121,7 +992,6 @@
       } catch (error) {
         console.error('❌ Error loading HOD profile:', error);
 
-
         const fallbackData = {
           hodID: 'Sushil Kumar Uniyal',
           employeeID: '3401234',
@@ -1130,9 +1000,7 @@
           currentDate: new Date().toLocaleDateString('en-IN') + ' ' + new Date().toLocaleTimeString('en-IN')
         };
 
-
         updateFormWithSessionData(fallbackData);
-
 
         if (!isViewOnlyMode) {
           showNotification('Using fallback HOD details - Check API connection', 'error');
@@ -1140,39 +1008,34 @@
       }
     }
 
-
-    // ✅ NEW: Load and capture auto-filled HOD signature
+    // Load and capture auto-filled HOD signature
     async function loadAndCaptureHODSignature() {
       try {
         const response = await fetch('/api/hod/get-signature', {
           credentials: 'include'
         });
 
-
         if (response.ok) {
           const data = await response.json();
           if (data.success && data.signatureUrl) {
-            // ✅ CAPTURE the auto-filled signature
+            // Capture the auto-filled signature
             autoFilledSignatureData = data.signatureUrl;
-
 
             const sigArea = $('hodSignatureArea');
             sigArea.innerHTML = `
-              <img src="${data.signatureUrl}" 
-                   alt="HOD Signature" 
-                   style="max-height: 70px; max-width: 100%; display: block; margin: 0 auto; 
-                          border: 2px solid #28a745; border-radius: 6px; padding: 5px; background: #f8fff9;">
-              <div style="text-align: center; margin-top: 8px; color: #155724; font-weight: bold; font-size: 12px;">
-                ✓ Auto-filled from Profile
-              </div>
-            `;
+                            <img src="${data.signatureUrl}" 
+                                 alt="HOD Signature" 
+                                 style="max-height: 70px; max-width: 100%; display: block; margin: 0 auto; 
+                                        border: 2px solid #28a745; border-radius: 6px; padding: 5px; background: #f8fff9;">
+                            <div style="text-align: center; margin-top: 8px; color: #155724; font-weight: bold; font-size: 12px;">
+                                ✓ Auto-filled from Profile
+                            </div>
+                        `;
             sigArea.classList.add('has-signature');
-
 
             // Update status indicator
             $('signatureStatus').textContent = '✅ Loaded';
             $('signatureStatus').className = 'signature-status-indicator signature-loaded';
-
 
             console.log('✅ HOD signature auto-loaded and captured for storage');
           } else {
@@ -1180,12 +1043,11 @@
             autoFilledSignatureData = null;
             const sigArea = $('hodSignatureArea');
             sigArea.innerHTML = `
-              <div class="signature-placeholder">
-                <div>No signature found in profile</div>
-                <small style="color: #6c757d;">Please contact admin to add signature to your profile</small>
-              </div>
-            `;
-
+                            <div class="signature-placeholder">
+                                <div>No signature found in profile</div>
+                                <small style="color: #6c757d;">Please contact admin to add signature to your profile</small>
+                            </div>
+                        `;
 
             // Update status indicator
             $('signatureStatus').textContent = '❌ Missing';
@@ -1196,31 +1058,26 @@
         console.error('❌ Error loading HOD signature:', error);
         autoFilledSignatureData = null;
 
-
         const sigArea = $('hodSignatureArea');
         sigArea.innerHTML = `
-          <div class="signature-placeholder">
-            <div>Unable to load signature</div>
-            <small style="color: #6c757d;">Check your connection and try again</small>
-          </div>
-        `;
-
+                    <div class="signature-placeholder">
+                        <div>Unable to load signature</div>
+                        <small style="color: #6c757d;">Check your connection and try again</small>
+                    </div>
+                `;
 
         $('signatureStatus').textContent = '❌ Error';
         $('signatureStatus').className = 'signature-status-indicator signature-missing';
       }
     }
 
-
-    // ✅ NEW: Enhanced iframe data collection with e-file table capture
+    // Enhanced iframe data collection with e-file table capture
     function collectEfileTableData(iframe) {
       try {
         const doc = iframe.contentDocument || iframe.contentWindow.document;
         if (!doc) return {};
 
-
         const tableData = {};
-
 
         // Collect table headers and rows
         const tables = doc.querySelectorAll('table');
@@ -1228,11 +1085,9 @@
           const headers = [];
           const rows = [];
 
-
           // Extract headers
           const headerCells = table.querySelectorAll('th');
           headerCells.forEach(th => headers.push(th.textContent.trim()));
-
 
           // Extract rows
           const bodyRows = table.querySelectorAll('tbody tr');
@@ -1250,12 +1105,10 @@
             if (rowData.length > 0) rows.push(rowData);
           });
 
-
           if (headers.length > 0 || rows.length > 0) {
             tableData[`table_${index}`] = { headers, rows };
           }
         });
-
 
         // Also collect specific e-file fields
         const efileFields = [
@@ -1263,7 +1116,6 @@
           'fromEoffice', 'toEoffice', 'tosalutation', 'toName', 'toDesignation', 'toEmpNo',
           'efileTable', 'efileBody'
         ];
-
 
         efileFields.forEach(fieldId => {
           const element = doc.getElementById(fieldId);
@@ -1276,10 +1128,8 @@
           }
         });
 
-
         console.log('✅ E-file table data collected:', Object.keys(tableData));
         return tableData;
-
 
       } catch (error) {
         console.error('❌ Error collecting e-file table data:', error);
@@ -1287,37 +1137,29 @@
       }
     }
 
-
     // Enhanced form loading with proper iframe handling and data population
     async function loadFormData() {
       try {
         showStatus(`Loading form data...${isViewOnlyMode ? ' (View-Only Mode)' : ''}`, 'loading');
 
-
         await loadHODProfile();
-
 
         const res = await fetch(`/api/hod/form-details/${formId}`, {
           credentials: 'include'
         });
 
-
         if (!res.ok) {
           throw new Error(`Server responded with ${res.status}`);
         }
 
-
         const data = await res.json();
-
 
         if (!data.success) {
           throw new Error(data.message || 'Failed to load form');
         }
 
-
         console.log('✅ Form data loaded:', data);
         formData = data;
-
 
         if (data.form && isViewOnlyMode) {
           if (data.form.hodApproval && data.form.hodApproval.remarks) {
@@ -1328,7 +1170,6 @@
             $('approvalRemarks').value = data.form.rejectionReason;
           }
         }
-
 
         const container = $('formContainer');
         const framesToLoad = [
@@ -1341,41 +1182,35 @@
           }
         ];
 
-
         framesToLoad.forEach(frameInfo => {
           const frameDiv = document.createElement('div');
           frameDiv.className = 'form-container';
-
 
           const frameUrl = new URL(frameInfo.url, window.location.origin);
           frameUrl.searchParams.set('role', 'hod');
           frameUrl.searchParams.set('formId', formId);
           frameUrl.searchParams.set('mode', formStatus);
 
-
           let existingDataForFrame = {};
           if (isViewOnlyMode && data.form && data.form.formResponses && data.form.formResponses[frameInfo.key]) {
             existingDataForFrame = data.form.formResponses[frameInfo.key];
           }
 
-
           frameDiv.innerHTML = `
-            <div class="form-header">
-              <h3>${frameInfo.title} ${isViewOnlyMode ? '(Read-Only)' : ''}</h3>
-            </div>
-            <iframe src="${frameUrl.toString()}" 
-                    data-form-key="${frameInfo.key}"
-                    data-existing-data='${JSON.stringify(existingDataForFrame)}'
-                    onload="handleFrameLoad(this)"
-                    style="width: 100%; height: 600px; border: none;">
-            </iframe>
-          `;
+                        <div class="form-header">
+                            <h3>${frameInfo.title} ${isViewOnlyMode ? '(Read-Only)' : ''}</h3>
+                        </div>
+                        <iframe src="${frameUrl.toString()}" 
+                                data-form-key="${frameInfo.key}"
+                                data-existing-data='${JSON.stringify(existingDataForFrame)}'
+                                onload="handleFrameLoad(this)"
+                                style="width: 100%; height: 600px; border: none;">
+                        </iframe>
+                    `;
           container.appendChild(frameDiv);
         });
 
-
         hideStatus();
-
 
         setTimeout(() => {
           if (isViewOnlyMode) {
@@ -1391,7 +1226,6 @@
           }
         }, 3000);
 
-
       } catch (e) {
         console.error('❌ Load error:', e);
         showStatus(`Failed to load form: ${e.message}`, 'error');
@@ -1400,11 +1234,9 @@
       }
     }
 
-
     // Enhanced frame loading handler with data messaging
     window.handleFrameLoad = function (frame) {
       console.log(`✅ Frame loaded: ${frame.dataset.formKey}`);
-
 
       try {
         if (isViewOnlyMode && frame.dataset.existingData) {
@@ -1422,7 +1254,6 @@
           }
         }
 
-
         setTimeout(() => {
           frame.contentWindow.postMessage({
             action: 'setMode',
@@ -1431,56 +1262,46 @@
           }, '*');
         }, 500);
 
-
       } catch (error) {
         console.error('❌ Error sending data to iframe:', error);
       }
     };
 
-
-    // ✅ FIXED: Enhanced approval processing with auto-filled signature and e-file table storage
+    // Enhanced approval processing with auto-filled signature and e-file table storage
     async function processApproval(action) {
       if (isViewOnlyMode) {
         showNotification('This form cannot be modified - it has already been processed.', 'error');
         return;
       }
 
-
       const button = action === 'approved' ? $('finalApproveBtn') : $('rejectBtn');
       const remarks = $('approvalRemarks').value.trim();
-
 
       if (action === 'rejected' && !remarks) {
         showNotification('Please provide remarks when rejecting a form.', 'error');
         return;
       }
 
-
-      // ✅ Check for auto-filled signature (required for approval)
+      // Check for auto-filled signature (required for approval)
       if (action === 'approved' && !autoFilledSignatureData) {
         showNotification('HOD signature is missing from your profile. Please contact admin to add your signature.', 'error');
         return;
       }
 
-
       const confirmMessage = action === 'approved'
         ? 'Are you sure you want to approve this form and send it to IT?'
         : 'Are you sure you want to reject this form and return it to the employee?';
 
-
       if (!confirm(confirmMessage)) return;
-
 
       $('finalApproveBtn').disabled = true;
       $('rejectBtn').disabled = true;
       button.textContent = 'Processing...';
 
-
       const statusMessage = action === 'approved'
         ? 'Collecting form data and submitting for approval...'
         : 'Processing rejection and preparing feedback...';
       showStatus(statusMessage, 'loading');
-
 
       try {
         // Collect comprehensive HOD data including auto-filled signature
@@ -1493,13 +1314,11 @@
           designation: 'HOD'
         };
 
-
-        // ✅ Include auto-filled signature
+        // Include auto-filled signature
         if (autoFilledSignatureData) {
           hodData.signature = autoFilledSignatureData;
           console.log('✅ Auto-filled signature included in payload');
         }
-
 
         const payload = {
           formId,
@@ -1508,20 +1327,17 @@
           reviewedBy: hodData.name,
           hodDetails: hodData,
           formResponses: {},
-          signature: autoFilledSignatureData // ✅ Top-level signature
+          signature: autoFilledSignatureData // Top-level signature
         };
 
-
-        // ✅ Enhanced form data collection with e-file table data
+        // Enhanced form data collection with e-file table data
         if (action === 'approved') {
           const iframes = document.querySelectorAll('iframe[data-form-key]');
-
 
           for (const iframe of iframes) {
             const key = iframe.dataset.formKey;
             const doc = iframe.contentDocument || iframe.contentWindow.document;
             const formDataForKey = {};
-
 
             if (doc) {
               doc.querySelectorAll('[id]').forEach(el => {
@@ -1535,15 +1351,13 @@
               });
             }
 
-
-            // ✅ Add auto-filled signature to each form
+            // Add auto-filled signature to each form
             if (autoFilledSignatureData) {
               formDataForKey.hodSignatureArea = autoFilledSignatureData;
               formDataForKey.hodSignature = autoFilledSignatureData;
             }
 
-
-            // ✅ Special handling for e-file form - collect table data
+            // Special handling for e-file form - collect table data
             if (key === 'efileForm') {
               const efileTableData = collectEfileTableData(iframe);
               Object.assign(formDataForKey, efileTableData);
@@ -1551,15 +1365,12 @@
               console.log('✅ E-file table data collected and stored');
             }
 
-
             payload.formResponses[key] = formDataForKey;
             console.log(`📋 Collected ${key}:`, Object.keys(formDataForKey).length, 'fields');
           }
         }
 
-
         console.log('📤 Submitting payload with auto-filled signature and e-file data:', payload);
-
 
         const endpoint = action === 'approved' ? '/api/hod/final-approve' : '/api/hod/approve-form';
         const response = await fetch(endpoint, {
@@ -1569,45 +1380,36 @@
           body: JSON.stringify(payload)
         });
 
-
         const result = await response.json();
         console.log('📥 Server response:', result);
-
 
         if (response.ok && result.success) {
           const successMessage = action === 'approved'
             ? '✅ Form approved and sent to IT successfully!'
             : '✅ Form rejected and returned to employee successfully!';
 
-
           showStatus(successMessage, 'success');
           showNotification(successMessage, 'success');
 
-
           button.textContent = action === 'approved' ? '✅ Approved' : '✅ Rejected';
-
 
           const modalTitle = action === 'approved' ? 'Form Approved' : 'Form Rejected';
           const modalMessage = action === 'approved'
             ? 'The form has been approved and sent to IT successfully. What would you like to do next?'
             : 'The form has been rejected and returned to the employee successfully. What would you like to do next?';
 
-
           setTimeout(() => {
             showFinalModal(modalTitle, modalMessage, action);
           }, 1500);
-
 
         } else {
           throw new Error(result.message || 'Server rejected the submission');
         }
 
-
       } catch (error) {
         console.error('❌ Submission error:', error);
         showStatus(`❌ Error: ${error.message}`, 'error');
         showNotification(`Error: ${error.message}`, 'error');
-
 
         if (!isViewOnlyMode) {
           $('finalApproveBtn').disabled = false;
@@ -1618,12 +1420,10 @@
       }
     }
 
-
     // Initialize everything with mode support
     document.addEventListener('DOMContentLoaded', () => {
       initializePageMode();
       loadFormData();
-
 
       if (!isViewOnlyMode) {
         $('finalApproveBtn').onclick = () => processApproval('approved');
@@ -1635,10 +1435,5 @@
     });
   </script>
 </body>
-
-
-
-
-
 
 </html>

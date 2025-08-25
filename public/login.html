@@ -1,15 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 
-
 <head>
-  
-  <meta charset="utf-8" />
-   
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>IT No-Dues Login Portal</title>
-   
-  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>IT No-Dues Login Portal</title>
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <style>
     :root {
       --bg-light-1: #7fc5ff;
@@ -719,111 +715,93 @@
 
 <body>
     <!-- Dark/Light Toggle -->
-    <button class="toggle-theme" id="themeToggle" title="Toggle Light/Dark">🌙</button>
+  <button class="toggle-theme" id="themeToggle" title="Toggle Light/Dark">🌙</button>
 
+  <!-- Floating Particles -->
+  <div class="particles">
+    <span style="left:20%; animation-duration:8s; animation-delay:0s"></span>
+    <span style="left:40%; animation-duration:12s; animation-delay:2s"></span>
+    <span style="left:60%; animation-duration:10s; animation-delay:4s"></span>
+    <span style="left:80%; animation-duration:14s; animation-delay:1s"></span>
+  </div>
 
-    <!-- Floating Particles -->
-    <div class="particles">
-        <span style="left:20%; animation-duration:8s; animation-delay:0s"></span>
-        <span style="left:40%; animation-duration:12s; animation-delay:2s"></span>
-        <span style="left:60%; animation-duration:10s; animation-delay:4s"></span>
-        <span style="left:80%; animation-duration:14s; animation-delay:1s"></span>
-      </div>
+  <!-- Login Form Container -->
+  <div class="login-container" id="loginCard">
+    <h2>NO DUES CLEARANCE PORTAL</h2>
 
+    <form id="loginForm" autocomplete="off" novalidate>
+      <!-- Role Selection -->
+      <div class="form-group">
+        <span class="material-icons">arrow_drop_down</span>
+        <select id="userType" name="userType" required>
+          <option value="" disabled selected hidden></option>
+          <option value="employee">Employee</option>
+          <option value="it">IT Department</option>
+          <option value="hod">Head of Department</option>
+        </select>
+        <label for="userType">Login as</label>
+      </div>
 
-    <!-- Login Form Container -->
-    <div class="login-container" id="loginCard">
-        <h2>NO DUES CLEARANCE PORTAL</h2>
+      <!-- User ID -->
+      <div class="form-group">
+        <span class="material-icons">person</span>
+        <input type="text" id="userId" name="userId" required placeholder=" " autocomplete="username">
+        <label for="userId">User ID</label>
+      </div>
 
+      <!-- Password -->
+      <div class="form-group password-group">
+        <span class="material-icons">lock</span>
+        <input type="password" id="password" name="password" required placeholder=" " autocomplete="current-password">
+        <label for="password">Password</label>
+        <button type="button" id="togglePassword" class="toggle-password" title="Show/Hide Password">
+          <span class="material-icons" id="toggleIcon">visibility_off</span>
+        </button>
+      </div>
 
-        <form id="loginForm" autocomplete="off" novalidate>
-            <!-- Role Selection -->
-            <div class="form-group">
-                <span class="material-icons">arrow_drop_down</span>
-                <select id="userType" name="userType" required>
-                    <option value="" disabled selected hidden></option>
-                    <option value="employee">Employee</option>
-                    <option value="it">IT Department</option>
-                    <option value="hod">Head of Department</option>
-                  </select>
-                <label for="userType">Login as</label>
-              </div>
+      <!-- Remember Me -->
+      <div class="remember-me">
+        <input type="checkbox" id="rememberMe">
+        <label for="rememberMe">Remember Me</label>
+      </div>
 
+      <!-- Login Button -->
+      <div class="btn-wrap" id="btnWrap">
+        <button type="submit" class="login-btn" id="loginBtn">Login</button>
+        <div class="spinner"></div>
+      </div>
 
-            <!-- User ID -->
-            <div class="form-group">
-                <span class="material-icons">person</span>
-                <input type="text" id="userId" name="userId" required placeholder=" " autocomplete="username" />
-                <label for="userId">User ID</label>
-              </div>
+      <!-- Error Message -->
+      <div class="error" id="errorMsg" role="alert" aria-live="polite"></div>
+    </form>
 
+    <div class="links">
+      <a href="#">Forgot Password?</a> | <a href="#">Help & Support</a>
+    </div>
+  </div>
 
-            <!-- Password -->
-            <div class="form-group password-group">
-                <span class="material-icons">lock</span>
-                <input type="password" id="password" name="password" required placeholder=" "
-          autocomplete="current-password" />
-                <label for="password">Password</label>
-                <button type="button" id="togglePassword" class="toggle-password" title="Show/Hide Password">
-                    <span class="material-icons" id="toggleIcon">visibility_off</span>
-                  </button>
-              </div>
+  <!-- OTP Verification Modal -->
+  <div id="otpModal" class="otp-modal hidden">
+    <div class="modal-overlay">
+      <div class="modal-content">
+        <h3>🔐 Verify Your Identity</h3>
+        <p>We've sent a 6-digit verification code to:</p>
+        <p id="maskedEmail" class="email-display"></p>
 
+        <div class="otp-input-container">
+          <input type="text" id="otpInput" class="otp-input" maxlength="6" placeholder="000000" autocomplete="off">
+        </div>
 
-            <!-- Remember Me -->
-            <div class="remember-me">
-                <input type="checkbox" id="rememberMe" />
-                <label for="rememberMe">Remember Me</label>
-              </div>
+        <div class="modal-actions">
+          <button id="verifyOtpBtn" class="modal-btn verify-btn">Verify OTP</button>
+          <button id="resendOtpBtn" class="modal-btn resend-btn">Resend OTP</button>
+          <button id="cancelOtpBtn" class="modal-btn cancel-btn">Cancel</button>
+        </div>
 
-
-            <!-- Login Button -->
-            <div class="btn-wrap" id="btnWrap">
-                <button type="submit" class="login-btn" id="loginBtn">Login</button>
-                <div class="spinner"></div>
-              </div>
-
-
-            <!-- Error Message -->
-            <div class="error" id="errorMsg" role="alert" aria-live="polite"></div>
-          </form>
-
-
-        <div class="links">
-            <a href="#">Forgot Password?</a> | <a href="#">Help & Support</a>
-          </div>
-      </div>
-
-
-    <!-- OTP Verification Modal -->
-    <div id="otpModal" class="otp-modal hidden">
-        <div class="modal-overlay">
-            <div class="modal-content">
-                <h3>🔐 Verify Your Identity</h3>
-                <p>We've sent a 6-digit verification code to:</p>
-                <p id="maskedEmail" class="email-display"></p>
-
-
-                <div class="otp-input-container">
-                    <input type="text" id="otpInput" class="otp-input" maxlength="6" placeholder="000000"
-            autocomplete="off">
-                  </div>
-
-
-                <div class="modal-actions">
-                    <button id="verifyOtpBtn" class="modal-btn verify-btn">Verify OTP</button>
-                    <button id="resendOtpBtn" class="modal-btn resend-btn">Resend OTP</button>
-                    <button id="cancelOtpBtn" class="modal-btn cancel-btn">Cancel</button>
-                  </div>
-
-
-                <div id="otpMessage" class="otp-message"></div>
-              </div>
-          </div>
-      </div>
-
-
-   
+        <div id="otpMessage" class="otp-message"></div>
+      </div>
+    </div>
+  </div>
   <script>
     window.addEventListener('DOMContentLoaded', () => {
       // DOM Elements

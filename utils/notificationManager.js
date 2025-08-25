@@ -3,11 +3,9 @@ const path = require('path');
 const WebSocket = require('ws');
 const { loadJSON, saveJSON } = require('./fileUtils');
 
-
 // File paths
 const NOTIFICATIONS_LOG = './data/notifications.json';
 const EMPLOYEE_SESSIONS = './data/employee_sessions.json';
-
 
 /**
  * Enhanced Real-time Notification Manager
@@ -19,8 +17,9 @@ class NotificationManager {
     this.connectedClients = new Map(); // employeeId -> WebSocket connection
     this.notificationQueue = [];
     this.isInitialized = false;
+    this.heartbeatInterval = null;
+    this.cleanupInterval = null;
   }
-
 
   /**
    * Initialize WebSocket server for real-time notifications
@@ -28,55 +27,134 @@ class NotificationManager {
    */
   initializeWebSocket(port = 8081) {
     try {
-      this.wsServer = new WebSocket.Server({ port });
+      this.wsServer = new WebSocket.Server({
+        port,
+        perMessageDeflate: false,
+        maxPayload: 1024 * 1024 // 1MB max payload
+      });
 
       this.wsServer.on('connection', (ws, req) => {
         console.log('📡 New WebSocket connection established');
 
+        // Set connection metadata
+        ws.isAlive = true;
+        ws.connectedAt = new Date().toISOString();
+        ws.lastActivity = new Date().toISOString();
+
         // Handle client identification
         ws.on('message', (message) => {
           try {
-            const data = JSON.parse(message);
+            ws.lastActivity = new Date().toISOString();
+            const data = JSON.parse(message.toString());
 
             if (data.type === 'identify' && data.employeeId) {
+              // Validate employeeId format
+              if (typeof data.employeeId !== 'string' || !data.employeeId.trim()) {
+                ws.send(JSON.stringify({
+                  type: 'error',
+                  message: 'Invalid employee ID format'
+                }));
+                return;
+              }
+
+              ws.employeeId = data.employeeId;
               this.connectedClients.set(data.employeeId, ws);
               console.log(`👤 Employee ${data.employeeId} connected to WebSocket`);
 
+              // Send connection confirmation
+              ws.send(JSON.stringify({
+                type: 'connection_confirmed',
+                employeeId: data.employeeId,
+                connectedAt: ws.connectedAt
+              }));
+
               // Send queued notifications for this employee
               this.sendQueuedNotifications(data.employeeId);
+            } else if (data.type === 'ping') {
+              // Handle ping for keep-alive
+              ws.isAlive = true;
+              ws.send(JSON.stringify({ type: 'pong' }));
             }
           } catch (error) {
             console.error('Error processing WebSocket message:', error);
+            ws.send(JSON.stringify({
+              type: 'error',
+              message: 'Invalid message format'
+            }));
           }
         });
 
-
-        ws.on('close', () => {
-          // Remove client from connected clients
-          for (const [employeeId, client] of this.connectedClients.entries()) {
-            if (client === ws) {
-              this.connectedClients.delete(employeeId);
-              console.log(`📴 Employee ${employeeId} disconnected from WebSocket`);
-              break;
-            }
-          }
+        // Handle connection close
+        ws.on('close', (code, reason) => {
+          console.log(`📴 WebSocket connection closed - Code: ${code}, Reason: ${reason}`);
+          this.removeClient(ws);
         });
 
-
+        // Handle connection errors
         ws.on('error', (error) => {
           console.error('WebSocket error:', error);
+          this.removeClient(ws);
+        });
+
+        // Handle ping/pong for connection health
+        ws.on('pong', () => {
+          ws.isAlive = true;
+          ws.lastActivity = new Date().toISOString();
         });
       });
 
+      // Start heartbeat to detect broken connections
+      this.startHeartbeat();
 
       console.log(`✅ WebSocket notification server started on port ${port}`);
       this.isInitialized = true;
 
     } catch (error) {
       console.error('❌ Failed to initialize WebSocket server:', error);
+      throw error;
     }
   }
 
+  /**
+   * Remove client from connected clients map
+   * @param {WebSocket} ws 
+   */
+  removeClient(ws) {
+    if (ws.employeeId) {
+      this.connectedClients.delete(ws.employeeId);
+      console.log(`📴 Employee ${ws.employeeId} disconnected from WebSocket`);
+    } else {
+      // Remove by WebSocket instance if no employeeId
+      for (const [employeeId, client] of this.connectedClients.entries()) {
+        if (client === ws) {
+          this.connectedClients.delete(employeeId);
+          console.log(`📴 Employee ${employeeId} disconnected from WebSocket`);
+          break;
+        }
+      }
+    }
+  }
+
+  /**
+   * Start heartbeat to detect broken connections
+   */
+  startHeartbeat() {
+    if (this.heartbeatInterval) {
+      clearInterval(this.heartbeatInterval);
+    }
+
+    this.heartbeatInterval = setInterval(() => {
+      this.wsServer.clients.forEach((ws) => {
+        if (!ws.isAlive) {
+          console.log('📴 Terminating dead connection');
+          return ws.terminate();
+        }
+
+        ws.isAlive = false;
+        ws.ping();
+      });
+    }, 30000); // Check every 30 seconds
+  }
 
   /**
    * Send queued notifications to newly connected employee
@@ -85,15 +163,17 @@ class NotificationManager {
   sendQueuedNotifications(employeeId) {
     const queuedNotifications = this.notificationQueue.filter(n => n.employeeId === employeeId);
 
-    queuedNotifications.forEach(notification => {
-      this.sendRealTimeNotification(employeeId, notification);
-    });
+    if (queuedNotifications.length > 0) {
+      console.log(`📤 Sending ${queuedNotifications.length} queued notifications to ${employeeId}`);
 
+      queuedNotifications.forEach(notification => {
+        this.sendRealTimeNotification(employeeId, notification);
+      });
 
-    // Remove sent notifications from queue
-    this.notificationQueue = this.notificationQueue.filter(n => n.employeeId !== employeeId);
+      // Remove sent notifications from queue
+      this.notificationQueue = this.notificationQueue.filter(n => n.employeeId !== employeeId);
+    }
   }
-
 
   /**
    * ENHANCED: Notify employee about form rejection with multiple channels
@@ -113,15 +193,17 @@ class NotificationManager {
       timestamp: new Date().toISOString(),
       priority: 'high',
       title: '❌ Application Rejected',
-      message: `Your application ${formId} has been rejected by HOD.`,
+      message: `Your application ${formId} has been rejected.`,
       details: {
         rejectionReason: reason,
         actionRequired: 'Submit new application',
-        redirectUrl: '/employee.html'
+        redirectUrl: '/employee.html',
+        rejectedBy: options.rejectedBy || 'System',
+        rejectionStage: options.rejectionStage || 'Review',
+        canResubmit: options.canResubmit !== false
       },
       ...options
     };
-
 
     // Log the notification
     console.log(`📢 Form rejection notification for employee ${employeeId}: Form ${formId} rejected - ${reason}`);
@@ -134,7 +216,6 @@ class NotificationManager {
 
     return notificationData;
   }
-
 
   /**
    * ENHANCED: Notify about form approval
@@ -156,12 +237,13 @@ class NotificationManager {
       title: '✅ Application Approved',
       message: `Your application ${formId} has been approved by ${approvedBy}.`,
       details: {
-        nextStep: 'Forwarded to IT department',
-        estimatedCompletion: '2-3 business days'
+        nextStep: options.nextStep || 'Forwarded to IT department',
+        estimatedCompletion: options.estimatedCompletion || '2-3 business days',
+        redirectUrl: '/employee.html',
+        trackingUrl: `/tracking?formId=${formId}`
       },
       ...options
     };
-
 
     console.log(`📢 Form approval notification for employee ${employeeId}: Form ${formId} approved by ${approvedBy}`);
 
@@ -170,7 +252,6 @@ class NotificationManager {
 
     return notificationData;
   }
-
 
   /**
    * ENHANCED: Notify about certificate generation
@@ -194,11 +275,12 @@ class NotificationManager {
       details: {
         certificateCount: certificates.length,
         downloadUrl: '/certificates.html',
-        validUntil: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString() // 30 days
+        validUntil: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(), // 30 days
+        processedBy: options.processedBy || 'IT Department',
+        completedAt: options.completedAt || new Date().toISOString()
       },
       ...options
     };
-
 
     console.log(`📢 Certificates ready notification for employee ${employeeId}: ${certificates.length} certificates available`);
 
@@ -208,12 +290,17 @@ class NotificationManager {
     return notificationData;
   }
 
-
   /**
    * Send notification via multiple channels
    * @param {Object} notificationData 
    */
   sendMultiChannelNotification(notificationData) {
+    // Validate notification data
+    if (!notificationData.employeeId || !notificationData.type) {
+      console.error('Invalid notification data: missing employeeId or type');
+      return false;
+    }
+
     // 1. Real-time WebSocket notification
     this.sendRealTimeNotification(notificationData.employeeId, notificationData);
 
@@ -225,8 +312,9 @@ class NotificationManager {
 
     // 4. SMS notification (future implementation)
     // this.sendSMSNotification(notificationData);
-  }
 
+    return true;
+  }
 
   /**
    * Send real-time WebSocket notification
@@ -238,11 +326,14 @@ class NotificationManager {
 
     if (client && client.readyState === WebSocket.OPEN) {
       try {
-        client.send(JSON.stringify({
+        const message = JSON.stringify({
           type: 'notification',
-          ...notificationData
-        }));
+          id: this.generateNotificationId(),
+          ...notificationData,
+          sentAt: new Date().toISOString()
+        });
 
+        client.send(message);
         console.log(`📡 Real-time notification sent to employee ${employeeId}`);
         return true;
       } catch (error) {
@@ -257,7 +348,6 @@ class NotificationManager {
     }
   }
 
-
   /**
    * Send browser notification (for web clients)
    * @param {string} employeeId 
@@ -268,8 +358,9 @@ class NotificationManager {
 
     if (client && client.readyState === WebSocket.OPEN) {
       try {
-        client.send(JSON.stringify({
+        const browserNotification = {
           type: 'browser_notification',
+          id: this.generateNotificationId(),
           title: notificationData.title,
           body: notificationData.message,
           icon: this.getNotificationIcon(notificationData.type),
@@ -279,10 +370,12 @@ class NotificationManager {
           actions: this.getNotificationActions(notificationData.type),
           data: {
             formId: notificationData.formId,
-            redirectUrl: notificationData.details?.redirectUrl
-          }
-        }));
+            redirectUrl: notificationData.details?.redirectUrl || '/employee.html'
+          },
+          sentAt: new Date().toISOString()
+        };
 
+        client.send(JSON.stringify(browserNotification));
         console.log(`🔔 Browser notification sent to employee ${employeeId}`);
         return true;
       } catch (error) {
@@ -294,19 +387,24 @@ class NotificationManager {
     return false;
   }
 
-
   /**
    * Queue notification for later delivery
    * @param {Object} notificationData 
    */
   queueNotification(notificationData) {
-    // Add expiry time (24 hours)
+    // Add expiry time (24 hours) and queue timestamp
     notificationData.expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString();
+    notificationData.queuedAt = new Date().toISOString();
 
     this.notificationQueue.push(notificationData);
-    console.log(`📥 Notification queued for employee ${notificationData.employeeId}`);
-  }
+    console.log(`📥 Notification queued for employee ${notificationData.employeeId} (Queue size: ${this.notificationQueue.length})`);
 
+    // Limit queue size to prevent memory issues
+    if (this.notificationQueue.length > 1000) {
+      this.notificationQueue = this.notificationQueue.slice(-1000);
+      console.log('📥 Notification queue trimmed to last 1000 items');
+    }
+  }
 
   /**
    * Get notification icon based on type
@@ -317,12 +415,12 @@ class NotificationManager {
       'form_rejection': '/images/rejection-icon.png',
       'form_approval': '/images/approval-icon.png',
       'certificates_ready': '/images/certificate-icon.png',
-      'form_assigned': '/images/form-icon.png'
+      'forms_assigned': '/images/form-icon.png',
+      'it_announcement': '/images/announcement-icon.png'
     };
 
     return icons[type] || '/images/default-notification-icon.png';
   }
-
 
   /**
    * Get notification actions based on type
@@ -341,12 +439,15 @@ class NotificationManager {
       'certificates_ready': [
         { action: 'download_certificates', title: 'Download Now' },
         { action: 'view_certificates', title: 'View All' }
+      ],
+      'forms_assigned': [
+        { action: 'complete_forms', title: 'Complete Forms' },
+        { action: 'view_forms', title: 'View Forms' }
       ]
     };
 
     return actions[type] || [{ action: 'view', title: 'View' }];
   }
-
 
   /**
    * Log notification to file
@@ -363,11 +464,13 @@ class NotificationManager {
         notifications = [];
       }
 
-      notifications.push({
+      const logEntry = {
         id: this.generateNotificationId(),
         ...notificationData,
         loggedAt: new Date().toISOString()
-      });
+      };
+
+      notifications.push(logEntry);
 
       // Keep only last 1000 notifications
       if (notifications.length > 1000) {
@@ -382,14 +485,12 @@ class NotificationManager {
     }
   }
 
-
   /**
    * Generate unique notification ID
    */
   generateNotificationId() {
     return 'NOTIF_' + Date.now() + '_' + Math.random().toString(36).substring(2, 9);
   }
-
 
   /**
    * Get notification history for employee
@@ -399,6 +500,13 @@ class NotificationManager {
   getNotificationHistory(employeeId, limit = 50) {
     try {
       const notifications = loadJSON(NOTIFICATIONS_LOG) || [];
+
+      if (!employeeId) {
+        // Return all notifications if no employeeId specified
+        return notifications
+          .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
+          .slice(0, limit);
+      }
 
       return notifications
         .filter(n => n.employeeId === employeeId)
@@ -410,7 +518,6 @@ class NotificationManager {
       return [];
     }
   }
-
 
   /**
    * Clean up expired notifications from queue
@@ -432,14 +539,12 @@ class NotificationManager {
     }
   }
 
-
   /**
    * Get connected clients count
    */
   getConnectedClientsCount() {
     return this.connectedClients.size;
   }
-
 
   /**
    * Check if employee is online
@@ -450,6 +555,12 @@ class NotificationManager {
     return client && client.readyState === WebSocket.OPEN;
   }
 
+  /**
+   * Get connected employees list
+   */
+  getConnectedEmployees() {
+    return Array.from(this.connectedClients.keys());
+  }
 
   /**
    * Broadcast notification to all connected clients
@@ -461,10 +572,14 @@ class NotificationManager {
     for (const [employeeId, client] of this.connectedClients.entries()) {
       if (client.readyState === WebSocket.OPEN) {
         try {
-          client.send(JSON.stringify({
+          const message = JSON.stringify({
             type: 'broadcast',
-            ...notificationData
-          }));
+            id: this.generateNotificationId(),
+            ...notificationData,
+            sentAt: new Date().toISOString()
+          });
+
+          client.send(message);
           sentCount++;
         } catch (error) {
           console.error(`Failed to broadcast to ${employeeId}:`, error);
@@ -476,6 +591,44 @@ class NotificationManager {
     return sentCount;
   }
 
+  /**
+   * Shutdown notification system gracefully
+   */
+  shutdown() {
+    console.log('📴 Shutting down NotificationManager...');
+
+    // Clear intervals
+    if (this.heartbeatInterval) {
+      clearInterval(this.heartbeatInterval);
+    }
+    if (this.cleanupInterval) {
+      clearInterval(this.cleanupInterval);
+    }
+
+    // Close all client connections
+    for (const [employeeId, client] of this.connectedClients.entries()) {
+      try {
+        client.send(JSON.stringify({
+          type: 'server_shutdown',
+          message: 'Server is shutting down'
+        }));
+        client.close(1000, 'Server shutdown');
+      } catch (error) {
+        console.error(`Error closing connection for ${employeeId}:`, error);
+      }
+    }
+
+    // Close WebSocket server
+    if (this.wsServer) {
+      this.wsServer.close(() => {
+        console.log('📴 WebSocket server closed');
+      });
+    }
+
+    this.connectedClients.clear();
+    this.notificationQueue = [];
+    this.isInitialized = false;
+  }
 
   /**
    * Singleton pattern - get instance
@@ -486,7 +639,6 @@ class NotificationManager {
     }
     return NotificationManager.instance;
   }
-
 
   /**
    * Initialize the notification system
@@ -499,7 +651,7 @@ class NotificationManager {
       instance.initializeWebSocket(options.wsPort || 8081);
 
       // Start cleanup interval (every hour)
-      setInterval(() => {
+      instance.cleanupInterval = setInterval(() => {
         instance.cleanupExpiredNotifications();
       }, 60 * 60 * 1000);
 
@@ -509,23 +661,30 @@ class NotificationManager {
     return instance;
   }
 
-
   /**
    * Shutdown notification system
    */
   static shutdown() {
     const instance = NotificationManager.getInstance();
-
-    if (instance.wsServer) {
-      instance.wsServer.close();
-      console.log('📴 NotificationManager shut down');
-    }
+    instance.shutdown();
+    NotificationManager.instance = null;
   }
 }
-
 
 // Static instance
 NotificationManager.instance = null;
 
+// Graceful shutdown handling
+process.on('SIGINT', () => {
+  console.log('📴 Received SIGINT, shutting down gracefully');
+  NotificationManager.shutdown();
+  process.exit(0);
+});
+
+process.on('SIGTERM', () => {
+  console.log('📴 Received SIGTERM, shutting down gracefully');
+  NotificationManager.shutdown();
+  process.exit(0);
+});
 
 module.exports = NotificationManager;

@@ -653,18 +653,18 @@
       await initializeForm();
     });
 
-    // âœ… NEW: Check if this is HOD review mode
+    // Check if this is HOD review mode
     function isHODReview() {
       const urlParams = new URLSearchParams(window.location.search);
       return urlParams.get('role') === 'hod';
     }
 
-    // âœ… NEW: Auto-fill HOD details when accessed by HOD
+    // Auto-fill HOD details when accessed by HOD
     async function autoFillHODDetailsInForm() {
       if (!isHODReview()) return;
 
       try {
-        console.log('ðŸ”„ Auto-filling HOD details in Form 365 Transfer...');
+        console.log('📋 Auto-filling HOD details in Form 365 Transfer...');
         showMessage('Loading HOD details for form review...', 'info');
 
         const response = await fetch('/api/hod/my-details', {
@@ -674,7 +674,7 @@
         if (response.ok) {
           const data = await response.json();
           if (data.success && data.hodDetails) {
-            console.log('âœ… HOD details received for form auto-fill:', data.hodDetails);
+            console.log('✅ HOD details received for form auto-fill:', data.hodDetails);
 
             const hodDetails = data.hodDetails;
 
@@ -699,7 +699,7 @@
                 field.title = 'Auto-filled from HOD session';
                 field.readOnly = true;
 
-                console.log(`âœ… Auto-filled ${fieldId} with: ${value}`);
+                console.log(`✅ Auto-filled ${fieldId} with: ${value}`);
               }
             });
 
@@ -716,12 +716,12 @@
           }
         }
       } catch (error) {
-        console.error('âŒ Error auto-filling HOD details:', error);
+        console.error('❌ Error auto-filling HOD details:', error);
         showMessage('Failed to auto-fill HOD details', 'error');
       }
     }
 
-    // âœ… NEW: Auto-fill HOD signature in form
+    // Auto-fill HOD signature in form
     async function autoFillHODSignatureInForm() {
       try {
         const response = await fetch('/api/hod/get-signature', {
@@ -736,12 +736,12 @@
               sigArea.innerHTML = `<img src="${data.signatureUrl}" alt="HOD Signature" style="max-height: 60px; max-width: 100%; border: 2px solid #28a745; border-radius: 4px;">`;
               sigArea.classList.add('has-signature');
               sigArea.title = 'HOD signature auto-loaded';
-              console.log('âœ… Auto-filled HOD signature in Form 365 Transfer');
+              console.log('✅ Auto-filled HOD signature in Form 365 Transfer');
             }
           }
         }
       } catch (error) {
-        console.error('âŒ Error loading HOD signature:', error);
+        console.error('❌ Error loading HOD signature:', error);
       }
     }
 
@@ -755,9 +755,9 @@
         // Get user role from session
         await getUserRole();
 
-        // âœ… ENHANCED: Auto-fill HOD details if in HOD review mode
+        // Auto-fill HOD details if in HOD review mode
         if (isHODReview()) {
-          console.log('ðŸ“‹ Form 365 Transfer opened in HOD review mode - auto-filling HOD details...');
+          console.log('📋 Form 365 Transfer opened in HOD review mode - auto-filling HOD details...');
           setTimeout(autoFillHODDetailsInForm, 1000);
         }
 
@@ -1103,10 +1103,10 @@
       // Initialize navigation for this form
       FormNavigationIntegration.initializeForForm(formType);
 
-      console.log(`âœ… Navigation system initialized for ${formType} form`);
+      console.log(`✅ Navigation system initialized for ${formType} form`);
     });
 
-    // âœ… FIXED: Enhanced role-based element hiding with proper selectors
+    // Enhanced role-based element hiding with proper selectors
     function initializeRoleBasedUI() {
 
       // Multiple methods to detect user role
@@ -1188,7 +1188,7 @@
           }
         });
 
-        // âœ… FIXED: Hide save buttons using proper selectors (NO MORE :contains)
+        // Hide save buttons using proper selectors
         const saveSelectors = [
           'button[type="submit"]',
           'input[type="submit"]',
@@ -1218,7 +1218,7 @@
                 el.className?.includes('save');
 
               if (isSaveButton) {
-                // âœ… HIDE COMPLETELY (not just disable)
+                // Hide completely (not just disable)
                 el.style.display = 'none !important';
                 el.setAttribute('aria-hidden', 'true');
                 el.setAttribute('tabindex', '-1');
@@ -1240,7 +1240,7 @@
           }
         });
 
-        // âœ… FIXED: Hide save buttons by text content using safe method
+        // Hide save buttons by text content using safe method
         const allButtons = document.querySelectorAll('button, input[type="button"], input[type="submit"]');
         allButtons.forEach(button => {
           const text = (button.textContent || button.value || '').toLowerCase();
@@ -1260,10 +1260,10 @@
         document.body.classList.add(`role-${userRole}`);
         document.body.setAttribute('data-user-role', userRole);
 
-        console.log(`ðŸ”’ UI restricted for ${userRole.toUpperCase()} role - Save buttons HIDDEN`);
+        console.log(`🔒 UI restricted for ${userRole.toUpperCase()} role - Save buttons HIDDEN`);
 
       } else {
-        console.log(`âœ… Full UI access for role: ${userRole || 'EMPLOYEE'}`);
+        console.log(`✅ Full UI access for role: ${userRole || 'EMPLOYEE'}`);
       }
     }
 
@@ -1311,12 +1311,12 @@
       });
     }
 
-    // âœ… ADDED: Message listener for iframe data population
+    // Message listener for iframe data population
     window.addEventListener('message', function (event) {
-      console.log('ðŸ“© Message received in iframe:', event.data);
+      console.log('📩 Message received in iframe:', event.data);
 
       if (event.data && event.data.action === 'populateForm') {
-        console.log('ðŸ”„ Populating form with data:', event.data.data);
+        console.log('📄 Populating form with data:', event.data.data);
         const data = event.data.data;
 
         // Loop through all data fields and populate matching elements
@@ -1325,7 +1325,7 @@
           if (element) {
             if (element.tagName === 'INPUT' || element.tagName === 'TEXTAREA' || element.tagName === 'SELECT') {
               element.value = data[fieldId] || '';
-              console.log(`âœ… Set ${fieldId} = ${data[fieldId]}`);
+              console.log(`✅ Set ${fieldId} = ${data[fieldId]}`);
             } else if (element.tagName === 'IMG') {
               element.src = data[fieldId] || '';
             } else {
@@ -1341,7 +1341,7 @@
             el.style.backgroundColor = '#f8f9fa';
             el.style.cursor = 'not-allowed';
           });
-          console.log('ðŸ”’ Form set to read-only mode');
+          console.log('🔒 Form set to read-only mode');
         }
       }
 
@@ -1364,7 +1364,7 @@
       if (existingData) {
         try {
           const data = JSON.parse(decodeURIComponent(existingData));
-          console.log('ðŸ”„ Loading data from URL params:', data);
+          console.log('📄 Loading data from URL params:', data);
 
           Object.keys(data).forEach(fieldId => {
             const element = document.getElementById(fieldId);
@@ -1373,7 +1373,7 @@
             }
           });
         } catch (error) {
-          console.error('âŒ Error parsing URL data:', error);
+          console.error('❌ Error parsing URL data:', error);
         }
       }
 

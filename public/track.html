@@ -1,8 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Application Status Tracker - IT Clearance System</title>
   <style>
     * {
@@ -53,7 +54,7 @@
       border-radius: 6px;
       padding: 30px;
       margin-bottom: 25px;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
       border-left: 4px solid #003366;
       text-align: center;
     }
@@ -77,7 +78,7 @@
       border-radius: 6px;
       padding: 30px;
       margin-bottom: 25px;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     }
 
     .progress-header {
@@ -202,7 +203,7 @@
       border-radius: 6px;
       padding: 30px;
       margin-bottom: 25px;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     }
 
     .forms-section h3 {
@@ -228,7 +229,7 @@
     }
 
     .form-item:hover {
-      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     }
 
     .form-item.completed {
@@ -310,7 +311,7 @@
       background-color: #ffffff;
       border-radius: 6px;
       padding: 30px;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     }
 
     .certificates-section h2 {
@@ -341,7 +342,7 @@
 
     .certificate-item:hover {
       transform: translateY(-2px);
-      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     }
 
     .certificate-item h4 {
@@ -387,7 +388,7 @@
       border-radius: 4px;
       cursor: pointer;
       font-size: 14px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
       transition: background-color 0.2s ease;
       font-weight: 500;
     }
@@ -414,14 +415,27 @@
     }
 
     @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
+      0% {
+        transform: rotate(0deg);
+      }
+
+      100% {
+        transform: rotate(360deg);
+      }
     }
 
     @keyframes pulse {
-      0% { transform: scale(1); }
-      50% { transform: scale(1.1); }
-      100% { transform: scale(1); }
+      0% {
+        transform: scale(1);
+      }
+
+      50% {
+        transform: scale(1.1);
+      }
+
+      100% {
+        transform: scale(1);
+      }
     }
 
     /* Responsive Design */
@@ -489,7 +503,7 @@
       color: white;
       font-weight: 500;
       z-index: 10000;
-      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
       opacity: 0;
       transform: translateX(100%);
       transition: all 0.3s ease;
@@ -510,6 +524,7 @@
     }
   </style>
 </head>
+
 <body>
   <a href="dashboard.html" class="back-btn">
     ← Return to Dashboard
@@ -531,7 +546,7 @@
         <h2>Application Processing Timeline</h2>
         <p>Current status and progression through departmental review stages</p>
       </div>
-      
+
       <div class="horizontal-timeline" id="horizontalTimeline">
         <div class="loading">
           <div class="spinner"></div>
@@ -550,7 +565,8 @@
     <!-- Horizontal Certificates Section -->
     <div class="certificates-section" id="certificatesSection" style="display: none;">
       <h2>Available Certificates</h2>
-      <p style="text-align: center; color: #6c757d; margin-bottom: 20px;">Download your approved IT clearance documentation</p>
+      <p style="text-align: center; color: #6c757d; margin-bottom: 20px;">Download your approved IT clearance
+        documentation</p>
       <div class="certificates-horizontal" id="certificatesHorizontal">
         <!-- Certificates will be populated here -->
       </div>
@@ -566,7 +582,7 @@
     let applicationData = null;
     let certificatesData = [];
 
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function () {
       loadTrackingData();
       setInterval(loadTrackingData, 30000);
     });
@@ -576,13 +592,13 @@
         const statusResponse = await fetch('/api/employee/dashboard-status', {
           credentials: 'include'
         });
-        
+
         if (!statusResponse.ok) {
           throw new Error('Failed to load status');
         }
-        
+
         const statusData = await statusResponse.json();
-        
+
         if (statusData.success) {
           applicationData = statusData;
           updateFormId();
@@ -593,7 +609,7 @@
         const certResponse = await fetch('/api/employee/certificates', {
           credentials: 'include'
         });
-        
+
         if (certResponse.ok) {
           const certData = await certResponse.json();
           if (certData.success) {
@@ -619,7 +635,7 @@
     function updateHorizontalTimeline() {
       const timeline = document.getElementById('horizontalTimeline');
       const status = applicationData.applicationStatus || 'Not Submitted';
-      
+
       const timelineSteps = [
         {
           id: 1,
@@ -684,7 +700,7 @@
       };
 
       const completedSteps = statusFlow[currentStatus] || [];
-      
+
       if (completedSteps.includes(stepType)) {
         return 'completed';
       } else if (isActiveStep(stepType, currentStatus)) {
@@ -716,15 +732,15 @@
 
     async function updateHorizontalFormsStatus() {
       const formsGrid = document.getElementById('formsHorizontalGrid');
-      
+
       try {
         const response = await fetch('/api/employee/assigned-forms', {
           credentials: 'include'
         });
-        
+
         const data = await response.json();
         const assignedForms = data.assignedForms?.[0]?.assignedForms || [];
-        
+
         if (assignedForms.length === 0) {
           formsGrid.innerHTML = `
             <div class="form-item not-submitted">
@@ -778,7 +794,7 @@
             </div>
           `;
         }).join('');
-        
+
       } catch (error) {
         // Silent error handling
       }
@@ -796,7 +812,7 @@
       if (storageKey && localStorage.getItem(storageKey)) {
         return 'completed';
       }
-      
+
       return 'not-submitted';
     }
 
@@ -808,10 +824,10 @@
     function updateCertificatesSection() {
       const certificatesSection = document.getElementById('certificatesSection');
       const certificatesHorizontal = document.getElementById('certificatesHorizontal');
-      
+
       if (certificatesData.length > 0) {
         certificatesSection.style.display = 'block';
-        
+
         certificatesHorizontal.innerHTML = certificatesData.map(cert => `
           <div class="certificate-item">
             <h4>${cert.displayName}</h4>
@@ -833,11 +849,11 @@
         const response = await fetch(`/api/employee/certificates/${certId}/download`, {
           credentials: 'include'
         });
-        
+
         if (!response.ok) {
           throw new Error('Download failed');
         }
-        
+
         const blob = await response.blob();
         const url = window.URL.createObjectURL(blob);
         const a = document.createElement('a');
@@ -847,9 +863,9 @@
         a.click();
         window.URL.revokeObjectURL(url);
         document.body.removeChild(a);
-        
+
         showSuccess('Certificate downloaded successfully.');
-        
+
       } catch (error) {
         showError('Unable to download certificate. Please try again or contact IT support.');
       }
@@ -867,13 +883,13 @@
       const toast = document.createElement('div');
       toast.className = `toast ${type}`;
       toast.textContent = message;
-      
+
       document.body.appendChild(toast);
-      
+
       setTimeout(() => {
         toast.classList.add('show');
       }, 100);
-      
+
       setTimeout(() => {
         toast.classList.remove('show');
         setTimeout(() => {
@@ -885,4 +901,5 @@
     }
   </script>
 </body>
+
 </html>

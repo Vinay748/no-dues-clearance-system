@@ -1,242 +1,1386 @@
 <!DOCTYPE html>
 <html lang="en">
 
-
 <head>
-     
   <meta charset="UTF-8">
-      <title>Disposal Form Review - HOD</title>
-      <style>
+  <title>Disposal of Email Account</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
     body {
-      font-family: Arial, sans-serif;
-      max-width: 900px;
-      margin: auto;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #f8f9fa;
+      color: #2c3e50;
+      line-height: 1.6;
       padding: 20px;
-      background: #f9f9f9;
+      font-weight: 400;
     }
 
-
-    h2 {
-      text-align: center;
-      margin-bottom: 20px;
-    }
-
-
-    .section {
+    /* Main Container */
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
       background: #fff;
-      padding: 15px;
-      margin-bottom: 20px;
-      border: 1px solid #ccc;
-      border-radius: 6px;
+      border: 1px solid #e9ecef;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
     }
 
-
-    label {
-      display: block;
-      margin-top: 10px;
-      font-weight: bold;
-    }
-
-
-    input[type="text"],
-    input[type="date"],
-    input[type="file"] {
-      width: 100%;
-      padding: 8px;
-      margin-top: 4px;
-      font-size: 1rem;
-    }
-
-
-    .signature-preview {
-      margin-top: 10px;
-      border: 1px dashed #aaa;
-      height: 60px;
+    /* Header */
+    .form-header {
+      background: #2c5aa0;
+      color: white;
+      padding: 25px;
       text-align: center;
-      line-height: 60px;
     }
 
+    .form-header h1 {
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin-bottom: 10px;
+      letter-spacing: -0.025em;
+    }
 
-    button {
-      display: block;
-      margin: 20px auto;
-      padding: 10px 20px;
-      background: green;
-      color: #fff;
+    .form-subtitle {
+      font-size: 0.9rem;
+      opacity: 0.9;
+      font-weight: 400;
+    }
+
+    /* Form Content */
+    .form-content {
+      padding: 30px;
+    }
+
+    /* Reason Selection */
+    .reason-section {
+      background: #f8f9fa;
+      border: 1px solid #e9ecef;
+      border-radius: 6px;
+      padding: 20px;
+      margin-bottom: 30px;
+    }
+
+    .reason-text {
+      font-style: italic;
+      color: #6c757d;
+      font-size: 0.9rem;
+      line-height: 1.5;
+    }
+
+    .reason-select {
+      font-weight: 600;
+      color: #495057;
       border: none;
-      font-size: 1rem;
-      cursor: pointer;
-      border-radius: 4px;
+      background: transparent;
+      font-size: 0.9rem;
+      margin: 0 3px;
+      text-decoration: underline;
     }
-  </style>
-</head>
 
+    /* Form Sections */
+    .form-section {
+      margin-bottom: 30px;
+      padding: 25px;
+      background: #fff;
+      border: 1px solid #e9ecef;
+      border-radius: 8px;
+    }
 
-<body>
-      <h2>Format for Disposal of Email Account</h2>
+    .section-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: #2c3e50;
+      margin-bottom: 20px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid #e9ecef;
+    }
 
+    /* Form Fields */
+    .field-group {
+      margin-bottom: 20px;
+    }
 
-      <div class="section" id="employeeSection">
-            <label>Unit Name:</label>
-            <input type="text" id="unitName" readonly>
+    .field-row {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 15px;
+      font-size: 0.95rem;
+      line-height: 1.6;
+    }
 
+    .field-label {
+      color: #495057;
+      font-weight: 500;
+    }
 
-            <label>Department:</label>
-            <input type="text" id="department" readonly>
+    .field-input {
+      border: none;
+      border-bottom: 1px solid #ced4da;
+      padding: 4px 8px;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.95rem;
+      background: transparent;
+      min-width: 120px;
+      transition: border-color 0.3s ease;
+    }
 
+    .field-input:focus {
+      outline: none;
+      border-bottom-color: #2c5aa0;
+      background: #f8f9fa;
+    }
 
-            <label>Email Id of (Mr./Ms./Mrs.):</label>
-            <input type="text" id="emailFrom" readonly>
+    .field-input.wide {
+      min-width: 200px;
+    }
 
+    .field-input.short {
+      min-width: 80px;
+    }
 
-            <label>Designation:</label>
-            <input type="text" id="designationFrom" readonly>
+    .field-select {
+      border: 1px solid #ced4da;
+      border-radius: 4px;
+      padding: 4px 8px;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.95rem;
+      background: white;
+    }
 
+    .field-select:focus {
+      outline: none;
+      border-color: #2c5aa0;
+    }
 
-            <label>Employee No.:</label>
-            <input type="text" id="empNoFrom" readonly>
+    /* HOD Section */
+    .hod-section {
+      background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+      border: 1px solid #dee2e6;
+      border-left: 4px solid #2c5aa0;
+    }
 
+    .hod-grid {
+      display: grid;
+      grid-template-columns: 1fr 300px;
+      gap: 30px;
+      align-items: start;
+    }
 
-            <label>Transferred to Email Id of:</label>
-            <input type="text" id="emailTo" readonly>
+    .hod-details {
+      display: grid;
+      gap: 15px;
+    }
 
+    .input-group {
+      display: flex;
+      flex-direction: column;
+    }
 
-            <label>Designation:</label>
-            <input type="text" id="designationTo" readonly>
+    .input-group label {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #495057;
+      margin-bottom: 5px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
 
+    .input-group input {
+      padding: 8px 12px;
+      border: 1px solid #ced4da;
+      border-radius: 4px;
+      background: #f8f9fa;
+      color: #495057;
+      font-size: 0.9rem;
+      font-weight: 500;
+      font-family: 'Inter', sans-serif;
+    }
 
-            <label>Employee No.:</label>
-            <input type="text" id="empNoTo" readonly>
+    .auto-filled {
+      background: #d4edda !important;
+      border-color: #28a745 !important;
+    }
 
+    /* Signature Area */
+    .signature-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
 
-            <label>Transfer Date:</label>
-            <input type="date" id="transferDate" readonly>
+    .signature-area {
+      width: 100%;
+      height: 80px;
+      border: 2px dashed #ced4da;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      margin-bottom: 15px;
+      transition: all 0.3s ease;
+      background: #fff;
+    }
 
+    .signature-area:hover {
+      border-color: #2c5aa0;
+      background: #f8f9ff;
+    }
 
-            <label>Email ID to be Disposed:</label>
-            <input type="text" id="disposableEmail" readonly>
-        </div>
+    .signature-area.has-signature {
+      border-color: #28a745;
+      background: #f8fff8;
+    }
 
+    .signature-placeholder {
+      color: #6c757d;
+      font-size: 0.9rem;
+      text-align: center;
+      font-weight: 500;
+    }
 
-      <div class="section" id="hodSection">
-            <h3>HOD Approval Section</h3>
+    .signature-note {
+      font-size: 0.8rem;
+      color: #6c757d;
+      text-align: center;
+      font-style: italic;
+    }
 
+    /* IT Section */
+    .it-section {
+      background: #f8f9fa;
+      border: 1px solid #e9ecef;
+      border-left: 4px solid #6c757d;
+      opacity: 0.7;
+    }
 
-            <label for="hodName">Name of HOD:</label>
-            <input type="text" id="hodName">
+    .readonly-section {
+      pointer-events: none;
+    }
 
+    /* Action Buttons */
+    .action-section {
+      padding: 25px 30px;
+      background: #f8f9fa;
+      border-top: 1px solid #e9ecef;
+      text-align: center;
+    }
 
-            <label for="hodEmpNo">Employee No.:</label>
-            <input type="text" id="hodEmpNo">
+    .save-button {
+      background: #2c5aa0;
+      color: white;
+      border: none;
+      padding: 12px 30px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      font-weight: 600;
+      font-family: 'Inter', sans-serif;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
 
+    .save-button:hover {
+      background: #1a4480;
+      transform: translateY(-1px);
+    }
 
-            <label for="hodEmail">Email Id:</label>
-            <input type="text" id="hodEmail">
+    .save-button:disabled {
+      background: #6c757d;
+      cursor: not-allowed;
+      opacity: 0.6;
+      transform: none;
+    }
 
+    /* Messages */
+    .save-message {
+      margin-top: 15px;
+      padding: 12px 20px;
+      border-radius: 6px;
+      font-weight: 500;
+      text-align: center;
+      display: none;
+      font-family: 'Inter', sans-serif;
+    }
 
-            <label>Signature:</label>
-            <input type="file" id="signatureUpload" accept="image/*">
-            <div id="signaturePreview" class="signature-preview">No signature uploaded</div>
-        </div>
+    .save-message.success {
+      background: #d4edda;
+      color: #155724;
+      border: 1px solid #c3e6cb;
+    }
 
+    .save-message.error {
+      background: #f8d7da;
+      color: #721c24;
+      border: 1px solid #f5c6cb;
+    }
 
-      <button onclick="submitHodReview()">✅ Submit HOD Approval</button>
-      <p id="statusMsg"></p>
+    .save-message.info {
+      background: #cce5ff;
+      color: #004085;
+      border: 1px solid #b3d7ff;
+    }
 
+    /* Department Titles */
+    .department-title {
+      font-size: 0.9rem;
+      color: #495057;
+      margin-top: 20px;
+      padding: 10px 0;
+    }
 
-     
-  <script>
-    const queryParams = new URLSearchParams(window.location.search);
-    const formId = queryParams.get('formId');
+    /* Mobile Responsive */
+    @media (max-width: 768px) {
+      body {
+        padding: 15px;
+      }
 
+      .form-content {
+        padding: 20px;
+      }
 
-    async function loadDisposalFormData() {
-      if (!formId) return alert("Missing form ID!");
+      .hod-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+      }
 
+      .field-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+      }
 
-      try {
-        const res = await fetch(`/api/hod/form-details?formId=${formId}`, {
-          credentials: 'include'
-        });
-        const data = await res.json();
+      .field-input {
+        width: 100%;
+        min-width: auto;
+      }
 
-
-        if (!data.success) return alert("Failed to load form data.");
-
-
-        const form = data.form.formResponses?.disposalFormData;
-        if (!form) return alert("Disposal form data missing.");
-
-
-        // Fill employee read-only fields
-        document.getElementById("unitName").value = form.unitName || '';
-        document.getElementById("department").value = form.department || '';
-        document.getElementById("emailFrom").value = form.emailFrom || '';
-        document.getElementById("designationFrom").value = form.designationFrom || '';
-        document.getElementById("empNoFrom").value = form.empNoFrom || '';
-        document.getElementById("emailTo").value = form.emailTo || '';
-        document.getElementById("designationTo").value = form.designationTo || '';
-        document.getElementById("empNoTo").value = form.empNoTo || '';
-        document.getElementById("transferDate").value = form.transferDate || '';
-        document.getElementById("disposableEmail").value = form.disposableEmail || '';
-      } catch (err) {
-        console.error('❌ Error loading disposal form:', err);
-        alert("Error loading form");
+      .action-section {
+        padding: 20px;
       }
     }
 
+    .hidden {
+      display: none;
+    }
 
-    function previewSignature(event) {
+    /* Form Status Banner Styles */
+    .form-status-banner {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 16px;
+      border-radius: 6px;
+      margin-bottom: 16px;
+      font-size: 14px;
+      font-weight: 500;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s ease;
+    }
+
+    .form-status-banner.status-info {
+      background: #d1ecf1;
+      color: #0c5460;
+      border: 1px solid #bee5eb;
+    }
+
+    .form-status-banner.status-warning {
+      background: #fff3cd;
+      color: #856404;
+      border: 1px solid #ffeaa7;
+    }
+
+    .form-status-banner.status-success {
+      background: #d4edda;
+      color: #155724;
+      border: 1px solid #c3e6cb;
+    }
+
+    .form-status-banner.status-error {
+      background: #f8d7da;
+      color: #721c24;
+      border: 1px solid #f5c6cb;
+    }
+
+    .status-content {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .status-icon {
+      font-size: 18px;
+    }
+
+    .status-text strong {
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    .close-btn {
+      background: none;
+      border: none;
+      font-size: 18px;
+      cursor: pointer;
+      opacity: 0.7;
+      padding: 4px;
+      width: 24px;
+      height: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      transition: all 0.2s ease;
+    }
+
+    .close-btn:hover {
+      opacity: 1;
+      background: rgba(0, 0, 0, 0.1);
+    }
+
+    /* Read-only form styling */
+    .read-only {
+      background-color: #f8f9fa !important;
+      color: #6c757d !important;
+      border-color: #dee2e6 !important;
+      cursor: not-allowed !important;
+    }
+
+    .form-container.read-only {
+      position: relative;
+    }
+
+    .form-container.read-only::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(248, 249, 250, 0.3);
+      pointer-events: none;
+      z-index: 1;
+      border-radius: inherit;
+    }
+  </style>
+  <script src="/js/formStatusManager.js"></script>
+
+  <!-- Enhanced Navigation System -->
+  <link rel="stylesheet" href="../css/navigationStyles.css">
+  <script src="../js/navigationManager.js"></script>
+  <script src="../js/formNavigationIntegration.js"></script>
+</head>
+
+<body>
+  <div class="container">
+    <!-- Professional Header -->
+    <div class="form-header">
+      <h1>Disposal of Email Account</h1>
+      <div class="form-subtitle">Official Format for Email Account Transfer & Disposal</div>
+    </div>
+
+    <!-- Form Content -->
+    <div class="form-content">
+
+      <!-- Reason Selection -->
+      <div class="reason-section">
+        <div class="reason-text">
+          Confirmation of following format shall be issued by the concerned HOD on
+          <select id="confirmationReason" class="reason-select">
+            <option>Superannuation</option>
+            <option>Resignation</option>
+            <option>Dry-Lien</option>
+            <option>Deputation</option>
+            <option>Death</option>
+          </select>
+          of an employee under his control. In case of death, Corporate IT may assist in transferring emails.
+        </div>
+      </div>
+
+      <!-- Basic Information -->
+      <div class="form-section" data-role="employee">
+        <div class="section-title">Department Information</div>
+
+        <div class="field-group">
+          <div class="field-row">
+            <span class="field-label">Unit Name:</span>
+            <input type="text" class="field-input wide" id="unitName">
+          </div>
+          <div class="field-row">
+            <span class="field-label">Department:</span>
+            <input type="text" class="field-input wide" id="department">
+          </div>
+        </div>
+      </div>
+
+      <!-- Email Transfer Details -->
+      <div class="form-section" data-role="employee">
+        <div class="section-title">Email Transfer Confirmation</div>
+
+        <div class="field-group">
+          <div class="field-row">
+            <span class="field-label">This is confirmed that all relevant official email messages</span>
+            <em>(Received & Sent, along with the attachments)</em>
+          </div>
+
+          <div class="field-row">
+            <span class="field-label">in Email ID</span>
+            <input type="email" class="field-input wide" id="emailFrom">
+            <span class="field-label">of</span>
+            <select id="salutationFrom" class="field-select">
+              <option>Mr.</option>
+              <option>Ms.</option>
+              <option>Mrs.</option>
+            </select>
+            <input type="text" class="field-input" id="nameFrom">
+          </div>
+
+          <div class="field-row">
+            <span class="field-label">Designation</span>
+            <input type="text" class="field-input" id="designationFrom">
+            <span class="field-label">Employee No.</span>
+            <input type="text" class="field-input short" id="empNoFrom">
+          </div>
+
+          <div class="field-row">
+            <span class="field-label">has been transferred to Email ID</span>
+            <input type="email" class="field-input wide" id="emailTo">
+            <span class="field-label">of</span>
+            <select id="salutationTo" class="field-select">
+              <option>Mr.</option>
+              <option>Ms.</option>
+              <option>Mrs.</option>
+            </select>
+            <input type="text" class="field-input" id="nameTo">
+          </div>
+
+          <div class="field-row">
+            <span class="field-label">Designation</span>
+            <input type="text" class="field-input" id="designationTo">
+            <span class="field-label">Employee No.</span>
+            <input type="text" class="field-input short" id="empNoTo">
+            <span class="field-label">on dated</span>
+            <input type="date" class="field-input" id="transferDate">
+          </div>
+        </div>
+
+        <div class="field-group">
+          <div class="field-row">
+            <span class="field-label">The Email ID</span>
+            <input type="email" class="field-input wide" id="disposableEmail">
+            <span class="field-label">can now be disposed/deleted.</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- HOD Approval Section -->
+      <div class="form-section hod-section" data-role="hod">
+        <div class="section-title">HOD Approval Section</div>
+
+        <div class="hod-grid">
+          <div class="hod-details">
+            <div class="input-group">
+              <label>Name of HOD</label>
+              <input type="text" name="hodName" id="hodName" readonly>
+            </div>
+            <div class="input-group">
+              <label>Employee No.</label>
+              <input type="text" name="hodEmpNo" id="hodEmpNo" readonly>
+            </div>
+            <div class="input-group">
+              <label>Email</label>
+              <input type="email" name="hodEmail" id="hodEmail" readonly>
+            </div>
+
+            <div class="department-title">
+              <div>HOD, IT Department</div>
+              <div>HOD, IT Department, Rishikesh</div>
+            </div>
+          </div>
+
+          <div class="signature-container">
+            <div class="signature-area" id="hodSignatureArea">
+              <div class="signature-placeholder">Click to Upload HOD Signature</div>
+            </div>
+            <div class="signature-note">HOD details are auto-filled from your session</div>
+            <input type="file" id="hodSignatureInput" style="display:none;" accept="image/*">
+          </div>
+        </div>
+      </div>
+
+      <!-- IT Department Section -->
+      <div class="form-section it-section readonly-section" id="itSection" data-role="it">
+        <div class="section-title">DGM (IT) Confirmation</div>
+
+        <div class="field-group">
+          <div class="field-row">
+            <span class="field-label">The Email ID</span>
+            <input type="email" class="field-input wide" id="deactivatedEmail">
+            <span class="field-label">has been deactivated on</span>
+            <input type="date" class="field-input" id="deactivationDate">
+          </div>
+
+          <div class="field-row">
+            <span class="field-label">by (Name)</span>
+            <input type="text" class="field-input" id="itName">
+            <span class="field-label">(Designation)</span>
+            <input type="text" class="field-input" id="itDesignation">
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Action Section -->
+    <div class="action-section">
+      <button class="save-button" onclick="saveDisposalForm()">Save Disposal Form</button>
+      <div id="saveMessage" class="save-message"></div>
+    </div>
+  </div>
+
+  <script>
+    // Global variables
+    let currentUserRole = '';
+    let formId = '';
+
+    // Initialize form
+    window.addEventListener("DOMContentLoaded", async () => {
+      await initializeForm();
+    });
+
+    // Check if this is HOD review mode
+    function isHODReview() {
+      const urlParams = new URLSearchParams(window.location.search);
+      return urlParams.get('role') === 'hod';
+    }
+
+    // Auto-fill HOD details when accessed by HOD
+    async function autoFillHODDetailsInForm() {
+      if (!isHODReview()) return;
+
+      try {
+        console.log('📄 Auto-filling HOD details in Disposal Form...');
+        showMessage('Loading HOD details for form review...', 'info');
+
+        const response = await fetch('/api/hod/my-details', {
+          credentials: 'include'
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          if (data.success && data.hodDetails) {
+            console.log('✅ HOD details received for form auto-fill:', data.hodDetails);
+
+            const hodDetails = data.hodDetails;
+
+            // Map HOD details to form fields using green theme
+            const hodFieldMappings = {
+              'hodName': hodDetails.name,
+              'hodEmpNo': hodDetails.employeeId,
+              'hodEmail': hodDetails.email
+            };
+
+            // Fill all matching fields
+            Object.entries(hodFieldMappings).forEach(([fieldId, value]) => {
+              const field = document.getElementById(fieldId) || document.querySelector(`[name="${fieldId}"]`);
+              if (field && !field.value) {
+                field.value = value;
+
+                // Style as auto-filled with GREEN theme
+                field.classList.add('auto-filled');
+                field.style.backgroundColor = '#d4edda';
+                field.style.borderColor = '#28a745';
+                field.style.color = '#155724';
+                field.title = 'Auto-filled from HOD session';
+                field.readOnly = true;
+
+                console.log(`✅ Auto-filled ${fieldId} with: ${value}`);
+              }
+            });
+
+            // Auto-load HOD signature
+            await autoFillHODSignatureInForm();
+
+            showMessage('HOD details auto-filled successfully!', 'success');
+
+            // Update signature note
+            const signatureNote = document.querySelector('.signature-note');
+            if (signatureNote) {
+              signatureNote.textContent = `HOD details auto-filled for ${hodDetails.name}`;
+            }
+          }
+        }
+      } catch (error) {
+        console.error('❌ Error auto-filling HOD details:', error);
+        showMessage('Failed to auto-fill HOD details', 'error');
+      }
+    }
+
+    // Auto-fill HOD signature in form
+    async function autoFillHODSignatureInForm() {
+      try {
+        const response = await fetch('/api/hod/get-signature', {
+          credentials: 'include'
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          if (data.success && data.signatureUrl) {
+            const sigArea = document.getElementById('hodSignatureArea');
+            if (sigArea) {
+              sigArea.innerHTML = `<img src="${data.signatureUrl}" alt="HOD Signature" style="max-height: 60px; max-width: 100%; border: 2px solid #28a745; border-radius: 4px;">`;
+              sigArea.classList.add('has-signature');
+              sigArea.title = 'HOD signature auto-loaded';
+              console.log('✅ Auto-filled HOD signature in Disposal Form');
+            }
+          }
+        }
+      } catch (error) {
+        console.error('❌ Error loading HOD signature:', error);
+      }
+    }
+
+    // Initialize form with role detection and HOD auto-fill
+    async function initializeForm() {
+      try {
+        // Get form ID from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        formId = urlParams.get("formId") || "";
+
+        // Get user role from session
+        await getUserRole();
+
+        // Auto-fill HOD details if in HOD review mode
+        if (isHODReview()) {
+          console.log('📋 Disposal Form opened in HOD review mode - auto-filling HOD details...');
+          setTimeout(autoFillHODDetailsInForm, 1000);
+        }
+
+        // Load HOD profile if user is HOD (existing functionality)
+        if (currentUserRole === 'hod') {
+          await loadHODProfile();
+          await loadHODSignature();
+        }
+
+        // Load existing form data
+        await loadFormData();
+
+        // Set up role-based permissions
+        setupRoleBasedAccess();
+
+        // Initialize signature handling
+        initializeSignatureHandling();
+
+      } catch (error) {
+        console.error('Error initializing form:', error);
+        showMessage('Error loading form. Please refresh the page.', 'error');
+      }
+    }
+
+    // Get user role from session
+    async function getUserRole() {
+      try {
+        const response = await fetch('/api/auth/check-session', {
+          credentials: 'include'
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          currentUserRole = data.role || '';
+          console.log('User role:', currentUserRole);
+        }
+      } catch (error) {
+        console.error('Error getting user role:', error);
+        currentUserRole = 'employee'; // Default fallback
+      }
+    }
+
+    // Load HOD profile and auto-fill fields
+    async function loadHODProfile() {
+      try {
+        console.log('Loading HOD profile for auto-fill...');
+
+        const response = await fetch('/api/hod/profile', {
+          credentials: 'include'
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          if (data.success) {
+            // Auto-fill HOD fields
+            const hodName = document.getElementById('hodName');
+            const hodEmpNo = document.getElementById('hodEmpNo');
+            const hodEmail = document.getElementById('hodEmail');
+
+            if (hodName) {
+              hodName.value = data.hodData.name;
+              hodName.classList.add('auto-filled');
+            }
+            if (hodEmpNo) {
+              hodEmpNo.value = data.hodData.employeeId;
+              hodEmpNo.classList.add('auto-filled');
+            }
+            if (hodEmail) {
+              hodEmail.value = data.hodData.email;
+              hodEmail.classList.add('auto-filled');
+            }
+
+            console.log('HOD profile auto-filled successfully:', data.hodData);
+          }
+        }
+      } catch (error) {
+        console.error('Error loading HOD profile:', error);
+      }
+    }
+
+    // Load existing HOD signature
+    async function loadHODSignature() {
+      try {
+        const response = await fetch('/api/hod/get-signature', {
+          credentials: 'include'
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          if (data.success && data.signatureUrl) {
+            const sigArea = document.getElementById('hodSignatureArea');
+            if (sigArea) {
+              sigArea.innerHTML = `<img src="${data.signatureUrl}" alt="HOD Signature" style="max-height: 60px; max-width: 100%;">`;
+              sigArea.classList.add('has-signature');
+            }
+            console.log('Existing HOD signature loaded');
+          }
+        }
+      } catch (error) {
+        console.error('Error loading HOD signature:', error);
+      }
+    }
+
+    // Initialize signature upload handling
+    function initializeSignatureHandling() {
+      const hodSignatureArea = document.getElementById('hodSignatureArea');
+      const hodSignatureInput = document.getElementById('hodSignatureInput');
+
+      if (hodSignatureArea && hodSignatureInput) {
+        hodSignatureArea.addEventListener('click', () => {
+          if (currentUserRole === 'hod') {
+            hodSignatureInput.click();
+          }
+        });
+
+        hodSignatureInput.addEventListener('change', handleSignatureUpload);
+      }
+    }
+
+    // Handle signature file upload
+    async function handleSignatureUpload(event) {
       const file = event.target.files[0];
       if (!file) return;
 
+      try {
+        // Preview signature
+        const reader = new FileReader();
+        reader.onload = function (e) {
+          const sigArea = document.getElementById('hodSignatureArea');
+          if (sigArea) {
+            sigArea.innerHTML = `<img src="${e.target.result}" alt="HOD Signature" style="max-height: 60px; max-width: 100%;">`;
+            sigArea.classList.add('has-signature');
+          }
+        };
+        reader.readAsDataURL(file);
 
-      const reader = new FileReader();
-      reader.onload = function (e) {
-        document.getElementById('signaturePreview').innerHTML =
-          `<img src="${e.target.result}" alt="Signature" style="max-height: 60px;">`;
-      };
-      reader.readAsDataURL(file);
+        // Upload to server
+        const formData = new FormData();
+        formData.append('signature', file);
+
+        const response = await fetch('/api/hod/upload-signature', {
+          method: 'POST',
+          body: formData,
+          credentials: 'include'
+        });
+
+        if (response.ok) {
+          console.log('Signature uploaded successfully');
+          showMessage('Signature uploaded successfully', 'success');
+        } else {
+          throw new Error('Failed to upload signature');
+        }
+
+      } catch (error) {
+        console.error('Error uploading signature:', error);
+        showMessage('Failed to upload signature', 'error');
+      }
     }
 
+    // Set up role-based access control
+    function setupRoleBasedAccess() {
+      document.querySelectorAll('[data-role]').forEach(section => {
+        const roleType = section.getAttribute('data-role');
+        const shouldBeEditable = (
+          (roleType === 'employee' && currentUserRole === 'employee') ||
+          (roleType === 'hod' && currentUserRole === 'hod') ||
+          (roleType === 'it' && currentUserRole === 'it')
+        );
 
-    async function submitHodReview() {
-      const hodName = document.getElementById("hodName").value.trim();
-      const hodEmpNo = document.getElementById("hodEmpNo").value.trim();
-      const hodEmail = document.getElementById("hodEmail").value.trim();
-      const signatureFile = document.getElementById("signatureUpload").files[0];
+        if (!shouldBeEditable) {
+          section.classList.add('readonly-section');
+          section.querySelectorAll('input, select, textarea').forEach(input => {
+            input.disabled = true;
+          });
+        }
+      });
+    }
 
+    // Enhanced save function with HOD data
+    async function saveDisposalForm() {
+      try {
+        showMessage('Saving form...', 'info');
 
-      if (!hodName || !hodEmpNo || !hodEmail || !signatureFile) {
-        return alert("Please complete all HOD fields and upload signature.");
+        const formData = collectFormData();
+
+        console.log('Saving disposal form data:', formData);
+
+        // Save to server
+        const response = await fetch('/api/employee/save-disposal', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({ disposalForm: formData })
+        });
+
+        const result = await response.json();
+
+        if (response.ok && result.success) {
+          // Save to localStorage for dashboard access
+          localStorage.setItem('disposalFormData', JSON.stringify(formData));
+          console.log('Disposal form saved to localStorage');
+
+          showMessage(result.message || 'Form saved successfully!', 'success');
+        } else {
+          throw new Error(result.message || 'Failed to save form');
+        }
+
+      } catch (error) {
+        console.error('Error saving form:', error);
+        showMessage('Failed to save form: ' + error.message, 'error');
+      }
+    }
+
+    // Collect all form data including HOD fields
+    function collectFormData() {
+      const getValue = (id) => {
+        const el = document.getElementById(id);
+        if (!el) return "";
+        return el.value || "";
+      };
+
+      const hodSignatureImg = document.querySelector('#hodSignatureArea img');
+
+      return {
+        // Basic form fields
+        confirmationReason: getValue("confirmationReason"),
+        unitName: getValue("unitName"),
+        department: getValue("department"),
+        salutationFrom: getValue("salutationFrom"),
+        nameFrom: getValue("nameFrom"),
+        designationFrom: getValue("designationFrom"),
+        empNoFrom: getValue("empNoFrom"),
+        emailFrom: getValue("emailFrom"),
+        salutationTo: getValue("salutationTo"),
+        nameTo: getValue("nameTo"),
+        designationTo: getValue("designationTo"),
+        empNoTo: getValue("empNoTo"),
+        emailTo: getValue("emailTo"),
+        transferDate: getValue("transferDate"),
+        disposableEmail: getValue("disposableEmail"),
+
+        // HOD fields (auto-filled)
+        hodName: getValue("hodName"),
+        hodEmpNo: getValue("hodEmpNo"),
+        hodEmail: getValue("hodEmail"),
+        hodSignature: hodSignatureImg ? hodSignatureImg.src : '',
+
+        // IT fields
+        deactivatedEmail: getValue("deactivatedEmail"),
+        deactivationDate: getValue("deactivationDate"),
+        itName: getValue("itName"),
+        itDesignation: getValue("itDesignation"),
+
+        // Metadata
+        formId: formId,
+        lastUpdated: new Date().toISOString(),
+        userRole: currentUserRole
+      };
+    }
+
+    // Load existing form data
+    async function loadFormData() {
+      try {
+        let formData = null;
+
+        if (formId && (currentUserRole === 'hod' || currentUserRole === 'it')) {
+          // Load from server for HOD/IT review
+          const response = await fetch(`/api/hod/form-details?formId=${encodeURIComponent(formId)}`, {
+            credentials: 'include'
+          });
+          const data = await response.json();
+          formData = data?.disposalFormData;
+        } else {
+          // Load from server for employee
+          const response = await fetch('/api/employee/form-data?formName=disposalForm', {
+            credentials: 'include'
+          });
+          const data = await response.json();
+          formData = data?.formData;
+        }
+
+        if (formData) {
+          // Populate form fields
+          Object.entries(formData).forEach(([key, value]) => {
+            const el = document.getElementById(key);
+            if (el && ['INPUT', 'TEXTAREA', 'SELECT'].includes(el.tagName)) {
+              el.value = value || '';
+            }
+          });
+
+          // Load signature if available
+          if (formData.hodSignature) {
+            const sigArea = document.getElementById('hodSignatureArea');
+            if (sigArea) {
+              sigArea.innerHTML = `<img src="${formData.hodSignature}" alt="HOD Signature" style="max-height: 60px; max-width: 100%;">`;
+              sigArea.classList.add('has-signature');
+            }
+          }
+
+          console.log('Form data loaded successfully');
+        }
+
+      } catch (error) {
+        console.error('Error loading form data:', error);
+      }
+    }
+
+    // Show status messages
+    function showMessage(message, type) {
+      const messageEl = document.getElementById('saveMessage');
+      if (messageEl) {
+        messageEl.textContent = message;
+        messageEl.className = `save-message ${type}`;
+        messageEl.style.display = 'block';
+
+        // Auto-hide success messages
+        if (type === 'success') {
+          setTimeout(() => {
+            messageEl.style.display = 'none';
+          }, 3000);
+        }
+      }
+    }
+
+    // Initialize navigation for specific form type
+    document.addEventListener('DOMContentLoaded', () => {
+      // Determine form type from URL or page structure
+      const formType = window.location.pathname.includes('disposal') ? 'disposal' :
+        window.location.pathname.includes('efile') ? 'efile' :
+          window.location.pathname.includes('365transfer') ? 'form365transfer' :
+            window.location.pathname.includes('365disposal') ? 'form365disposal' : 'unknown';
+
+      // Initialize navigation for this form
+      FormNavigationIntegration.initializeForForm(formType);
+
+      console.log(`✅ Navigation system initialized for ${formType} form`);
+    });
+
+    // Enhanced role-based element hiding with proper selectors
+    function initializeRoleBasedUI() {
+
+      // Multiple methods to detect user role
+      function detectUserRole() {
+        // Method 1: From localStorage/sessionStorage
+        let role = localStorage.getItem('userRole') || sessionStorage.getItem('userRole');
+
+        // Method 2: From page title or URL
+        if (!role) {
+          if (window.location.href.includes('hod') || window.location.href.includes('HOD')) {
+            role = 'HOD';
+          } else if (window.location.href.includes('itreview') || window.location.href.includes('IT')) {
+            role = 'IT';
+          }
+        }
+
+        // Method 3: From a meta tag or hidden input
+        const roleElement = document.querySelector('meta[name="user-role"]') ||
+          document.querySelector('input[name="userRole"]');
+        if (!role && roleElement) {
+          role = roleElement.content || roleElement.value;
+        }
+
+        // Method 4: From server-rendered data
+        if (!role && typeof window.userRole !== 'undefined') {
+          role = window.userRole;
+        }
+
+        // Method 5: From authentication/session cookies (if available)
+        if (!role && document.cookie) {
+          const cookieRole = document.cookie
+            .split('; ')
+            .find(row => row.startsWith('userRole='));
+          if (cookieRole) {
+            role = cookieRole.split('=')[1];
+          }
+        }
+
+        return role ? role.toLowerCase() : null;
       }
 
+      const userRole = detectUserRole();
 
-      const formData = new FormData();
-      formData.append('formId', formId);
-      formData.append('formType', 'disposal');
-      formData.append('hodName', hodName);
-      formData.append('hodEmpNo', hodEmpNo);
-      formData.append('hodEmail', hodEmail);
-      formData.append('signature', signatureFile);
+      if (userRole === 'hod' || userRole === 'it') {
 
+        // Hide back buttons with multiple selectors
+        const elementsToHide = [
+          '.global-back-button',
+          '.back-btn',
+          'button[onclick*="goBack"]',
+          'button[onclick*="history.back"]',
+          'button[onclick*="window.history"]',
+          'a[href*="dashboard"]',
+          'a[href*="back"]',
+          '.navigation-back',
+          '.back-to-dashboard',
+          '[class*="back"]',
+          '[id*="back"]'
+        ];
 
-      const res = await fetch('/api/hod/submit-form', {
-        method: 'POST',
-        credentials: 'include',
-        body: formData
-      });
+        elementsToHide.forEach(selector => {
+          try {
+            const elements = document.querySelectorAll(selector);
+            elements.forEach(el => {
+              const elementText = el.textContent.toLowerCase();
+              const isBackButton = elementText.includes('back') ||
+                elementText.includes('dashboard') ||
+                el.onclick?.toString().includes('back') ||
+                el.onclick?.toString().includes('goBack');
 
+              if (isBackButton || selector.includes('back') || selector.includes('dashboard')) {
+                el.style.display = 'none';
+                el.setAttribute('tabindex', '-1');
+                el.setAttribute('aria-hidden', 'true');
+              }
+            });
+          } catch (error) {
+            console.log('Save selector error:', selector, error);
+          }
+        });
 
-      const result = await res.json();
-      document.getElementById("statusMsg").textContent = result.message || "Done";
+        // Hide save buttons using proper selectors
+        const saveSelectors = [
+          'button[type="submit"]',
+          'input[type="submit"]',
+          '.save-button',
+          '.save-btn',
+          'button[onclick*="save"]',
+          'button[onclick*="submit"]',
+          'button[onclick*="Save"]',
+          '#saveBtn',
+          '#submitBtn',
+          '[value*="Save"]',
+          '[value*="Submit"]',
+          'input[value*="Save"]',
+          '.btn-primary[onclick*="save"]'
+        ];
+
+        saveSelectors.forEach(selector => {
+          try {
+            const elements = document.querySelectorAll(selector);
+            elements.forEach(el => {
+              const elementText = (el.textContent || el.value || el.innerHTML || '').toLowerCase();
+              const isSaveButton = elementText.includes('save') ||
+                elementText.includes('submit') ||
+                el.type === 'submit' ||
+                el.name === 'submit' ||
+                el.id?.includes('save') ||
+                el.className?.includes('save');
+
+              if (isSaveButton) {
+                // Hide completely (not just disable)
+                el.style.display = 'none !important';
+                el.setAttribute('aria-hidden', 'true');
+                el.setAttribute('tabindex', '-1');
+
+                // Also hide parent container if it only contains the save button
+                const parent = el.parentElement;
+                if (parent && parent.children.length === 1) {
+                  parent.style.display = 'none';
+                }
+
+                // Remove from form submission
+                if (el.form) {
+                  el.remove();
+                }
+              }
+            });
+          } catch (error) {
+            console.log('Save selector error:', selector, error);
+          }
+        });
+
+        // Hide save buttons by text content using safe method
+        const allButtons = document.querySelectorAll('button, input[type="button"], input[type="submit"]');
+        allButtons.forEach(button => {
+          const text = (button.textContent || button.value || '').toLowerCase();
+          if (text.includes('save') || text.includes('submit') || text.includes('update')) {
+            button.style.display = 'none !important';
+            button.setAttribute('aria-hidden', 'true');
+
+            // Hide parent if it's a button container
+            const parent = button.parentElement;
+            if (parent && (parent.className.includes('button') || parent.className.includes('action'))) {
+              parent.style.display = 'none';
+            }
+          }
+        });
+
+        // Add role-based CSS class
+        document.body.classList.add(`role-${userRole}`);
+        document.body.setAttribute('data-user-role', userRole);
+
+        console.log(`🔒 UI restricted for ${userRole.toUpperCase()} role - Save buttons HIDDEN`);
+
+      } else {
+        console.log(`✅ Full UI access for role: ${userRole || 'EMPLOYEE'}`);
+      }
     }
 
+    // Run multiple times to catch all elements
+    document.addEventListener('DOMContentLoaded', initializeRoleBasedUI);
+    window.addEventListener('load', initializeRoleBasedUI);
 
-    document.getElementById("signatureUpload").addEventListener("change", previewSignature);
-    window.onload = loadDisposalFormData;
+    // Check again after navigation manager loads
+    setTimeout(initializeRoleBasedUI, 500);
+    setTimeout(initializeRoleBasedUI, 2000);
+    setTimeout(initializeRoleBasedUI, 4000);
+
+    // Set up observer for dynamically added elements
+    if (typeof MutationObserver !== 'undefined') {
+      const observer = new MutationObserver(function (mutations) {
+        let shouldReapply = false;
+
+        mutations.forEach(function (mutation) {
+          if (mutation.addedNodes.length > 0) {
+            mutation.addedNodes.forEach(function (node) {
+              if (node.nodeType === Node.ELEMENT_NODE) {
+                const hasSaveButton = node.querySelector && (
+                  node.querySelector('button[type="submit"]') ||
+                  node.querySelector('.save-button') ||
+                  node.querySelector('input[type="submit"]') ||
+                  (node.textContent && node.textContent.toLowerCase().includes('save'))
+                );
+
+                if (hasSaveButton) {
+                  shouldReapply = true;
+                }
+              }
+            });
+          }
+        });
+
+        if (shouldReapply) {
+          setTimeout(initializeRoleBasedUI, 100);
+        }
+      });
+
+      observer.observe(document.body, {
+        childList: true,
+        subtree: true
+      });
+    }
+
+    // Message listener for iframe data population
+    window.addEventListener('message', function (event) {
+      console.log('📩 Message received in iframe:', event.data);
+
+      if (event.data && event.data.action === 'populateForm') {
+        console.log('📄 Populating form with data:', event.data.data);
+        const data = event.data.data;
+
+        // Loop through all data fields and populate matching elements
+        Object.keys(data).forEach(fieldId => {
+          const element = document.getElementById(fieldId);
+          if (element) {
+            if (element.tagName === 'INPUT' || element.tagName === 'TEXTAREA' || element.tagName === 'SELECT') {
+              element.value = data[fieldId] || '';
+              console.log(`✅ Set ${fieldId} = ${data[fieldId]}`);
+            } else if (element.tagName === 'IMG') {
+              element.src = data[fieldId] || '';
+            } else {
+              element.textContent = data[fieldId] || '';
+            }
+          }
+        });
+
+        // If read-only mode, disable all inputs
+        if (event.data.isReadOnly) {
+          document.querySelectorAll('input, select, textarea, button').forEach(el => {
+            el.disabled = true;
+            el.style.backgroundColor = '#f8f9fa';
+            el.style.cursor = 'not-allowed';
+          });
+          console.log('🔒 Form set to read-only mode');
+        }
+      }
+
+      if (event.data && event.data.action === 'setMode') {
+        if (event.data.isReadOnly) {
+          document.querySelectorAll('input, select, textarea, button').forEach(el => {
+            el.disabled = true;
+            el.style.backgroundColor = '#f8f9fa';
+          });
+        }
+      }
+    });
+
+    // Also check URL parameters for data (fallback method)
+    window.addEventListener('DOMContentLoaded', function () {
+      const urlParams = new URLSearchParams(window.location.search);
+      const mode = urlParams.get('mode');
+      const existingData = urlParams.get('existingData');
+
+      if (existingData) {
+        try {
+          const data = JSON.parse(decodeURIComponent(existingData));
+          console.log('📄 Loading data from URL params:', data);
+
+          Object.keys(data).forEach(fieldId => {
+            const element = document.getElementById(fieldId);
+            if (element && element.value !== undefined) {
+              element.value = data[fieldId] || '';
+            }
+          });
+        } catch (error) {
+          console.error('❌ Error parsing URL data:', error);
+        }
+      }
+
+      if (mode === 'approved' || mode === 'rejected') {
+        document.querySelectorAll('input, select, textarea, button').forEach(el => {
+          el.disabled = true;
+          el.style.backgroundColor = '#f8f9fa';
+        });
+      }
+    });
   </script>
 </body>
-
 
 </html>
