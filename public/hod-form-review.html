@@ -685,7 +685,7 @@
 
   <!-- View-only notice for approved/rejected forms -->
   <div class="view-only-notice hidden" id="viewOnlyNotice">
-    <h3 id="viewOnlyTitle">📋 View-Only Mode</h3>
+    <h3 id="viewOnlyTitle">View-Only Mode</h3>
     <p id="viewOnlyMessage">This form has been processed and cannot be modified.</p>
   </div>
 
@@ -726,7 +726,7 @@
     <div class="signature-section" id="signatureSection">
       <div class="signature-header">
         <span class="signature-label">HOD Digital Signature (Auto-filled)</span>
-        <span id="signatureStatus" class="signature-status-indicator">⏳ Loading...</span>
+        <span id="signatureStatus" class="signature-status-indicator">Loading...</span>
       </div>
 
       <div class="signature-area" id="hodSignatureArea">
@@ -842,7 +842,7 @@
         $('viewOnlyNotice').classList.remove('hidden');
 
         if (formStatus === 'approved') {
-          $('viewOnlyTitle').textContent = '✅ Form Approved - View Only';
+          $('viewOnlyTitle').textContent = 'Form Approved - View Only';
           $('viewOnlyMessage').textContent = 'This form has been approved and sent to IT. No further action can be taken.';
           $('formStatusBadge').className = 'form-status status-approved';
           $('formStatusText').textContent = 'Approved';
@@ -850,7 +850,7 @@
           $('approvalSectionTitle').textContent = 'Form Completion Details';
           $('remarksLabel').textContent = 'HOD Review Comments (Read-Only)';
         } else if (formStatus === 'rejected') {
-          $('viewOnlyTitle').textContent = '❌ Form Rejected - View Only';
+          $('viewOnlyTitle').textContent = 'Form Rejected - View Only';
           $('viewOnlyMessage').textContent = 'This form has been rejected and returned to employee. No further action can be taken.';
           $('formStatusBadge').className = 'form-status status-rejected';
           $('formStatusText').textContent = 'Rejected';
@@ -870,12 +870,10 @@
         $('rejectBtn').textContent = 'Form Already Processed';
         $('rejectBtn').disabled = true;
 
-        console.log('✅ Initialized in view-only mode:', formStatus);
       } else {
         $('formStatusBadge').className = 'form-status status-pending';
         $('formStatusText').textContent = 'Pending Review';
         $('formStatusBadge').classList.remove('hidden');
-        console.log('✅ Initialized in action mode: pending');
       }
     }
 
@@ -933,7 +931,7 @@
       if (!name) return 'H';
       const parts = name.split(' ');
       if (parts.length >= 2) {
-        return (parts[0] + parts[11]).toUpperCase();
+        return (parts[0] + parts[1]).toUpperCase();
       }
       return name.substring(0, 2).toUpperCase();
     }
@@ -954,7 +952,6 @@
     // Enhanced HOD Profile Loading with AUTO-FILLED signature capture
     async function loadHODProfile() {
       try {
-        console.log('🔄 Loading HOD profile from API for auto-fill...');
         if (!isViewOnlyMode) {
           showNotification('Loading HOD profile and auto-filling details...', 'info');
         }
@@ -966,7 +963,6 @@
         if (response.ok) {
           const data = await response.json();
           if (data.success && data.hodDetails) {
-            console.log('✅ HOD details received:', data.hodDetails);
 
             const sessionData = {
               hodID: data.hodDetails.name,
@@ -981,7 +977,6 @@
             // Load and capture auto-filled HOD signature
             await loadAndCaptureHODSignature();
 
-            console.log('✅ HOD profile auto-filled successfully');
             if (!isViewOnlyMode) {
               showNotification('HOD details auto-filled successfully!', 'success');
             }
@@ -990,7 +985,6 @@
           throw new Error('Failed to fetch HOD details from API');
         }
       } catch (error) {
-        console.error('❌ Error loading HOD profile:', error);
 
         const fallbackData = {
           hodID: 'Sushil Kumar Uniyal',
@@ -1028,16 +1022,15 @@
                                  style="max-height: 70px; max-width: 100%; display: block; margin: 0 auto; 
                                         border: 2px solid #28a745; border-radius: 6px; padding: 5px; background: #f8fff9;">
                             <div style="text-align: center; margin-top: 8px; color: #155724; font-weight: bold; font-size: 12px;">
-                                ✓ Auto-filled from Profile
+                                Auto-filled from Profile
                             </div>
                         `;
             sigArea.classList.add('has-signature');
 
             // Update status indicator
-            $('signatureStatus').textContent = '✅ Loaded';
+            $('signatureStatus').textContent = 'Loaded';
             $('signatureStatus').className = 'signature-status-indicator signature-loaded';
 
-            console.log('✅ HOD signature auto-loaded and captured for storage');
           } else {
             // No signature found
             autoFilledSignatureData = null;
@@ -1050,12 +1043,11 @@
                         `;
 
             // Update status indicator
-            $('signatureStatus').textContent = '❌ Missing';
+            $('signatureStatus').textContent = 'Missing';
             $('signatureStatus').className = 'signature-status-indicator signature-missing';
           }
         }
       } catch (error) {
-        console.error('❌ Error loading HOD signature:', error);
         autoFilledSignatureData = null;
 
         const sigArea = $('hodSignatureArea');
@@ -1066,7 +1058,7 @@
                     </div>
                 `;
 
-        $('signatureStatus').textContent = '❌ Error';
+        $('signatureStatus').textContent = 'Error';
         $('signatureStatus').className = 'signature-status-indicator signature-missing';
       }
     }
@@ -1128,11 +1120,9 @@
           }
         });
 
-        console.log('✅ E-file table data collected:', Object.keys(tableData));
         return tableData;
 
       } catch (error) {
-        console.error('❌ Error collecting e-file table data:', error);
         return {};
       }
     }
@@ -1158,7 +1148,6 @@
           throw new Error(data.message || 'Failed to load form');
         }
 
-        console.log('✅ Form data loaded:', data);
         formData = data;
 
         if (data.form && isViewOnlyMode) {
@@ -1227,7 +1216,6 @@
         }, 3000);
 
       } catch (e) {
-        console.error('❌ Load error:', e);
         showStatus(`Failed to load form: ${e.message}`, 'error');
         $('finalApproveBtn').textContent = 'Load Failed';
         $('rejectBtn').textContent = 'Load Failed';
@@ -1236,7 +1224,6 @@
 
     // Enhanced frame loading handler with data messaging
     window.handleFrameLoad = function (frame) {
-      console.log(`✅ Frame loaded: ${frame.dataset.formKey}`);
 
       try {
         if (isViewOnlyMode && frame.dataset.existingData) {
@@ -1249,7 +1236,6 @@
                 mode: formStatus,
                 isReadOnly: true
               }, '*');
-              console.log('✅ Sent existing data to iframe:', frame.dataset.formKey, Object.keys(existingData).length, 'fields');
             }, 500);
           }
         }
@@ -1263,7 +1249,6 @@
         }, 500);
 
       } catch (error) {
-        console.error('❌ Error sending data to iframe:', error);
       }
     };
 
@@ -1317,7 +1302,6 @@
         // Include auto-filled signature
         if (autoFilledSignatureData) {
           hodData.signature = autoFilledSignatureData;
-          console.log('✅ Auto-filled signature included in payload');
         }
 
         const payload = {
@@ -1362,15 +1346,11 @@
               const efileTableData = collectEfileTableData(iframe);
               Object.assign(formDataForKey, efileTableData);
               collectedEfileTableData = efileTableData;
-              console.log('✅ E-file table data collected and stored');
             }
 
             payload.formResponses[key] = formDataForKey;
-            console.log(`📋 Collected ${key}:`, Object.keys(formDataForKey).length, 'fields');
           }
         }
-
-        console.log('📤 Submitting payload with auto-filled signature and e-file data:', payload);
 
         const endpoint = action === 'approved' ? '/api/hod/final-approve' : '/api/hod/approve-form';
         const response = await fetch(endpoint, {
@@ -1381,17 +1361,16 @@
         });
 
         const result = await response.json();
-        console.log('📥 Server response:', result);
 
         if (response.ok && result.success) {
           const successMessage = action === 'approved'
-            ? '✅ Form approved and sent to IT successfully!'
-            : '✅ Form rejected and returned to employee successfully!';
+            ? 'Form approved and sent to IT successfully!'
+            : 'Form rejected and returned to employee successfully!';
 
           showStatus(successMessage, 'success');
           showNotification(successMessage, 'success');
 
-          button.textContent = action === 'approved' ? '✅ Approved' : '✅ Rejected';
+          button.textContent = action === 'approved' ? 'Approved' : 'Rejected';
 
           const modalTitle = action === 'approved' ? 'Form Approved' : 'Form Rejected';
           const modalMessage = action === 'approved'
@@ -1407,8 +1386,7 @@
         }
 
       } catch (error) {
-        console.error('❌ Submission error:', error);
-        showStatus(`❌ Error: ${error.message}`, 'error');
+        showStatus(`Error: ${error.message}`, 'error');
         showNotification(`Error: ${error.message}`, 'error');
 
         if (!isViewOnlyMode) {
@@ -1435,5 +1413,6 @@
     });
   </script>
 </body>
+
 
 </html>

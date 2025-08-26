@@ -49,10 +49,8 @@ async function moveCompletedFormToHistory(employeeId, formData) {
     history.push(historyEntry);
     saveJSON(FORM_HISTORY, history);
 
-    console.log(`📚 Moved form ${formData.formId} to history for employee ${employeeId}`);
     return true;
   } catch (error) {
-    console.error('Error moving form to history:', error);
     return false;
   }
 }
@@ -77,7 +75,6 @@ router.post('/verify-otp', roleAuth('employee'), (req, res) => {
 
 // --------------------- No Dues Form Submission ---------------------
 router.post('/submit-no-dues', roleAuth('employee'), upload.single('orderLetter'), (req, res) => {
-  console.log('📋 === Form Submission Debug ===');
 
   try {
     // Basic validation
@@ -95,8 +92,6 @@ router.post('/submit-no-dues', roleAuth('employee'), upload.single('orderLetter'
     const noDuesType = bodyData.noDuesType || '';
     const reason = bodyData.reason || '';
 
-    console.log('  Extracted safely:', { name, employeeId, email, department, noDuesType, reason });
-
     if (!name || !employeeId || !email || !department || !noDuesType) {
       return res.status(400).json({ success: false, message: 'Missing required fields' });
     }
@@ -107,10 +102,8 @@ router.post('/submit-no-dues', roleAuth('employee'), upload.single('orderLetter'
       const loadedData = loadJSON(PENDING_FORMS);
       if (Array.isArray(loadedData)) {
         pendingForms = loadedData;
-        console.log('  ✅ Successfully loaded', pendingForms.length, 'forms');
       }
     } catch (loadError) {
-      console.error('  ❌ Error loading JSON:', loadError.message);
       pendingForms = [];
     }
 
@@ -153,8 +146,6 @@ router.post('/submit-no-dues', roleAuth('employee'), upload.single('orderLetter'
     req.session.user.formId = formId;
     req.session.user.applicationStatus = 'pending';
 
-    console.log('🎉 Success! Form', formId, 'created');
-
     res.json({
       success: true,
       message: 'Application submitted successfully',
@@ -163,7 +154,6 @@ router.post('/submit-no-dues', roleAuth('employee'), upload.single('orderLetter'
     });
 
   } catch (error) {
-    console.error('💥 FATAL ERROR in submit-no-dues:', error);
     res.status(500).json({
       success: false,
       message: 'Internal server error: ' + error.message
@@ -196,7 +186,6 @@ router.get('/previous-application', roleAuth('employee'), (req, res) => {
 
     res.json({ success: true, hasApplication: true, application: latestApp });
   } catch (error) {
-    console.error('Error checking previous application:', error);
     res.status(500).json({ success: false, message: 'Error checking previous application: ' + error.message });
   }
 });
@@ -204,7 +193,6 @@ router.get('/previous-application', roleAuth('employee'), (req, res) => {
 // --------------------- Detailed Tracking Endpoint ---------------------
 router.get('/tracking-details', roleAuth('employee'), (req, res) => {
   try {
-    console.log('🎯 Fetching detailed tracking information...');
 
     const sessionUser = req.session?.user;
     if (!sessionUser) return res.status(401).json({ success: false, message: 'Not authenticated' });
@@ -241,9 +229,6 @@ router.get('/tracking-details', roleAuth('employee'), (req, res) => {
     const timeline = buildTimelineData(employeeForm);
     const formsStatus = getFormsCompletionStatus(employeeForm);
 
-    console.log(`✅ Found application ${employeeForm.formId} for employee ${employeeId}`);
-    console.log(`📊 Timeline has ${timeline.length} events, ${formsStatus.length} forms`);
-
     res.json({
       success: true,
       hasApplication: true,
@@ -259,7 +244,6 @@ router.get('/tracking-details', roleAuth('employee'), (req, res) => {
     });
 
   } catch (error) {
-    console.error('❌ Error getting tracking details:', error);
     res.status(500).json({ success: false, message: error.message });
   }
 });
@@ -379,7 +363,6 @@ function getFormsCompletionStatus(formData) {
 const savePartialForm = (reqKey, storageKey) => {
   return async (req, res) => {
     try {
-      console.log(`💾 Saving ${storageKey}...`);
 
       const sessionUser = req.session?.user;
       if (!sessionUser) return res.status(401).json({ success: false, message: "Session expired" });
@@ -436,7 +419,6 @@ const savePartialForm = (reqKey, storageKey) => {
         }
 
       } catch (parseError) {
-        console.error(`JSON parse error for ${storageKey}:`, parseError);
         return res.status(400).json({
           success: false,
           message: `Invalid JSON format for ${storageKey}: ${parseError.message}`
@@ -449,14 +431,12 @@ const savePartialForm = (reqKey, storageKey) => {
       try {
         saveJSON(PENDING_FORMS, allForms);
       } catch (saveError) {
-        console.error(`Error saving ${storageKey}:`, saveError);
         return res.status(500).json({
           success: false,
           message: `Failed to save ${storageKey}`
         });
       }
 
-      console.log(`✅ ${storageKey} saved successfully for employee ${employeeId}`);
       res.json({
         success: true,
         message: `${storageKey} saved successfully`,
@@ -465,7 +445,6 @@ const savePartialForm = (reqKey, storageKey) => {
       });
 
     } catch (err) {
-      console.error(`❌ Error saving ${storageKey}:`, err);
       res.status(500).json({
         success: false,
         message: 'Internal Server Error: ' + err.message
@@ -482,7 +461,6 @@ router.post('/save-form365-disposal', roleAuth('employee'), savePartialForm('for
 // --------------------- Final Submit ---------------------
 router.post('/final-submit', roleAuth('employee'), (req, res) => {
   try {
-    console.log('📤 Employee final submit request...');
 
     const sessionUser = req.session?.user;
     if (!sessionUser) return res.status(401).json({ success: false, message: 'Session expired' });
@@ -554,8 +532,6 @@ router.post('/final-submit', roleAuth('employee'), (req, res) => {
       return res.status(500).json({ success: false, message: 'Failed to save form submission' });
     }
 
-    console.log(`✅ Form ${form.formId} submitted to HOD successfully`);
-
     res.json({
       success: true,
       message: 'Forms submitted to HOD for review',
@@ -564,7 +540,6 @@ router.post('/final-submit', roleAuth('employee'), (req, res) => {
     });
 
   } catch (err) {
-    console.error('❌ Final Submit Error:', err);
     res.status(500).json({ success: false, message: 'Internal Server Error: ' + err.message });
   }
 });
@@ -572,7 +547,6 @@ router.post('/final-submit', roleAuth('employee'), (req, res) => {
 // Enhanced Certificate Endpoints with History Support
 router.get('/certificates', roleAuth('employee'), (req, res) => {
   try {
-    console.log('📜 Fetching certificates for employee (including history)...');
 
     const sessionUser = req.session?.user;
     if (!sessionUser) return res.status(401).json({ success: false, message: 'Not authenticated' });
@@ -595,7 +569,6 @@ router.get('/certificates', roleAuth('employee'), (req, res) => {
         }))];
       }
     } catch {
-      console.log('No active certificates file found');
     }
 
     // Get historical certificates
@@ -625,18 +598,14 @@ router.get('/certificates', roleAuth('employee'), (req, res) => {
           });
       }
     } catch {
-      console.log('No history file found for certificates');
     }
 
     // Sort certificates by generation date (newest first)
     allCertificates.sort((a, b) => new Date(b.generatedAt || b.completedAt) - new Date(a.generatedAt || a.completedAt));
 
-    console.log(`✅ Found ${allCertificates.length} total certificates for employee ${employeeId} (${allCertificates.filter(c => c.source === 'active').length} active, ${allCertificates.filter(c => c.source === 'history').length} historical)`);
-
     res.json({ success: true, certificates: allCertificates });
 
   } catch (error) {
-    console.error('❌ Error fetching certificates:', error);
     res.status(500).json({ success: false, message: error.message });
   }
 });
@@ -699,11 +668,8 @@ router.get('/certificates/:certId/download', roleAuth('employee'), (req, res) =>
     const filePath = certificate.filepath;
 
     if (!fs.existsSync(filePath)) {
-      console.error(`Certificate file not found: ${filePath}`);
       return res.status(404).json({ success: false, message: 'Certificate file not found on server' });
     }
-
-    console.log(`📥 Downloading certificate: ${certificate.filename} for employee ${employeeId} (${certificate.source || 'active'})`);
 
     res.setHeader('Content-Type', 'application/pdf');
     res.setHeader('Content-Disposition', `attachment; filename="${certificate.filename}"`);
@@ -712,7 +678,6 @@ router.get('/certificates/:certId/download', roleAuth('employee'), (req, res) =>
     const fileStream = fs.createReadStream(filePath);
 
     fileStream.on('error', (error) => {
-      console.error('Error streaming certificate file:', error);
       if (!res.headersSent) {
         res.status(500).json({ success: false, message: 'Error streaming certificate file' });
       }
@@ -721,7 +686,6 @@ router.get('/certificates/:certId/download', roleAuth('employee'), (req, res) =>
     fileStream.pipe(res);
 
   } catch (error) {
-    console.error('❌ Error downloading certificate:', error);
     res.status(500).json({ success: false, message: error.message });
   }
 });
@@ -814,7 +778,6 @@ router.get('/dashboard-status', roleAuth('employee'), async (req, res) => {
     });
 
   } catch (err) {
-    console.error('❌ /dashboard-status error:', err);
     res.status(500).json({
       success: false,
       message: 'Error fetching dashboard status: ' + err.message
@@ -839,11 +802,6 @@ router.get('/assigned-forms', roleAuth('employee'), (req, res) => {
       return res.status(500).json({ success: false, message: 'Database error: Unable to load forms data' });
     }
 
-    console.log(`🔍 All forms for employee ${employeeId}:`,
-      allForms.filter(f => f && f.employeeId === employeeId)
-        .map(f => ({ formId: f.formId, status: f.status, submissionDate: f.submissionDate }))
-    );
-
     // CRITICAL FIX: Filter only NON-COMPLETED forms for assigned forms display
     const allowedStatuses = ['approved', 'Submitted to HOD', 'pending', 'Pending'];  // Removed 'IT Completed'
     const myForms = allForms.filter(f => {
@@ -852,10 +810,6 @@ router.get('/assigned-forms', roleAuth('employee'), (req, res) => {
         f.status &&
         allowedStatuses.includes(f.status);
     });
-
-    console.log(`📋 Filtered forms for employee ${employeeId}:`,
-      myForms.map(f => ({ formId: f.formId, status: f.status, assignedFormsCount: f.assignedForms?.length || 0 }))
-    );
 
     if (myForms.length === 0) {
       return res.json({
@@ -873,8 +827,6 @@ router.get('/assigned-forms', roleAuth('employee'), (req, res) => {
       const dateB = new Date(b.submissionDate || b.lastUpdated || 0);
       return dateB - dateA;
     })[0];
-
-    console.log(`✅ Selected form for ${employeeId}: ${myForm.formId} (${myForm.status}) - ${myForm.assignedForms?.length || 0} assigned forms`);
 
     // Update session formId if needed
     if (req.session.user.formId !== myForm.formId) {
@@ -902,7 +854,6 @@ router.get('/assigned-forms', roleAuth('employee'), (req, res) => {
     });
 
   } catch (error) {
-    console.error('💥 Unexpected error in /assigned-forms:', error);
     res.status(500).json({ success: false, message: 'Internal Server Error' });
   }
 });
@@ -963,8 +914,6 @@ router.get('/form-data', roleAuth('employee'), (req, res) => {
 
     const formData = formEntry.formResponses?.[formKey] || null;
 
-    console.log(`📄 Returning form data for ${formName}:`, formData ? 'Found' : 'Not found');
-
     res.json({
       success: true,
       formData: formData,
@@ -972,7 +921,6 @@ router.get('/form-data', roleAuth('employee'), (req, res) => {
     });
 
   } catch (error) {
-    console.error('❌ Error fetching form data:', error);
     res.status(500).json({
       success: false,
       message: 'Internal server error: ' + error.message
@@ -1015,14 +963,12 @@ router.get('/form-status', roleAuth('employee'), async (req, res) => {
     });
 
   } catch (error) {
-    console.error('Error getting form status:', error);
     res.status(500).json({
       success: false,
       message: 'Failed to get form status'
     });
   }
 });
-
 
 // --------------------- Track Forms ---------------------
 router.get('/track', roleAuth('employee'), (req, res) => {
@@ -1047,7 +993,6 @@ router.get('/track', roleAuth('employee'), (req, res) => {
 
     res.json({ success: true, forms: myForms });
   } catch (err) {
-    console.error('❌ /track error:', err);
     res.status(500).json({
       success: false,
       message: 'Failed to retrieve track data: ' + err.message
@@ -1101,7 +1046,6 @@ router.get('/history', roleAuth('employee'), (req, res) => {
       }
     });
   } catch (err) {
-    console.error('❌ /history error:', err);
     res.status(500).json({
       success: false,
       message: 'Failed to retrieve form history: ' + err.message
@@ -1145,7 +1089,6 @@ router.get('/confirmation', roleAuth('employee'), (req, res) => {
 
     res.json({ success: true, data: form });
   } catch (err) {
-    console.error('❌ /confirmation error:', err);
     res.status(500).json({
       success: false,
       message: 'Internal Server Error: ' + err.message
@@ -1158,7 +1101,6 @@ router.get('/form-pdf/:formId', roleAuth('employee'), (req, res) => {
   const pdfPath = path.join(__dirname, '../public/forms/sample_form.pdf');
   res.sendFile(pdfPath, (err) => {
     if (err) {
-      console.error('Error sending PDF:', err);
       res.status(404).json({ success: false, message: 'PDF not found' });
     }
   });
@@ -1203,7 +1145,6 @@ router.get('/employee-info', roleAuth('employee'), (req, res) => {
       }
     });
   } catch (err) {
-    console.error('❌ /employee-info error:', err);
     res.status(500).json({
       success: false,
       message: 'Failed to retrieve employee info: ' + err.message

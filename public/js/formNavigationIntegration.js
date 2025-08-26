@@ -20,7 +20,7 @@ class FormNavigationIntegration {
             console.error('navigationManager is not defined');
             return;
         }
-        
+
         // Register the page
         window.navigationManager.setCurrentPage({
             pageId: window.location.pathname,
@@ -58,7 +58,7 @@ class FormNavigationIntegration {
     static async saveFormData(formType) {
         try {
             console.log(`Attempting to save ${formType} form`);
-            
+
             const saveHandlers = {
                 'disposal': this.saveDisposalForm,
                 'efile': this.saveEfileForm,
@@ -69,11 +69,11 @@ class FormNavigationIntegration {
             const handler = saveHandlers[formType];
             if (handler) {
                 const result = await handler.call(this);
-                
+
                 // After successful save, clear the localStorage cache
                 const storageKey = `${formType}FormData`;
                 localStorage.removeItem(storageKey);
-                
+
                 console.log(`${formType} form saved successfully`);
                 return result;
             }
@@ -155,10 +155,10 @@ class FormNavigationIntegration {
             if (typeof window.saveFormData === 'function') {
                 return await window.saveFormData();
             }
-            
+
             // Alternative: implement basic save logic
             return await this.performFormSave('disposal');
-            
+
         } catch (error) {
             console.error('Disposal form save failed:', error);
             throw new Error(`Disposal form save failed: ${error.message}`);
@@ -171,10 +171,10 @@ class FormNavigationIntegration {
             if (typeof window.saveFormData === 'function') {
                 return await window.saveFormData();
             }
-            
+
             // Alternative: implement basic save logic
             return await this.performFormSave('efile');
-            
+
         } catch (error) {
             console.error('E-file form save failed:', error);
             throw new Error(`E-file form save failed: ${error.message}`);
@@ -187,10 +187,10 @@ class FormNavigationIntegration {
             if (typeof window.saveFormData === 'function') {
                 return await window.saveFormData();
             }
-            
+
             // Alternative: implement basic save logic
             return await this.performFormSave('form365transfer');
-            
+
         } catch (error) {
             console.error('Form 365 Transfer save failed:', error);
             throw new Error(`Form 365 Transfer save failed: ${error.message}`);
@@ -203,10 +203,10 @@ class FormNavigationIntegration {
             if (typeof window.saveFormData === 'function') {
                 return await window.saveFormData();
             }
-            
+
             // Alternative: implement basic save logic
             return await this.performFormSave('form365disposal');
-            
+
         } catch (error) {
             console.error('Form 365 Disposal save failed:', error);
             throw new Error(`Form 365 Disposal save failed: ${error.message}`);
@@ -219,11 +219,11 @@ class FormNavigationIntegration {
             try {
                 // Find the form element
                 const form = document.querySelector('form') || document.querySelector('#mainForm') || document.querySelector(`#${formType}Form`);
-                
+
                 if (!form) {
                     // If no form found, just save current form data to localStorage
                     console.log(`No form element found for ${formType}, saving field data to localStorage`);
-                    
+
                     const formData = {};
                     const inputs = document.querySelectorAll('input, select, textarea');
                     inputs.forEach(input => {
@@ -238,12 +238,12 @@ class FormNavigationIntegration {
                             }
                         }
                     });
-                    
+
                     localStorage.setItem(`${formType}FormData`, JSON.stringify(formData));
                     localStorage.setItem(`${formType}LastSaved`, new Date().toISOString());
-                    
-                    resolve({ 
-                        success: true, 
+
+                    resolve({
+                        success: true,
                         message: `${formType} form data saved to localStorage`,
                         savedAt: new Date().toISOString()
                     });
@@ -272,17 +272,17 @@ class FormNavigationIntegration {
                 } catch (fetchError) {
                     // If API call fails, fallback to localStorage save
                     console.warn(`API save failed for ${formType}, falling back to localStorage:`, fetchError);
-                    
+
                     const formObject = {};
                     for (let [key, value] of formData.entries()) {
                         formObject[key] = value;
                     }
-                    
+
                     localStorage.setItem(`${formType}FormData`, JSON.stringify(formObject));
                     localStorage.setItem(`${formType}LastSaved`, new Date().toISOString());
-                    
-                    resolve({ 
-                        success: true, 
+
+                    resolve({
+                        success: true,
                         message: `${formType} form saved locally (API unavailable)`,
                         savedAt: new Date().toISOString(),
                         fallback: true

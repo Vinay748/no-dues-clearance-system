@@ -335,7 +335,7 @@ class NavigationManager {
         });
     }
 
-    // NEW METHOD: Clear unsaved data from all sources
+    // Clear unsaved data from all sources
     async clearUnsavedData() {
         return new Promise((resolve) => {
             try {
@@ -389,7 +389,7 @@ class NavigationManager {
         });
     }
 
-    // NEW METHOD: Show error message
+    // Show error message
     showErrorMessage(message) {
         const errorDiv = document.createElement('div');
         errorDiv.style.cssText = `
@@ -497,13 +497,13 @@ class NavigationManager {
         if (!modalContent) return;
 
         modalContent.addEventListener('touchstart', (e) => {
-            startY = e.touches[0].clientY;
+            startY = e.touches.clientY;
             isDragging = true;
         });
 
         modalContent.addEventListener('touchmove', (e) => {
             if (!isDragging) return;
-            currentY = e.touches[0].clientY;
+            currentY = e.touches.clientY;
             const deltaY = currentY - startY;
 
             if (deltaY > 0) {
@@ -633,7 +633,7 @@ class NavigationManager {
         backBtn.addEventListener('touchstart', (e) => {
             touchStartTime = Date.now();
             touchStartPos = {
-                x: e.touches[0].clientX,
+                x: e.touches.clientX,
                 y: e.touches.clientY
             };
             backBtn.classList.add('touch-active');

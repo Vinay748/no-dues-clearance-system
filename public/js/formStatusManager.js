@@ -78,7 +78,6 @@ class FormStatusManager {
     }
 }
 
-
 // Status messages configuration
 const STATUS_MESSAGES = {
     'pending': null,
@@ -108,7 +107,6 @@ const STATUS_MESSAGES = {
     }
 };
 
-
 // Banner management functions
 function updateFormBanner(status, context) {
     const banner = document.querySelector('.form-status-banner') || createStatusBanner();
@@ -117,15 +115,15 @@ function updateFormBanner(status, context) {
 
     if (config) {
         banner.innerHTML = `
-            <div class="status-content">
-                <span class="status-icon">${config.icon}</span>
-                <div class="status-text">
-                    <strong>${config.title}</strong>
-                    <div>${config.message}</div>
-                </div>
-            </div>
-            <button class="close-btn" onclick="closeBanner()" aria-label="Close banner">×</button>
-        `;
+            <div class="status-content">
+                <span class="status-icon">${config.icon}</span>
+                <div class="status-text">
+                    <strong>${config.title}</strong>
+                    <div>${config.message}</div>
+                </div>
+            </div>
+            <button class="close-btn" onclick="closeBanner()" aria-label="Close banner">×</button>
+        `;
 
         banner.className = `form-status-banner status-${config.type}`;
         banner.style.display = 'flex';
@@ -136,7 +134,6 @@ function updateFormBanner(status, context) {
         setFormInteractivity(false);
     }
 }
-
 
 function createStatusBanner() {
     const banner = document.createElement('div');
@@ -149,7 +146,6 @@ function createStatusBanner() {
 
     return banner;
 }
-
 
 function setFormInteractivity(isReadOnly) {
     const inputs = document.querySelectorAll('input, select, textarea, button[type="submit"]');
@@ -166,14 +162,12 @@ function setFormInteractivity(isReadOnly) {
     });
 }
 
-
 function closeBanner() {
     const banner = document.querySelector('.form-status-banner');
     if (banner) {
         banner.style.display = 'none';
     }
 }
-
 
 // Initialize when DOM is ready
 let formStatusManager;

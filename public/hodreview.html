@@ -708,7 +708,7 @@
         tbody.innerHTML = `
           <tr>
             <td colspan="6" class="empty-state">
-              📭 No ${tabType === 'total' ? '' : tabType} applications found
+              No ${tabType === 'total' ? '' : tabType} applications found
             </td>
           </tr>
         `;
@@ -856,11 +856,9 @@
 
             if (response.ok) {
               data = await response.json();
-              console.log(`✅ Successfully loaded data from: ${endpoint}`);
               break;
             }
           } catch (e) {
-            console.log(`❌ Failed to load from: ${endpoint}`);
             continue;
           }
         }
@@ -897,7 +895,7 @@
         updateTabCounts();
         document.getElementById('tableBody').innerHTML =
           `<tr><td colspan="6" class="empty-state">
-             ❌ Error loading data. Please refresh the page.
+             Error loading data. Please refresh the page.
            </td></tr>`;
       }
     }

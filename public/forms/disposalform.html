@@ -608,7 +608,6 @@
               <div>HOD, IT Department, Rishikesh</div>
             </div>
           </div>
-
           <div class="signature-container">
             <div class="signature-area" id="hodSignatureArea">
               <div class="signature-placeholder">Click to Upload HOD Signature</div>
@@ -670,7 +669,6 @@
       if (!isHODReview()) return;
 
       try {
-        console.log('📄 Auto-filling HOD details in Disposal Form...');
         showMessage('Loading HOD details for form review...', 'info');
 
         const response = await fetch('/api/hod/my-details', {
@@ -680,7 +678,6 @@
         if (response.ok) {
           const data = await response.json();
           if (data.success && data.hodDetails) {
-            console.log('✅ HOD details received for form auto-fill:', data.hodDetails);
 
             const hodDetails = data.hodDetails;
 
@@ -697,15 +694,12 @@
               if (field && !field.value) {
                 field.value = value;
 
-                // Style as auto-filled with GREEN theme
                 field.classList.add('auto-filled');
                 field.style.backgroundColor = '#d4edda';
                 field.style.borderColor = '#28a745';
                 field.style.color = '#155724';
                 field.title = 'Auto-filled from HOD session';
                 field.readOnly = true;
-
-                console.log(`✅ Auto-filled ${fieldId} with: ${value}`);
               }
             });
 
@@ -714,7 +708,6 @@
 
             showMessage('HOD details auto-filled successfully!', 'success');
 
-            // Update signature note
             const signatureNote = document.querySelector('.signature-note');
             if (signatureNote) {
               signatureNote.textContent = `HOD details auto-filled for ${hodDetails.name}`;
@@ -722,7 +715,6 @@
           }
         }
       } catch (error) {
-        console.error('❌ Error auto-filling HOD details:', error);
         showMessage('Failed to auto-fill HOD details', 'error');
       }
     }
@@ -742,12 +734,10 @@
               sigArea.innerHTML = `<img src="${data.signatureUrl}" alt="HOD Signature" style="max-height: 60px; max-width: 100%; border: 2px solid #28a745; border-radius: 4px;">`;
               sigArea.classList.add('has-signature');
               sigArea.title = 'HOD signature auto-loaded';
-              console.log('✅ Auto-filled HOD signature in Disposal Form');
             }
           }
         }
       } catch (error) {
-        console.error('❌ Error loading HOD signature:', error);
       }
     }
 
@@ -763,7 +753,6 @@
 
         // Auto-fill HOD details if in HOD review mode
         if (isHODReview()) {
-          console.log('📋 Disposal Form opened in HOD review mode - auto-filling HOD details...');
           setTimeout(autoFillHODDetailsInForm, 1000);
         }
 
@@ -783,7 +772,6 @@
         initializeSignatureHandling();
 
       } catch (error) {
-        console.error('Error initializing form:', error);
         showMessage('Error loading form. Please refresh the page.', 'error');
       }
     }
@@ -798,10 +786,8 @@
         if (response.ok) {
           const data = await response.json();
           currentUserRole = data.role || '';
-          console.log('User role:', currentUserRole);
         }
       } catch (error) {
-        console.error('Error getting user role:', error);
         currentUserRole = 'employee'; // Default fallback
       }
     }
@@ -809,8 +795,6 @@
     // Load HOD profile and auto-fill fields
     async function loadHODProfile() {
       try {
-        console.log('Loading HOD profile for auto-fill...');
-
         const response = await fetch('/api/hod/profile', {
           credentials: 'include'
         });
@@ -835,12 +819,9 @@
               hodEmail.value = data.hodData.email;
               hodEmail.classList.add('auto-filled');
             }
-
-            console.log('HOD profile auto-filled successfully:', data.hodData);
           }
         }
       } catch (error) {
-        console.error('Error loading HOD profile:', error);
       }
     }
 
@@ -859,11 +840,9 @@
               sigArea.innerHTML = `<img src="${data.signatureUrl}" alt="HOD Signature" style="max-height: 60px; max-width: 100%;">`;
               sigArea.classList.add('has-signature');
             }
-            console.log('Existing HOD signature loaded');
           }
         }
       } catch (error) {
-        console.error('Error loading HOD signature:', error);
       }
     }
 
@@ -911,14 +890,12 @@
         });
 
         if (response.ok) {
-          console.log('Signature uploaded successfully');
           showMessage('Signature uploaded successfully', 'success');
         } else {
           throw new Error('Failed to upload signature');
         }
 
       } catch (error) {
-        console.error('Error uploading signature:', error);
         showMessage('Failed to upload signature', 'error');
       }
     }
@@ -949,8 +926,6 @@
 
         const formData = collectFormData();
 
-        console.log('Saving disposal form data:', formData);
-
         // Save to server
         const response = await fetch('/api/employee/save-disposal', {
           method: 'POST',
@@ -964,15 +939,12 @@
         if (response.ok && result.success) {
           // Save to localStorage for dashboard access
           localStorage.setItem('disposalFormData', JSON.stringify(formData));
-          console.log('Disposal form saved to localStorage');
-
           showMessage(result.message || 'Form saved successfully!', 'success');
         } else {
           throw new Error(result.message || 'Failed to save form');
         }
 
       } catch (error) {
-        console.error('Error saving form:', error);
         showMessage('Failed to save form: ' + error.message, 'error');
       }
     }
@@ -1016,7 +988,6 @@
         deactivationDate: getValue("deactivationDate"),
         itName: getValue("itName"),
         itDesignation: getValue("itDesignation"),
-
         // Metadata
         formId: formId,
         lastUpdated: new Date().toISOString(),
@@ -1062,12 +1033,9 @@
               sigArea.classList.add('has-signature');
             }
           }
-
-          console.log('Form data loaded successfully');
         }
 
       } catch (error) {
-        console.error('Error loading form data:', error);
       }
     }
 
@@ -1090,27 +1058,17 @@
 
     // Initialize navigation for specific form type
     document.addEventListener('DOMContentLoaded', () => {
-      // Determine form type from URL or page structure
       const formType = window.location.pathname.includes('disposal') ? 'disposal' :
         window.location.pathname.includes('efile') ? 'efile' :
           window.location.pathname.includes('365transfer') ? 'form365transfer' :
             window.location.pathname.includes('365disposal') ? 'form365disposal' : 'unknown';
-
-      // Initialize navigation for this form
       FormNavigationIntegration.initializeForForm(formType);
-
-      console.log(`✅ Navigation system initialized for ${formType} form`);
     });
 
     // Enhanced role-based element hiding with proper selectors
     function initializeRoleBasedUI() {
-
-      // Multiple methods to detect user role
       function detectUserRole() {
-        // Method 1: From localStorage/sessionStorage
         let role = localStorage.getItem('userRole') || sessionStorage.getItem('userRole');
-
-        // Method 2: From page title or URL
         if (!role) {
           if (window.location.href.includes('hod') || window.location.href.includes('HOD')) {
             role = 'HOD';
@@ -1118,20 +1076,14 @@
             role = 'IT';
           }
         }
-
-        // Method 3: From a meta tag or hidden input
         const roleElement = document.querySelector('meta[name="user-role"]') ||
           document.querySelector('input[name="userRole"]');
         if (!role && roleElement) {
           role = roleElement.content || roleElement.value;
         }
-
-        // Method 4: From server-rendered data
         if (!role && typeof window.userRole !== 'undefined') {
           role = window.userRole;
         }
-
-        // Method 5: From authentication/session cookies (if available)
         if (!role && document.cookie) {
           const cookieRole = document.cookie
             .split('; ')
@@ -1140,15 +1092,11 @@
             role = cookieRole.split('=')[1];
           }
         }
-
         return role ? role.toLowerCase() : null;
       }
-
       const userRole = detectUserRole();
 
       if (userRole === 'hod' || userRole === 'it') {
-
-        // Hide back buttons with multiple selectors
         const elementsToHide = [
           '.global-back-button',
           '.back-btn',
@@ -1179,12 +1127,9 @@
                 el.setAttribute('aria-hidden', 'true');
               }
             });
-          } catch (error) {
-            console.log('Save selector error:', selector, error);
-          }
+          } catch (error) { }
         });
 
-        // Hide save buttons using proper selectors
         const saveSelectors = [
           'button[type="submit"]',
           'input[type="submit"]',
@@ -1214,37 +1159,27 @@
                 el.className?.includes('save');
 
               if (isSaveButton) {
-                // Hide completely (not just disable)
                 el.style.display = 'none !important';
                 el.setAttribute('aria-hidden', 'true');
                 el.setAttribute('tabindex', '-1');
-
-                // Also hide parent container if it only contains the save button
                 const parent = el.parentElement;
                 if (parent && parent.children.length === 1) {
                   parent.style.display = 'none';
                 }
-
-                // Remove from form submission
                 if (el.form) {
                   el.remove();
                 }
               }
             });
-          } catch (error) {
-            console.log('Save selector error:', selector, error);
-          }
+          } catch (error) { }
         });
 
-        // Hide save buttons by text content using safe method
         const allButtons = document.querySelectorAll('button, input[type="button"], input[type="submit"]');
         allButtons.forEach(button => {
           const text = (button.textContent || button.value || '').toLowerCase();
           if (text.includes('save') || text.includes('submit') || text.includes('update')) {
             button.style.display = 'none !important';
             button.setAttribute('aria-hidden', 'true');
-
-            // Hide parent if it's a button container
             const parent = button.parentElement;
             if (parent && (parent.className.includes('button') || parent.className.includes('action'))) {
               parent.style.display = 'none';
@@ -1252,31 +1187,20 @@
           }
         });
 
-        // Add role-based CSS class
         document.body.classList.add(`role-${userRole}`);
         document.body.setAttribute('data-user-role', userRole);
-
-        console.log(`🔒 UI restricted for ${userRole.toUpperCase()} role - Save buttons HIDDEN`);
-
-      } else {
-        console.log(`✅ Full UI access for role: ${userRole || 'EMPLOYEE'}`);
       }
     }
 
-    // Run multiple times to catch all elements
     document.addEventListener('DOMContentLoaded', initializeRoleBasedUI);
     window.addEventListener('load', initializeRoleBasedUI);
-
-    // Check again after navigation manager loads
     setTimeout(initializeRoleBasedUI, 500);
     setTimeout(initializeRoleBasedUI, 2000);
     setTimeout(initializeRoleBasedUI, 4000);
 
-    // Set up observer for dynamically added elements
     if (typeof MutationObserver !== 'undefined') {
       const observer = new MutationObserver(function (mutations) {
         let shouldReapply = false;
-
         mutations.forEach(function (mutation) {
           if (mutation.addedNodes.length > 0) {
             mutation.addedNodes.forEach(function (node) {
@@ -1287,7 +1211,6 @@
                   node.querySelector('input[type="submit"]') ||
                   (node.textContent && node.textContent.toLowerCase().includes('save'))
                 );
-
                 if (hasSaveButton) {
                   shouldReapply = true;
                 }
@@ -1295,33 +1218,24 @@
             });
           }
         });
-
         if (shouldReapply) {
           setTimeout(initializeRoleBasedUI, 100);
         }
       });
-
       observer.observe(document.body, {
         childList: true,
         subtree: true
       });
     }
 
-    // Message listener for iframe data population
     window.addEventListener('message', function (event) {
-      console.log('📩 Message received in iframe:', event.data);
-
       if (event.data && event.data.action === 'populateForm') {
-        console.log('📄 Populating form with data:', event.data.data);
         const data = event.data.data;
-
-        // Loop through all data fields and populate matching elements
         Object.keys(data).forEach(fieldId => {
           const element = document.getElementById(fieldId);
           if (element) {
             if (element.tagName === 'INPUT' || element.tagName === 'TEXTAREA' || element.tagName === 'SELECT') {
               element.value = data[fieldId] || '';
-              console.log(`✅ Set ${fieldId} = ${data[fieldId]}`);
             } else if (element.tagName === 'IMG') {
               element.src = data[fieldId] || '';
             } else {
@@ -1330,14 +1244,12 @@
           }
         });
 
-        // If read-only mode, disable all inputs
         if (event.data.isReadOnly) {
           document.querySelectorAll('input, select, textarea, button').forEach(el => {
             el.disabled = true;
             el.style.backgroundColor = '#f8f9fa';
             el.style.cursor = 'not-allowed';
           });
-          console.log('🔒 Form set to read-only mode');
         }
       }
 
@@ -1351,7 +1263,6 @@
       }
     });
 
-    // Also check URL parameters for data (fallback method)
     window.addEventListener('DOMContentLoaded', function () {
       const urlParams = new URLSearchParams(window.location.search);
       const mode = urlParams.get('mode');
@@ -1360,8 +1271,6 @@
       if (existingData) {
         try {
           const data = JSON.parse(decodeURIComponent(existingData));
-          console.log('📄 Loading data from URL params:', data);
-
           Object.keys(data).forEach(fieldId => {
             const element = document.getElementById(fieldId);
             if (element && element.value !== undefined) {
@@ -1369,7 +1278,6 @@
             }
           });
         } catch (error) {
-          console.error('❌ Error parsing URL data:', error);
         }
       }
 

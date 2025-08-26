@@ -47,7 +47,6 @@ const certificatesDir = path.join(__dirname, 'public', 'certificates');
 [uploadsDir, dataDir, publicDir, certificatesDir].forEach(dir => {
   if (!fs.existsSync(dir)) {
     fs.mkdirSync(dir, { recursive: true });
-    console.log(`✅ Created directory: ${dir}`);
   }
 });
 
@@ -60,7 +59,6 @@ const certificateSubDirs = [
 certificateSubDirs.forEach(dir => {
   if (!fs.existsSync(dir)) {
     fs.mkdirSync(dir, { recursive: true });
-    console.log(`✅ Created certificate subdirectory: ${dir}`);
   }
 });
 
@@ -71,12 +69,10 @@ const initializeOTPFiles = () => {
 
   if (!fs.existsSync(otpDataPath)) {
     fs.writeFileSync(otpDataPath, '{}', 'utf8');
-    console.log('✅ Initialized otp_data.json file');
   }
 
   if (!fs.existsSync(loginSessionsPath)) {
     fs.writeFileSync(loginSessionsPath, '{}', 'utf8');
-    console.log('✅ Initialized login_sessions.json file');
   }
 };
 
@@ -86,12 +82,10 @@ const initializeNotificationFiles = () => {
 
   if (!fs.existsSync(notificationsPath)) {
     fs.writeFileSync(notificationsPath, '[]', 'utf8');
-    console.log('✅ Initialized notifications.json file');
   }
 
   if (!fs.existsSync(employeeSessionsPath)) {
     fs.writeFileSync(employeeSessionsPath, '[]', 'utf8');
-    console.log('✅ Initialized employee_sessions.json file');
   }
 };
 
@@ -99,7 +93,6 @@ const initializeFormHistoryFile = () => {
   const formHistoryPath = path.join(dataDir, 'form_history.json');
   if (!fs.existsSync(formHistoryPath)) {
     fs.writeFileSync(formHistoryPath, '[]', 'utf8');
-    console.log('✅ Initialized form_history.json file');
   }
 };
 
@@ -158,7 +151,6 @@ app.use(async (req, res, next) => {
     const hasOldStructure = !user.sessionVersion || user.sessionVersion !== '2025-08-17';
 
     if (isOldSession || hasOldStructure) {
-      console.log(`🧹 Auto-cleaning session for user ${user.employeeId || user.id} - ${isOldSession ? 'Old' : 'Outdated structure'}`);
 
       // Preserve important data before cleanup
       const preservedData = {
@@ -193,22 +185,8 @@ app.use(async (req, res, next) => {
   }
 });
 
-// Request logging middleware
+// Request middleware
 app.use((req, res, next) => {
-  console.log(`${new Date().toISOString()} - ${req.method} ${req.path}`);
-
-  if (req.method === 'POST') {
-    try {
-      if (req.body && typeof req.body === 'object' && req.body !== null) {
-        console.log('POST Body keys:', Object.keys(req.body));
-      } else {
-        console.log('POST Body: undefined/null or not an object, type:', typeof req.body);
-      }
-    } catch (error) {
-      console.log('Error logging POST body:', error.message);
-    }
-  }
-
   next();
 });
 
@@ -218,7 +196,6 @@ function loadEmployeeUser() {
     const usersData = fs.readFileSync(path.join(dataDir, 'users.json'), 'utf8');
     return JSON.parse(usersData);
   } catch (error) {
-    console.error('Error loading employee user:', error);
     return null;
   }
 }
@@ -228,7 +205,6 @@ function loadHODUsers() {
     const hodData = fs.readFileSync(path.join(dataDir, 'hod_users.json'), 'utf8');
     return JSON.parse(hodData);
   } catch (error) {
-    console.error('Error loading HOD users:', error);
     return [];
   }
 }
@@ -238,7 +214,6 @@ function loadITUsers() {
     const itData = fs.readFileSync(path.join(dataDir, 'it_users.json'), 'utf8');
     return JSON.parse(itData);
   } catch (error) {
-    console.error('Error loading IT users:', error);
     return [];
   }
 }
@@ -316,7 +291,6 @@ app.post('/api/auth/employee-login', async (req, res) => {
     }
 
   } catch (error) {
-    console.error('Employee login error:', error);
     res.status(500).json({
       success: false,
       message: 'Login failed. Please try again.'
@@ -352,7 +326,6 @@ app.post('/api/auth/verify-otp', async (req, res) => {
       // Regenerate session to clear old data
       req.session.regenerate((err) => {
         if (err) {
-          console.error('Session regeneration failed:', err);
           return res.status(500).json({ success: false, message: 'Session error' });
         }
 
@@ -370,7 +343,6 @@ app.post('/api/auth/verify-otp', async (req, res) => {
 
         req.session.save((saveErr) => {
           if (saveErr) {
-            console.error('Session save failed:', saveErr);
             return res.status(500).json({ success: false, message: 'Session save error' });
           }
 
@@ -387,7 +359,6 @@ app.post('/api/auth/verify-otp', async (req, res) => {
     }
 
   } catch (error) {
-    console.error('OTP verification error:', error);
     res.status(500).json({
       success: false,
       message: 'Verification failed. Please try again.'
@@ -411,7 +382,6 @@ app.post('/api/auth/resend-otp', async (req, res) => {
     res.json(result);
 
   } catch (error) {
-    console.error('Resend OTP error:', error);
     res.status(500).json({
       success: false,
       message: 'Failed to resend OTP'
@@ -459,14 +429,11 @@ app.post('/api/auth/hod-login', async (req, res) => {
 
     req.session.save((err) => {
       if (err) {
-        console.error('HOD session save error:', err);
         return res.status(500).json({
           success: false,
           message: 'Session creation failed'
         });
       }
-
-      console.log(`✅ HOD login successful: ${hod.name} (${hodId})`);
 
       res.json({
         success: true,
@@ -485,7 +452,6 @@ app.post('/api/auth/hod-login', async (req, res) => {
     });
 
   } catch (error) {
-    console.error('HOD login error:', error);
     res.status(500).json({
       success: false,
       message: 'Login failed'
@@ -533,7 +499,6 @@ app.post('/api/auth/it-login', async (req, res) => {
 
     req.session.save((err) => {
       if (err) {
-        console.error('IT session save error:', err);
         return res.status(500).json({
           success: false,
           message: 'Session creation failed'
@@ -549,7 +514,6 @@ app.post('/api/auth/it-login', async (req, res) => {
     });
 
   } catch (error) {
-    console.error('IT login error:', error);
     res.status(500).json({
       success: false,
       message: 'Login failed'
@@ -575,7 +539,6 @@ app.get('/api/auth/check-session', (req, res) => {
 
 // Auto-cleanup cron job - Run daily at 2 AM
 cron.schedule('0 2 * * *', async () => {
-  console.log('🧹 Running daily form cleanup...');
 
   try {
     const PENDING_FORMS = './data/pending_forms.json';
@@ -631,10 +594,8 @@ cron.schedule('0 2 * * *', async () => {
       saveJSON(FORM_HISTORY, history);
       saveJSON(PENDING_FORMS, remainingForms);
 
-      console.log(`✅ Moved ${completedForms.length} completed forms to history`);
     }
   } catch (error) {
-    console.error('❌ Daily cleanup error:', error);
   }
 });
 
@@ -653,7 +614,6 @@ app.get('/api/employee/notifications', roleAuth('employee'), (req, res) => {
       notifications: notifications
     });
   } catch (error) {
-    console.error('Error fetching notifications:', error);
     res.status(500).json({
       success: false,
       message: 'Failed to fetch notifications'
@@ -674,7 +634,6 @@ app.get('/api/notification/websocket-info', (req, res) => {
 
 // Static file serving with certificate protection
 app.use('/certificates', (req, res, next) => {
-  console.log(`🚫 Blocked direct access to certificates: ${req.path}`);
   res.status(403).json({
     success: false,
     message: 'Direct access to certificates is forbidden. Please use the download API.'
@@ -787,7 +746,6 @@ app.get('/health', (req, res) => {
       certificateCount = files.filter(file => file.endsWith('.pdf')).length;
     }
   } catch (error) {
-    console.warn('Could not count certificate files:', error.message);
   }
 
   // Check OTP system health
@@ -877,7 +835,6 @@ app.get('/admin/certificates/status', (req, res) => {
       certificatesData: certificatesData.slice(0, 10)
     });
   } catch (error) {
-    console.error('Error getting certificate status:', error);
     res.status(500).json({
       success: false,
       message: 'Error retrieving certificate statistics'
@@ -941,7 +898,6 @@ app.get('/admin/system/status', (req, res) => {
       timestamp: new Date().toISOString()
     });
   } catch (error) {
-    console.error('Error getting system status:', error);
     res.status(500).json({
       success: false,
       message: 'Error retrieving system statistics'
@@ -954,13 +910,11 @@ const initializeCertificatesData = () => {
   const certificatesDataPath = path.join(dataDir, 'certificates.json');
   if (!fs.existsSync(certificatesDataPath)) {
     fs.writeFileSync(certificatesDataPath, '[]', 'utf8');
-    console.log('✅ Initialized certificates.json data file');
   }
 };
 
 // Enhanced 404 handler
 app.use((req, res) => {
-  console.log(`❌ 404 - Route not found: ${req.method} ${req.path}`);
 
   if (req.path.startsWith('/api/')) {
     res.status(404).json({
@@ -1015,7 +969,7 @@ app.use((req, res) => {
             <div class="error-message">Page Not Found</div>
             <p>The requested page <code>${req.path}</code> could not be found.</p>
             <p>You might be looking for the tracking page or dashboard.</p>
-            <a href="/" class="back-link">🏠 Go to Login Page</a>
+            <a href="/" class="back-link">Go to Login Page</a>
             <br><br>
             <small>Available pages: Dashboard, Track, Forms, Certificates</small>
           </div>
@@ -1027,10 +981,6 @@ app.use((req, res) => {
 
 // Enhanced global error handler
 app.use((err, req, res, next) => {
-  console.error('💥 Server Error:', err);
-  console.error('Error stack:', err.stack);
-  console.error('Request path:', req.path);
-  console.error('Request method:', req.method);
 
   if (req.path.startsWith('/api/')) {
     res.status(500).json({
@@ -1071,7 +1021,7 @@ app.use((err, req, res, next) => {
             <div class="error-code">500</div>
             <div class="error-message">Internal Server Error</div>
             <p>Something went wrong on our end. Please try again later.</p>
-            <a href="/" class="back-link">🏠 Go to Login Page</a>
+            <a href="/" class="back-link">Go to Login Page</a>
           </div>
         </body>
       </html>
@@ -1091,174 +1041,49 @@ app.listen(PORT, () => {
   try {
     const wsPort = process.env.WS_PORT || 8081;
     NotificationManager.initialize({ wsPort: wsPort });
-    console.log(`✅ NotificationManager initialized on WebSocket port ${wsPort}`);
   } catch (error) {
-    console.error('❌ Failed to initialize NotificationManager:', error);
   }
 
-  console.log('\n🎉 ================================');
-  console.log(`✅ Server running at http://localhost:${PORT}`);
-
-  // Show email configuration status
-  console.log('📧 Email Configuration:');
-  console.log(`   - Email User: ${process.env.EMAIL_USER ? '✅ Configured' : '❌ Missing'}`);
-  console.log(`   - Email Pass: ${process.env.EMAIL_PASS ? '✅ Configured' : '❌ Missing'}`);
-  console.log(`   - Email From: ${process.env.EMAIL_FROM || 'Using default'}`);
-
-  console.log('📁 Static directories:');
-  console.log(`   - Public: ${publicDir}`);
-  console.log(`   - Uploads: ${uploadsDir}`);
-  console.log(`   - Data: ${dataDir}`);
-  console.log(`   - Certificates: ${certificatesDir}`);
-
-  console.log('🔗 Available routes:');
-  console.log('   - Employee: /dashboard.html, /employee.html, /track.html');
-  console.log('   - HOD: /hodhome.html, /hodreview.html, /hod-form-review.html');
-  console.log('   - IT: /itreview.html, /it-form-review.html');
-  console.log('   - Forms: /forms/disposalform.html, /forms/efile.html');
-  console.log('   - Tracking: /track.html (Interactive timeline)');
-
-  console.log('🔧 Health check: /health');
-  console.log('📜 Certificate admin: /admin/certificates/status');
-  console.log('🎯 System admin: /admin/system/status');
-  console.log('⚡ Environment:', process.env.NODE_ENV || 'development');
-
-  // Log system status
-  const otpDataExists = fs.existsSync(path.join(dataDir, 'otp_data.json'));
-  const loginSessionsExists = fs.existsSync(path.join(dataDir, 'login_sessions.json'));
-
-  console.log('🔐 OTP System:');
-  console.log(`   - OTP Data file: ${otpDataExists ? '✅' : '❌'}`);
-  console.log(`   - Login Sessions file: ${loginSessionsExists ? '✅' : '❌'}`);
-  console.log(`   - OTP Manager: ✅ Active`);
-  console.log(`   - Employee OTP: ✅ Required`);
-  console.log(`   - HOD/IT OTP: ❌ Direct access`);
-
-  // Log notification system status
-  const notificationsExists = fs.existsSync(path.join(dataDir, 'notifications.json'));
-  const employeeSessionsExists = fs.existsSync(path.join(dataDir, 'employee_sessions.json'));
-
-  console.log('📡 Notification System:');
-  console.log(`   - Notifications file: ${notificationsExists ? '✅' : '❌'}`);
-  console.log(`   - Employee sessions file: ${employeeSessionsExists ? '✅' : '❌'}`);
-  console.log(`   - WebSocket server: ✅ Active on port ${process.env.WS_PORT || 8081}`);
-  console.log(`   - Real-time notifications: ✅ Enabled`);
-  console.log(`   - Connected clients: ${NotificationManager.getInstance().getConnectedClientsCount()}`);
-
-  // Log history and session cleanup status
-  const formHistoryExists = fs.existsSync(path.join(dataDir, 'form_history.json'));
-  console.log('📚 History & Session Management:');
-  console.log(`   - Form history file: ${formHistoryExists ? '✅' : '❌'}`);
-  console.log(`   - Auto session cleanup: ✅ Active`);
-  console.log(`   - Daily form archival: ✅ Scheduled (2:00 AM)`);
-  console.log(`   - Session versioning: ✅ v2025-08-17`);
-
-  // Log certificate and tracking system status
-  const certDirExists = fs.existsSync(certificatesDir);
-  const certDataExists = fs.existsSync(path.join(dataDir, 'certificates.json'));
-  const trackPageExists = fs.existsSync(path.join(publicDir, 'track.html'));
-
-  console.log('📜 Certificate system:');
-  console.log(`   - Directory: ${certDirExists ? '✅' : '❌'}`);
-  console.log(`   - Data file: ${certDataExists ? '✅' : '❌'}`);
-  console.log('🎯 Tracking system:');
-  console.log(`   - Track page: ${trackPageExists ? '✅' : '❌'}`);
-  console.log(`   - Interactive timeline: ✅ Enabled`);
-  console.log('================================\n');
-
-  // Log authentication endpoints in development mode
-  if (process.env.NODE_ENV !== 'production') {
-    console.log('🔧 Development Mode - Authentication Info:');
-    console.log(`   - Employee login: POST /api/auth/employee-login (requires OTP)`);
-    console.log(`   - HOD login: POST /api/auth/hod-login (direct access with prefill)`);
-    console.log(`   - IT login: POST /api/auth/it-login (direct access)`);
-    console.log(`   - OTP verification: POST /api/auth/verify-otp`);
-    console.log(`   - Resend OTP: POST /api/auth/resend-otp`);
-    console.log(`   - Session check: GET /api/auth/check-session`);
-    console.log(`   - Logout: POST /api/auth/logout ✅ NOW WORKING`);
-    console.log('');
-    console.log('✅ AUTH ROUTES PROPERLY MOUNTED:');
-    console.log(`   - ✅ Auth router mounted at /api/auth`);
-    console.log(`   - ✅ Logout endpoint: POST /api/auth/logout`);
-    console.log(`   - ✅ Logout endpoint: GET /api/auth/logout`);
-    console.log(`   - ✅ Session management active`);
-    console.log('');
-    console.log('✅ HOD PREFILL SYSTEM ENABLED:');
-    console.log(`   - ✅ Auto-fills HOD details on login`);
-    console.log(`   - ✅ HOD employee ID included in session`);
-    console.log(`   - ✅ Comprehensive HOD data in forms`);
-    console.log(`   - ✅ HOD details API: GET /api/hod/my-details`);
-    console.log('');
-    console.log('🆕 NOTIFICATION SYSTEM ENABLED:');
-    console.log(`   - ✅ Real-time form rejection notifications`);
-    console.log(`   - ✅ Form approval notifications`);
-    console.log(`   - ✅ Certificate ready notifications`);
-    console.log(`   - ✅ WebSocket server for instant updates`);
-    console.log('');
-    console.log('✅ SMART SESSION MANAGEMENT:');
-    console.log(`   - ✅ Auto session cleanup with data preservation`);
-    console.log(`   - ✅ Certificate and history retention`);
-    console.log(`   - ✅ Daily automated form archival`);
-    console.log(`   - ✅ Session versioning for compatibility`);
-    console.log('');
-  }
 });
 
 // Enhanced graceful shutdown handling
 process.on('SIGTERM', () => {
-  console.log('🛑 SIGTERM received. Shutting down gracefully...');
-  console.log('📊 Final server statistics:');
-  console.log(`   - Uptime: ${Math.floor(process.uptime())} seconds`);
-  console.log(`   - Memory usage: ${Math.round(process.memoryUsage().rss / 1024 / 1024)} MB`);
 
   // Shutdown notification system
   try {
     NotificationManager.shutdown();
-    console.log('   - NotificationManager: ✅ Shutdown complete');
   } catch (error) {
-    console.log('   - NotificationManager: ❌ Shutdown error');
   }
 
   try {
     const pendingFormsPath = path.join(dataDir, 'pending_forms.json');
     if (fs.existsSync(pendingFormsPath)) {
       const formsData = JSON.parse(fs.readFileSync(pendingFormsPath, 'utf8'));
-      console.log(`   - Total applications processed: ${formsData.length}`);
     }
 
     const certificatesPath = path.join(dataDir, 'certificates.json');
     if (fs.existsSync(certificatesPath)) {
       const certData = JSON.parse(fs.readFileSync(certificatesPath, 'utf8'));
-      console.log(`   - Total certificates generated: ${certData.length}`);
     }
 
     // History statistics
     const historyPath = path.join(dataDir, 'form_history.json');
     if (fs.existsSync(historyPath)) {
       const historyData = JSON.parse(fs.readFileSync(historyPath, 'utf8'));
-      console.log(`   - Total archived applications: ${historyData.length}`);
     }
 
-    console.log(`   - OTP system: Cleaned expired sessions and OTPs`);
   } catch (error) {
-    console.log('   - Could not retrieve final statistics');
   }
 
   process.exit(0);
 });
 
 process.on('SIGINT', () => {
-  console.log('\n🛑 SIGINT received. Shutting down gracefully...');
-  console.log('📊 Final server statistics:');
-  console.log(`   - Uptime: ${Math.floor(process.uptime())} seconds`);
-  console.log(`   - Memory usage: ${Math.round(process.memoryUsage().rss / 1024 / 1024)} MB`);
 
   // Shutdown notification system
   try {
     NotificationManager.shutdown();
-    console.log('   - NotificationManager: ✅ Shutdown complete');
   } catch (error) {
-    console.log('   - NotificationManager: ❌ Shutdown error');
   }
 
   process.exit(0);
@@ -1266,14 +1091,11 @@ process.on('SIGINT', () => {
 
 // Handle uncaught exceptions
 process.on('uncaughtException', (error) => {
-  console.error('💥 Uncaught Exception:', error);
-  console.error('🛑 Server will shut down...');
 
   // Emergency shutdown of notification system
   try {
     NotificationManager.shutdown();
   } catch (shutdownError) {
-    console.error('Emergency notification shutdown failed:', shutdownError);
   }
 
   process.exit(1);
@@ -1281,15 +1103,12 @@ process.on('uncaughtException', (error) => {
 
 // Handle unhandled promise rejections
 process.on('unhandledRejection', (reason, promise) => {
-  console.error('💥 Unhandled Rejection at:', promise, 'reason:', reason);
-  console.error('🛑 Server will shut down...');
 
   // Emergency shutdown of notification system
   try {
     NotificationManager.shutdown();
   } catch (shutdownError) {
-    console.error('Emergency notification shutdown failed:', shutdownError);
   }
-
-  process.exit(1);
 });
+
+console.log(`Server running at http://localhost:${PORT}`);

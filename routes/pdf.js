@@ -41,7 +41,6 @@ const generatePdf = (doc, form) => {
     doc.text(`Generated on: ${new Date().toLocaleDateString('en-IN')}`, { align: 'center' });
 
   } catch (error) {
-    console.error('Error generating PDF content:', error);
     doc.fontSize(12).text('Error generating form content');
   }
 };
@@ -60,8 +59,6 @@ const validateFormRequest = (req, res, next) => {
 
 // Enhanced error handling for PDF generation
 const handlePDFError = (error, res, operation = 'PDF generation') => {
-  console.error(`${operation} error:`, error);
-
   if (!res.headersSent) {
     return res.status(500).json({
       success: false,
@@ -82,7 +79,6 @@ router.get('/download/:formId', roleAuth('employee'), validateFormRequest, (req,
     const form = forms.find(f => f.formId === formId && f.employeeId === actualEmployeeId);
 
     if (!form) {
-      console.warn(`⚠️ Form not found for formId=${formId}, employeeId=${actualEmployeeId}`);
       return res.status(404).json({
         success: false,
         message: 'Form not found or access denied'
@@ -113,8 +109,6 @@ router.get('/download/:formId', roleAuth('employee'), validateFormRequest, (req,
     // Finalize the PDF
     doc.end();
 
-    console.log(`✅ PDF generated successfully for form ${formId}`);
-
   } catch (error) {
     handlePDFError(error, res, 'PDF generation');
   }
@@ -131,7 +125,6 @@ router.get('/:formId', roleAuth('employee'), validateFormRequest, (req, res) => 
     const form = forms.find(f => f.formId === formId && f.employeeId === actualEmployeeId);
 
     if (!form) {
-      console.warn(`⚠️ Form not found for formId=${formId}, employeeId=${actualEmployeeId}`);
       return res.status(404).json({
         success: false,
         message: 'Form not found or access denied'
@@ -162,8 +155,6 @@ router.get('/:formId', roleAuth('employee'), validateFormRequest, (req, res) => 
     // Finalize the PDF
     doc.end();
 
-    console.log(`✅ PDF viewed successfully for form ${formId}`);
-
   } catch (error) {
     handlePDFError(error, res, 'PDF generation');
   }
@@ -181,7 +172,6 @@ router.get('/generate/latest', roleAuth('employee'), (req, res) => {
     const employeeForms = forms.filter(f => f.employeeId === actualEmployeeId);
 
     if (employeeForms.length === 0) {
-      console.warn(`⚠️ No forms found for employeeId=${actualEmployeeId}`);
       return res.status(404).json({
         success: false,
         message: 'No form found for your account'
@@ -218,8 +208,6 @@ router.get('/generate/latest', roleAuth('employee'), (req, res) => {
 
     // Finalize the PDF
     doc.end();
-
-    console.log(`✅ Latest PDF generated successfully for employee ${actualEmployeeId}`);
 
   } catch (error) {
     handlePDFError(error, res, 'PDF generation');
@@ -261,7 +249,6 @@ router.get('/details/:formId', roleAuth('employee'), validateFormRequest, (req, 
     });
 
   } catch (error) {
-    console.error('Error retrieving form details:', error);
     res.status(500).json({
       success: false,
       message: 'Error retrieving form details'

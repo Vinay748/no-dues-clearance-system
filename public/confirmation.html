@@ -147,7 +147,7 @@
         // Create success display
         document.getElementById('confirmationDetails').innerHTML = `
                     <div class="success">
-                        <p><strong>✅ Your application has been submitted successfully!</strong></p>
+                        <p><strong>Your application has been submitted successfully!</strong></p>
                     </div>
                     
                     <div class="form-id-highlight">
@@ -196,11 +196,10 @@
                 `;
 
       } catch (error) {
-        console.error('Error loading confirmation:', error);
 
         document.getElementById('confirmationDetails').innerHTML = `
                     <div class="error">
-                        <p><strong>❌ Error loading confirmation details</strong></p>
+                        <p><strong>Error loading confirmation details</strong></p>
                         <p>${error.message}</p>
                         <p style="font-size: 14px; margin-top: 10px;">
                             Please check your session or contact support if this problem persists.
@@ -237,11 +236,10 @@
         await loadConfirmationDetails();
 
       } catch (error) {
-        console.error('Session check failed:', error);
 
         document.getElementById('confirmationDetails').innerHTML = `
                     <div class="error">
-                        <p><strong>❌ Session Expired</strong></p>
+                        <p><strong>Session Expired</strong></p>
                         <p>Please login again to view confirmation details.</p>
                     </div>
                 `;

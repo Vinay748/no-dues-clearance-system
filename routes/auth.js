@@ -9,7 +9,7 @@ const IT_USERS = './data/it_users.json';
 const HOD_USERS = './data/hod_users.json';
 
 // =========================================
-// ⚠️  IMPORTANT: LEGACY ROUTES - NOT USED
+// IMPORTANT: LEGACY ROUTES - NOT USED
 // =========================================
 
 router.post('/login', async (req, res) => {
@@ -29,7 +29,7 @@ router.post('/verify-otp', (req, res) => {
 });
 
 // =========================================
-// ✅ ENHANCED LOGOUT ROUTES
+// ENHANCED LOGOUT ROUTES
 // =========================================
 
 // POST: Enhanced logout for AJAX requests with comprehensive cleanup
@@ -40,15 +40,14 @@ router.post('/logout', (req, res) => {
 
     // Log logout attempt
     if (user) {
-      console.log(`📤 User logout: ${user.name} (${user.role}) - Session: ${sessionId || 'unknown'}`);
+      // User logout removed
     } else {
-      console.log('📤 Logout attempt with no active session');
+      // Logout attempt with no active session removed
     }
 
     // Perform comprehensive session cleanup
     req.session.destroy((err) => {
       if (err) {
-        console.error('❌ Session destruction error:', err);
         return res.status(500).json({
           success: false,
           message: 'Logout failed due to session cleanup error',
@@ -81,8 +80,6 @@ router.post('/logout', (req, res) => {
         'Expires': '0'
       });
 
-      console.log('✅ User logged out successfully - Session destroyed and cookies cleared');
-
       res.json({
         success: true,
         message: 'Logged out successfully',
@@ -93,7 +90,6 @@ router.post('/logout', (req, res) => {
     });
 
   } catch (error) {
-    console.error('❌ Logout error:', error);
     res.status(500).json({
       success: false,
       message: 'Logout failed due to server error',
@@ -109,12 +105,12 @@ router.get('/logout', (req, res) => {
 
     // Log logout attempt
     if (user) {
-      console.log(`📤 Browser logout: ${user.name} (${user.role})`);
+      // Browser logout removed
     }
 
     req.session.destroy((err) => {
       if (err) {
-        console.error('❌ Session destruction error on GET logout:', err);
+        // Session destruction error on GET logout removed
       }
 
       // Clear cookies even if session destruction fails
@@ -139,14 +135,11 @@ router.get('/logout', (req, res) => {
         'Expires': '0'
       });
 
-      console.log('✅ Browser logout completed - Redirecting to login');
-
       // Redirect to login page (adjust path as needed)
       res.redirect('/login.html');
     });
 
   } catch (error) {
-    console.error('❌ GET logout error:', error);
     // Still redirect even if there's an error
     res.redirect('/login.html?error=logout_failed');
   }
@@ -162,8 +155,6 @@ router.all('/logout', (req, res) => {
   }
 
   // Handle other HTTP methods
-  console.log(`📤 Logout via ${req.method} method`);
-
   req.session.destroy((err) => {
     res.clearCookie('connect.sid');
     res.json({
@@ -175,7 +166,7 @@ router.all('/logout', (req, res) => {
 });
 
 // =========================================
-// ✅ ENHANCED SESSION MANAGEMENT
+// ENHANCED SESSION MANAGEMENT
 // =========================================
 
 // Enhanced session check API
@@ -198,10 +189,10 @@ router.get('/check-session', (req, res) => {
     // Enhanced session timeout check (24 hours = 1440 minutes)
     const sessionTimeoutMinutes = 24 * 60;
     if (loginTime && sessionAge > sessionTimeoutMinutes) {
-      console.log(`⏰ Session expired for user ${user.name} - Age: ${sessionAge} minutes`);
-
       req.session.destroy((err) => {
-        if (err) console.error('Session destruction error:', err);
+        if (err) {
+          // Session destruction error removed
+        }
       });
 
       return res.status(401).json({
@@ -266,7 +257,6 @@ router.get('/check-session', (req, res) => {
     });
 
   } catch (error) {
-    console.error('❌ Session check error:', error);
     return res.status(500).json({
       success: false,
       message: 'Session check failed due to server error',
@@ -351,8 +341,6 @@ router.post('/update-profile', (req, res) => {
     user.lastActivity = new Date().toISOString();
     user.profileLastUpdated = new Date().toISOString();
 
-    console.log(`📝 Profile updated for ${user.role}: ${user.name} - Updates:`, Object.keys(updates));
-
     res.json({
       success: true,
       message: 'Profile updated successfully',
@@ -370,7 +358,6 @@ router.post('/update-profile', (req, res) => {
     });
 
   } catch (error) {
-    console.error('❌ Profile update error:', error);
     res.status(500).json({
       success: false,
       message: 'Profile update failed due to server error',
@@ -402,8 +389,6 @@ router.post('/refresh-session', (req, res) => {
 
     const sessionAge = user.loginTime ? Math.floor((now - new Date(user.loginTime)) / 1000 / 60) : 0;
 
-    console.log(`🔄 Session refreshed for ${user.role}: ${user.name} - Age: ${sessionAge} minutes`);
-
     res.json({
       success: true,
       message: 'Session refreshed successfully',
@@ -423,7 +408,6 @@ router.post('/refresh-session', (req, res) => {
     });
 
   } catch (error) {
-    console.error('❌ Session refresh error:', error);
     res.status(500).json({
       success: false,
       message: 'Session refresh failed',
@@ -482,7 +466,6 @@ router.get('/user-info', (req, res) => {
     });
 
   } catch (error) {
-    console.error('❌ User info error:', error);
     res.status(500).json({
       success: false,
       message: 'Failed to get user info',
@@ -510,10 +493,10 @@ router.post('/validate-session', (req, res) => {
 
     // Check session timeout (24 hours)
     if (loginTime && sessionAge > (24 * 60)) {
-      console.log(`⏰ Session validation failed - Expired for user ${user.name}`);
-
       req.session.destroy((err) => {
-        if (err) console.error('Session destruction error:', err);
+        if (err) {
+          // Session destruction error removed
+        }
       });
 
       return res.status(401).json({
@@ -527,8 +510,6 @@ router.post('/validate-session', (req, res) => {
 
     // Update last activity
     user.lastActivity = now.toISOString();
-
-    console.log(`✅ Session validated for ${user.role}: ${user.name} - Age: ${sessionAge} minutes`);
 
     res.json({
       success: true,
@@ -546,7 +527,6 @@ router.post('/validate-session', (req, res) => {
     });
 
   } catch (error) {
-    console.error('❌ Session validation error:', error);
     res.status(500).json({
       success: false,
       message: 'Session validation failed due to server error',
@@ -596,8 +576,6 @@ router.post('/sync-session', (req, res) => {
     user.lastActivity = new Date().toISOString();
     user.lastSyncTime = new Date().toISOString();
 
-    console.log(`🔄 Session synced for ${user.role}: ${user.name} - Updates:`, Object.keys(updates));
-
     res.json({
       success: true,
       message: 'Session synchronized successfully',
@@ -613,7 +591,6 @@ router.post('/sync-session', (req, res) => {
     });
 
   } catch (error) {
-    console.error('❌ Session sync error:', error);
     res.status(500).json({
       success: false,
       message: 'Session sync failed',
@@ -623,7 +600,7 @@ router.post('/sync-session', (req, res) => {
 });
 
 // =========================================
-// ✅ ENHANCED DEVELOPMENT & DEBUG ROUTES
+// ENHANCED DEVELOPMENT & DEBUG ROUTES
 // =========================================
 
 // Enhanced auth info endpoint
@@ -752,13 +729,11 @@ router.get('/session-debug', (req, res) => {
 });
 
 // =========================================
-// ✅ ERROR HANDLING MIDDLEWARE
+// ERROR HANDLING MIDDLEWARE
 // =========================================
 
 // Global error handler for auth routes
 router.use((error, req, res, next) => {
-  console.error('❌ Auth router error:', error);
-
   res.status(500).json({
     success: false,
     message: 'Authentication system error',

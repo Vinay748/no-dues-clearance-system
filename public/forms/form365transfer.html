@@ -664,7 +664,6 @@
       if (!isHODReview()) return;
 
       try {
-        console.log('📋 Auto-filling HOD details in Form 365 Transfer...');
         showMessage('Loading HOD details for form review...', 'info');
 
         const response = await fetch('/api/hod/my-details', {
@@ -674,7 +673,6 @@
         if (response.ok) {
           const data = await response.json();
           if (data.success && data.hodDetails) {
-            console.log('✅ HOD details received for form auto-fill:', data.hodDetails);
 
             const hodDetails = data.hodDetails;
 
@@ -699,7 +697,6 @@
                 field.title = 'Auto-filled from HOD session';
                 field.readOnly = true;
 
-                console.log(`✅ Auto-filled ${fieldId} with: ${value}`);
               }
             });
 
@@ -716,7 +713,6 @@
           }
         }
       } catch (error) {
-        console.error('❌ Error auto-filling HOD details:', error);
         showMessage('Failed to auto-fill HOD details', 'error');
       }
     }
@@ -736,12 +732,10 @@
               sigArea.innerHTML = `<img src="${data.signatureUrl}" alt="HOD Signature" style="max-height: 60px; max-width: 100%; border: 2px solid #28a745; border-radius: 4px;">`;
               sigArea.classList.add('has-signature');
               sigArea.title = 'HOD signature auto-loaded';
-              console.log('✅ Auto-filled HOD signature in Form 365 Transfer');
             }
           }
         }
       } catch (error) {
-        console.error('❌ Error loading HOD signature:', error);
       }
     }
 
@@ -757,7 +751,6 @@
 
         // Auto-fill HOD details if in HOD review mode
         if (isHODReview()) {
-          console.log('📋 Form 365 Transfer opened in HOD review mode - auto-filling HOD details...');
           setTimeout(autoFillHODDetailsInForm, 1000);
         }
 
@@ -777,7 +770,6 @@
         initializeSignatureHandling();
 
       } catch (error) {
-        console.error('Error initializing form:', error);
         showMessage('Error loading form. Please refresh the page.', 'error');
       }
     }
@@ -792,10 +784,8 @@
         if (response.ok) {
           const data = await response.json();
           currentUserRole = data.role || '';
-          console.log('User role:', currentUserRole);
         }
       } catch (error) {
-        console.error('Error getting user role:', error);
         currentUserRole = 'employee'; // Default fallback
       }
     }
@@ -803,7 +793,6 @@
     // Load HOD profile and auto-fill fields
     async function loadHODProfile() {
       try {
-        console.log('Loading HOD profile for auto-fill...');
 
         const response = await fetch('/api/hod/profile', {
           credentials: 'include'
@@ -830,11 +819,9 @@
               hodEmail.classList.add('auto-filled');
             }
 
-            console.log('HOD profile auto-filled successfully:', data.hodData);
           }
         }
       } catch (error) {
-        console.error('Error loading HOD profile:', error);
       }
     }
 
@@ -853,11 +840,9 @@
               sigArea.innerHTML = `<img src="${data.signatureUrl}" alt="HOD Signature" style="max-height: 60px; max-width: 100%;">`;
               sigArea.classList.add('has-signature');
             }
-            console.log('Existing HOD signature loaded');
           }
         }
       } catch (error) {
-        console.error('Error loading HOD signature:', error);
       }
     }
 
@@ -905,14 +890,12 @@
         });
 
         if (response.ok) {
-          console.log('Signature uploaded successfully');
           showMessage('Signature uploaded successfully', 'success');
         } else {
           throw new Error('Failed to upload signature');
         }
 
       } catch (error) {
-        console.error('Error uploading signature:', error);
         showMessage('Failed to upload signature', 'error');
       }
     }
@@ -948,8 +931,6 @@
 
         const formData = collectFormData();
 
-        console.log('Saving Form 365 Transfer data:', formData);
-
         // Determine endpoint based on role
         const endpoint = currentUserRole === 'hod'
           ? '/api/hod/save-form365-transfer'
@@ -968,7 +949,6 @@
         if (response.ok && result.success) {
           // Save to localStorage for dashboard access
           localStorage.setItem('form365TransferData', JSON.stringify(formData));
-          console.log('Form 365 Transfer saved to localStorage');
 
           showMessage(result.message || 'Form saved successfully!', 'success');
         } else {
@@ -976,7 +956,6 @@
         }
 
       } catch (error) {
-        console.error('Error saving form:', error);
         showMessage('Failed to save form: ' + error.message, 'error');
       }
     }
@@ -1067,11 +1046,9 @@
             }
           }
 
-          console.log('Form data loaded successfully');
         }
 
       } catch (error) {
-        console.error('Error loading form data:', error);
       }
     }
 
@@ -1103,7 +1080,6 @@
       // Initialize navigation for this form
       FormNavigationIntegration.initializeForForm(formType);
 
-      console.log(`✅ Navigation system initialized for ${formType} form`);
     });
 
     // Enhanced role-based element hiding with proper selectors
@@ -1184,7 +1160,6 @@
               }
             });
           } catch (error) {
-            console.log('Save selector error:', selector, error);
           }
         });
 
@@ -1236,7 +1211,6 @@
               }
             });
           } catch (error) {
-            console.log('Save selector error:', selector, error);
           }
         });
 
@@ -1260,10 +1234,7 @@
         document.body.classList.add(`role-${userRole}`);
         document.body.setAttribute('data-user-role', userRole);
 
-        console.log(`🔒 UI restricted for ${userRole.toUpperCase()} role - Save buttons HIDDEN`);
-
       } else {
-        console.log(`✅ Full UI access for role: ${userRole || 'EMPLOYEE'}`);
       }
     }
 
@@ -1313,10 +1284,8 @@
 
     // Message listener for iframe data population
     window.addEventListener('message', function (event) {
-      console.log('📩 Message received in iframe:', event.data);
 
       if (event.data && event.data.action === 'populateForm') {
-        console.log('📄 Populating form with data:', event.data.data);
         const data = event.data.data;
 
         // Loop through all data fields and populate matching elements
@@ -1325,7 +1294,6 @@
           if (element) {
             if (element.tagName === 'INPUT' || element.tagName === 'TEXTAREA' || element.tagName === 'SELECT') {
               element.value = data[fieldId] || '';
-              console.log(`✅ Set ${fieldId} = ${data[fieldId]}`);
             } else if (element.tagName === 'IMG') {
               element.src = data[fieldId] || '';
             } else {
@@ -1341,7 +1309,6 @@
             el.style.backgroundColor = '#f8f9fa';
             el.style.cursor = 'not-allowed';
           });
-          console.log('🔒 Form set to read-only mode');
         }
       }
 
@@ -1364,7 +1331,6 @@
       if (existingData) {
         try {
           const data = JSON.parse(decodeURIComponent(existingData));
-          console.log('📄 Loading data from URL params:', data);
 
           Object.keys(data).forEach(fieldId => {
             const element = document.getElementById(fieldId);
@@ -1373,7 +1339,6 @@
             }
           });
         } catch (error) {
-          console.error('❌ Error parsing URL data:', error);
         }
       }
 

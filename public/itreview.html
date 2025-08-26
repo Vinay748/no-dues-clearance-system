@@ -634,12 +634,11 @@
       <!-- Search Bar -->
       <div class="search-container">
         <input type="text" id="globalSearch" placeholder="Search by Form ID, Employee ID, Name..." class="search-input">
-        <button onclick="performSearch()" class="search-btn">🔍</button>
-        <button onclick="clearSearch()" class="clear-search-btn">✖️</button>
+        <button onclick="performSearch()" class="search-btn">Search</button>
+        <button onclick="clearSearch()" class="clear-search-btn">Clear</button>
       </div>
       <!-- Logout Button -->
       <button class="logout-btn" onclick="showLogoutConfirmation()">
-        <span>🚪</span>
         <span>Logout</span>
       </button>
     </div>
@@ -659,16 +658,16 @@
   <!-- Logout Confirmation Modal -->
   <div id="logoutModal" class="logout-modal">
     <div class="logout-modal-content">
-      <h3 style="color: #dc3545; margin-bottom: 20px;">🚪 Confirm Logout</h3>
+      <h3 style="color: #dc3545; margin-bottom: 20px;">Confirm Logout</h3>
       <p style="margin-bottom: 25px; line-height: 1.5;">
         Are you sure you want to logout from the IT Dashboard?
       </p>
       <div class="logout-modal-buttons">
         <button class="cancel-logout" onclick="hideLogoutConfirmation()">
-          ✖️ Cancel
+          Cancel
         </button>
         <button class="confirm-logout" onclick="performLogout()">
-          🚪 Yes, Logout
+          Yes, Logout
         </button>
       </div>
     </div>
@@ -677,7 +676,7 @@
   <!-- Original Pending Tab -->
   <div id="pending" class="tab active">
     <div class="workflow-indicator">
-      <strong>📋 Initial Employee Requests</strong> - Fresh applications awaiting IT approval to assign forms
+      <strong>Initial Employee Requests</strong> - Fresh applications awaiting IT approval to assign forms
     </div>
     <h3>Pending Applications</h3>
     <table>
@@ -705,7 +704,7 @@
   <!-- Original Approved Tab -->
   <div id="approved" class="tab">
     <div class="workflow-indicator">
-      <strong>✅ Approved for Form Filling</strong> - Employees assigned forms to complete
+      <strong>Approved for Form Filling</strong> - Employees assigned forms to complete
     </div>
     <h3>Approved Applications</h3>
     <table>
@@ -732,7 +731,7 @@
   <!-- Original Rejected Tab -->
   <div id="rejected" class="tab">
     <div class="workflow-indicator">
-      <strong>❌ Rejected Applications</strong> - Applications that didn't meet initial requirements
+      <strong>Rejected Applications</strong> - Applications that didn't meet initial requirements
     </div>
     <h3>Rejected Applications</h3>
     <table>
@@ -759,7 +758,7 @@
   <!-- NEW: HOD Approved Tab -->
   <div id="hodApproved" class="tab">
     <div class="workflow-indicator">
-      <strong>🎯 Ready for IT Final Review</strong> - Forms completed by employees and approved by HOD
+      <strong>Ready for IT Final Review</strong> - Forms completed by employees and approved by HOD
     </div>
     <h3>Forms from HOD (Ready for IT Processing)</h3>
     <table>
@@ -785,7 +784,7 @@
   <!-- NEW: IT Completed Tab -->
   <div id="completed" class="tab">
     <div class="workflow-indicator">
-      <strong>🏁 Process Complete</strong> - Final clearance completed by IT
+      <strong>Process Complete</strong> - Final clearance completed by IT
     </div>
     <h3>IT Completed Applications</h3>
     <table>
@@ -811,39 +810,39 @@
   <!-- Enhanced Modal for Form Preview & Selection -->
   <div id="formPreviewDialog" class="modal">
     <div class="modal-content">
-      <h2>📋 Select Forms to Send to Employee</h2>
+      <h2>Select Forms to Send to Employee</h2>
       <p>Preview and select which forms to assign to the employee:</p>
 
       <div class="iframe-container">
         <div class="iframe-wrapper">
-          <div class="iframe-header">📧 E-file Transfer Form</div>
+          <div class="iframe-header">E-file Transfer Form</div>
           <iframe id="efilePreview" src="/forms/efile.html"></iframe>
           <div class="form-checklist">
-            <label><input type="checkbox" id="efileCheck"> ✅ Select E-file Form</label>
+            <label><input type="checkbox" id="efileCheck"> Select E-file Form</label>
           </div>
         </div>
 
         <div class="iframe-wrapper">
-          <div class="iframe-header">🗂️ Disposal Form</div>
+          <div class="iframe-header">Disposal Form</div>
           <iframe id="disposalPreview" src="/forms/disposalform.html"></iframe>
           <div class="form-checklist">
-            <label><input type="checkbox" id="disposalCheck"> ✅ Select Disposal Form</label>
+            <label><input type="checkbox" id="disposalCheck"> Select Disposal Form</label>
           </div>
         </div>
 
         <div class="iframe-wrapper">
-          <div class="iframe-header">📋 Form 365</div>
+          <div class="iframe-header">Form 365</div>
           <iframe id="form365Preview"></iframe>
           <div class="form-checklist">
-            <label><input type="checkbox" id="form365Check"> ✅ Select Form 365</label>
+            <label><input type="checkbox" id="form365Check"> Select Form 365</label>
           </div>
         </div>
       </div>
 
       <div class="modal-actions">
-        <button class="cancel-btn" onclick="closeDialog()">❌ Cancel</button>
+        <button class="cancel-btn" onclick="closeDialog()">Cancel</button>
         <button id="sendToEmployeeBtn" class="send-btn" onclick="sendFormsToEmployee()" disabled>
-          📤 Send Selected Forms to Employee
+          Send Selected Forms to Employee
         </button>
       </div>
     </div>
@@ -932,7 +931,7 @@
 
       const noResultRow = document.createElement('tr');
       noResultRow.className = 'no-results-row';
-      noResultRow.innerHTML = `<td colspan="${colCount}" class="empty-state">🔍 No matching records found for your search</td>`;
+      noResultRow.innerHTML = `<td colspan="${colCount}" class="empty-state">No matching records found for your search</td>`;
       tbody.appendChild(noResultRow);
     }
 
@@ -985,7 +984,7 @@
         document.querySelector('.tab-buttons').appendChild(resultsDiv);
       }
 
-      resultsDiv.innerHTML = `📊 Found ${count} result${count !== 1 ? 's' : ''} for "${searchTerm}"`;
+      resultsDiv.innerHTML = `Found ${count} result${count !== 1 ? 's' : ''} for "${searchTerm}"`;
       resultsDiv.style.display = 'block';
     }
 
@@ -1010,7 +1009,7 @@
       try {
         // Show loading state
         const confirmBtn = document.querySelector('.confirm-logout');
-        confirmBtn.innerHTML = '🔄 Logging out...';
+        confirmBtn.innerHTML = 'Logging out...';
         confirmBtn.disabled = true;
 
         const response = await fetch('/api/auth/logout', {
@@ -1034,8 +1033,7 @@
           throw new Error(data.message || 'Logout failed');
         }
       } catch (error) {
-        console.error('Logout error:', error);
-        alert('❌ Logout failed: ' + error.message + '\nRedirecting to login page...');
+        alert('Logout failed: ' + error.message + '\nRedirecting to login page...');
         window.location.href = '/login.html';
       }
     }
@@ -1110,9 +1108,9 @@
       sendBtn.disabled = !allChecked;
 
       if (allChecked) {
-        sendBtn.innerHTML = '📤 Send All Forms to Employee';
+        sendBtn.innerHTML = 'Send All Forms to Employee';
       } else {
-        sendBtn.innerHTML = '📤 Select All Forms to Continue';
+        sendBtn.innerHTML = 'Select All Forms to Continue';
       }
     }
 
@@ -1120,7 +1118,7 @@
     async function sendFormsToEmployee() {
       const sendBtn = document.getElementById('sendToEmployeeBtn');
       sendBtn.disabled = true;
-      sendBtn.innerHTML = '📤 Sending Forms...';
+      sendBtn.innerHTML = 'Sending Forms...';
 
       try {
         const response = await fetch('/api/itadmin/decision', {
@@ -1140,15 +1138,14 @@
         const data = await response.json();
 
         if (response.ok && data.success) {
-          alert('✅ Forms successfully assigned to employee!');
+          alert('Forms successfully assigned to employee!');
           closeDialog();
           fetchAllData(); // Refresh all data
         } else {
           throw new Error(data.message || 'Failed to assign forms');
         }
       } catch (error) {
-        console.error('Error sending forms:', error);
-        alert('❌ Error while sending forms: ' + error.message);
+        alert('Error while sending forms: ' + error.message);
         sendBtn.disabled = false;
         updateSendButtonState();
       }
@@ -1180,14 +1177,13 @@
         const data = await response.json();
 
         if (response.ok && data.success) {
-          alert('✅ Request rejected successfully.');
+          alert('Request rejected successfully.');
           fetchAllData();
         } else {
           throw new Error(data.message || 'Failed to reject request');
         }
       } catch (error) {
-        console.error('Error rejecting request:', error);
-        alert('❌ Error while rejecting request: ' + error.message);
+        alert('Error while rejecting request: ' + error.message);
       }
     }
 
@@ -1199,9 +1195,7 @@
           fetchHODApproved(),
           fetchITCompleted()
         ]);
-        console.log('✅ All data refreshed successfully');
       } catch (error) {
-        console.error('❌ Error refreshing data:', error);
       }
     }
 
@@ -1229,13 +1223,11 @@
         const data = await response.json();
 
         if (data.success && Array.isArray(data.requests)) {
-          console.log('📊 Fetched review requests:', data.requests.length);
           populateOriginalTables(data.requests);
         } else {
           throw new Error(data.message || 'Invalid response format');
         }
       } catch (error) {
-        console.error('❌ Error fetching review data:', error);
         populateOriginalTables([]);
       }
     }
@@ -1258,13 +1250,11 @@
         const data = await response.json();
 
         if (data.success && Array.isArray(data.list)) {
-          console.log('📊 Fetched HOD approved forms:', data.list.length);
           populateHODApprovedTable(data.list);
         } else {
           throw new Error(data.message || 'Invalid response format');
         }
       } catch (error) {
-        console.error('❌ Error fetching HOD approved data:', error);
         populateHODApprovedTable([]);
       }
     }
@@ -1303,13 +1293,11 @@
         const data = await response.json();
 
         if (data.success && Array.isArray(data.list)) {
-          console.log('📊 Fetched IT completed forms:', data.list.length);
           populateCompletedTable(data.list);
         } else {
           throw new Error(data.message || 'Invalid response format');
         }
       } catch (error) {
-        console.error('❌ Error fetching IT completed data:', error);
         populateCompletedTable([]);
       }
     }
@@ -1325,9 +1313,9 @@
       rejectedBody.innerHTML = '';
 
       if (!requests || requests.length === 0) {
-        pendingBody.innerHTML = '<tr><td colspan="9" class="empty-state">📭 No pending requests</td></tr>';
-        approvedBody.innerHTML = '<tr><td colspan="8" class="empty-state">📭 No approved requests</td></tr>';
-        rejectedBody.innerHTML = '<tr><td colspan="8" class="empty-state">📭 No rejected requests</td></tr>';
+        pendingBody.innerHTML = '<tr><td colspan="9" class="empty-state">No pending requests</td></tr>';
+        approvedBody.innerHTML = '<tr><td colspan="8" class="empty-state">No approved requests</td></tr>';
+        rejectedBody.innerHTML = '<tr><td colspan="8" class="empty-state">No rejected requests</td></tr>';
         return;
       }
 
@@ -1337,7 +1325,7 @@
 
       // Populate pending requests
       if (pending.length === 0) {
-        pendingBody.innerHTML = '<tr><td colspan="9" class="empty-state">📭 No pending requests</td></tr>';
+        pendingBody.innerHTML = '<tr><td colspan="9" class="empty-state">No pending requests</td></tr>';
       } else {
         pending.forEach(req => {
           const row = createRequestRow(req, 'pending');
@@ -1347,7 +1335,7 @@
 
       // Populate approved requests
       if (approved.length === 0) {
-        approvedBody.innerHTML = '<tr><td colspan="8" class="empty-state">📭 No approved requests</td></tr>';
+        approvedBody.innerHTML = '<tr><td colspan="8" class="empty-state">No approved requests</td></tr>';
       } else {
         approved.forEach(req => {
           const row = createRequestRow(req, 'approved');
@@ -1357,7 +1345,7 @@
 
       // Populate rejected requests
       if (rejected.length === 0) {
-        rejectedBody.innerHTML = '<tr><td colspan="8" class="empty-state">📭 No rejected requests</td></tr>';
+        rejectedBody.innerHTML = '<tr><td colspan="8" class="empty-state">No rejected requests</td></tr>';
       } else {
         rejected.forEach(req => {
           const row = createRequestRow(req, 'rejected');
@@ -1375,7 +1363,7 @@
       const department = req.department || '-';
       const noDuesType = req.noDuesType || '-';
       const submissionDate = req.submissionDate ? new Date(req.submissionDate).toLocaleDateString() : '-';
-      const orderLetter = req.orderLetter ? `<a href="/uploads/${req.orderLetter}" target="_blank" style="color: #0077b6;">📄 View</a>` : '-';
+      const orderLetter = req.orderLetter ? `<a href="/uploads/${req.orderLetter}" target="_blank" style="color: #0077b6;">View</a>` : '-';
       const remark = req.remark || '-';
 
       if (type === 'pending') {
@@ -1390,10 +1378,10 @@
           <td><span class="status-badge status-pending">Pending</span></td>
           <td class="actions">
             <button class="approve-btn" onclick="openFormPreviewDialog('${formId}', '${noDuesType}')" title="Approve and assign forms">
-              ✅ Approve
+              Approve
             </button>
             <button class="reject-btn" onclick="rejectRequest('${formId}')" title="Reject this request">
-              ❌ Reject
+              Reject
             </button>
           </td>
         `;
@@ -1430,7 +1418,7 @@
       tbody.innerHTML = '';
 
       if (!forms || forms.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="7" class="empty-state">📭 No forms from HOD ready for IT review</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="7" class="empty-state">No forms from HOD ready for IT review</td></tr>';
         return;
       }
 
@@ -1449,7 +1437,7 @@
           <td><span class="status-badge status-approved">${form.status || 'Ready for IT'}</span></td>
           <td class="actions">
             <button class="review-btn" onclick="openITFormReview('${form.formId}')" title="Review and process this form">
-              🔍 Review & Process
+              Review & Process
             </button>
           </td>
         `;
@@ -1463,7 +1451,7 @@
       tbody.innerHTML = '';
 
       if (!forms || forms.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="7" class="empty-state">📭 No completed forms</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="7" class="empty-state">No completed forms</td></tr>';
         return;
       }
 
@@ -1509,7 +1497,6 @@
               btn.style.display = 'none';
             });
           } catch (error) {
-            console.log('Cannot access iframe content (cross-origin):', error);
           }
         });
       });
@@ -1517,7 +1504,6 @@
 
     // Enhanced initialization
     document.addEventListener('DOMContentLoaded', () => {
-      console.log('🚀 IT Dashboard initializing...');
 
       // Setup search functionality
       const searchInput = document.getElementById('globalSearch');
@@ -1571,17 +1557,14 @@
         }
       }, 30000);
 
-      console.log('✅ IT Dashboard loaded with working search functionality');
     });
 
     // Global error handler
     window.addEventListener('error', (event) => {
-      console.error('Global error caught:', event.error);
     });
 
     // Handle unhandled promise rejections
     window.addEventListener('unhandledrejection', (event) => {
-      console.error('Unhandled promise rejection:', event.reason);
       event.preventDefault();
     });
 

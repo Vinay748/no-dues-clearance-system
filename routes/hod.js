@@ -53,8 +53,6 @@ router.get('/my-details', roleAuth('hod'), (req, res) => {
       });
     }
 
-    console.log('✅ Providing HOD details for prefilling:', sessionUser.name);
-
     // Return HOD's own details for prefilling
     res.json({
       success: true,
@@ -71,7 +69,6 @@ router.get('/my-details', roleAuth('hod'), (req, res) => {
     });
 
   } catch (error) {
-    console.error('Error getting HOD details:', error);
     res.status(500).json({
       success: false,
       message: 'Error fetching HOD details'
@@ -98,7 +95,6 @@ router.get('/profile', roleAuth('hod'), (req, res) => {
       }
     });
   } catch (error) {
-    console.error('Error fetching HOD profile:', error);
     res.status(500).json({ success: false, message: 'Error fetching profile' });
   }
 });
@@ -111,7 +107,7 @@ router.get('/get-signature', roleAuth('hod'), (req, res) => {
     try {
       signatures = loadJSON(HOD_SIGNATURES);
     } catch {
-      console.log('No existing signatures file');
+      // No existing signatures file
     }
     const signature = signatures.find(s => s.hodId === hodId);
     if (!signature) {
@@ -127,7 +123,6 @@ router.get('/get-signature', roleAuth('hod'), (req, res) => {
       hodName: name
     });
   } catch (err) {
-    console.error('Error fetching HOD signature:', err);
     res.status(500).json({ success: false, message: 'Error fetching signature' });
   }
 });
@@ -143,11 +138,8 @@ router.get('/form-details', roleAuth('hod'), (req, res) => {
     const sessionUser = req.session?.user;
 
     if (!form) {
-      console.log(`Form ${formId} not found`);
       return res.status(404).json({ success: false, message: 'Form not found' });
     }
-
-    console.log(`✅ Found form ${formId}, status: ${form.status}`);
 
     // Include HOD details in response
     const response = {
@@ -173,7 +165,6 @@ router.get('/form-details', roleAuth('hod'), (req, res) => {
 
     res.json(response);
   } catch (err) {
-    console.error('Error loading form details:', err);
     res.status(500).json({ success: false, message: 'Error fetching form details' });
   }
 });
@@ -189,8 +180,6 @@ router.get('/form-details/:formId', roleAuth('hod'), (req, res) => {
     const sessionUser = req.session?.user;
 
     if (!form) return res.status(404).json({ success: false, message: 'Form not found' });
-
-    console.log(`✅ Providing form ${formId} with HOD details for ${sessionUser.name}`);
 
     res.json({
       success: true,
@@ -216,7 +205,6 @@ router.get('/form-details/:formId', roleAuth('hod'), (req, res) => {
       }
     });
   } catch (err) {
-    console.error('Error loading form details:', err);
     res.status(500).json({ success: false, message: 'Error fetching form details' });
   }
 });
@@ -225,10 +213,8 @@ router.get('/form-details/:formId', roleAuth('hod'), (req, res) => {
 router.get('/all', roleAuth('hod'), (req, res) => {
   try {
     const allForms = loadJSON(PENDING_FORMS);
-    console.log(`📋 Found ${allForms.length} total forms for HOD dashboard`);
     res.json({ success: true, data: allForms });
   } catch (err) {
-    console.error('Error fetching all forms:', err);
     res.status(500).json({ success: false, message: 'Failed to fetch all forms' });
   }
 });
@@ -238,10 +224,8 @@ router.get('/pending', roleAuth('hod'), (req, res) => {
   try {
     const pendingForms = loadJSON(PENDING_FORMS);
     const forms = pendingForms.filter(f => f.status === 'Submitted to HOD');
-    console.log(`📋 Found ${forms.length} forms pending HOD approval`);
     res.json({ success: true, data: forms });
   } catch (err) {
-    console.error('Error fetching pending forms:', err);
     res.status(500).json({ success: false, message: 'Failed to fetch pending forms' });
   }
 });
@@ -276,9 +260,6 @@ const validateFormSubmission = (req, res, next) => {
 router.post('/final-approve', roleAuth('hod'), validateFormSubmission, (req, res) => {
   try {
     let { formId, formResponses, action, remarks } = req.body;
-
-    console.log('📋 HOD Final Approve - formId:', formId);
-    console.log('📋 HOD Final Approve - formResponses keys:', Object.keys(formResponses));
 
     const forms = loadJSON(PENDING_FORMS);
     const formIndex = forms.findIndex(f => f.formId === formId);
@@ -348,8 +329,6 @@ router.post('/final-approve', roleAuth('hod'), validateFormSubmission, (req, res
     forms[formIndex] = form;
     saveJSON(PENDING_FORMS, forms);
 
-    console.log(`✅ Form ${formId} approved by HOD ${sessionUser.name} and forwarded to IT`);
-
     res.json({
       success: true,
       message: 'Form approved and sent to IT',
@@ -362,7 +341,6 @@ router.post('/final-approve', roleAuth('hod'), validateFormSubmission, (req, res
       }
     });
   } catch (err) {
-    console.error('Error in HOD final approval:', err);
     res.status(500).json({ success: false, message: 'Error during final approval' });
   }
 });
@@ -417,7 +395,6 @@ router.post('/approve-form', roleAuth('hod'), (req, res) => {
     if (action === 'approved' || action === 'approve') {
       form.status = 'Submitted to IT';
       form.hodApproval = hodActionData;
-      console.log(`✅ Form ${formId} approved by HOD ${sessionUser.name}`);
     } else if (action === 'rejected' || action === 'reject') {
       form.status = 'rejected';
       form.rejectionReason = remarks || 'No reason provided';
@@ -426,7 +403,6 @@ router.post('/approve-form', roleAuth('hod'), (req, res) => {
       form.hodRejection = hodActionData;
       form.assignedForms = [];
       form.formResponses = {};
-      console.log(`Form ${formId} rejected by HOD ${sessionUser.name} - Reason: ${remarks}`);
     }
 
     forms[formIndex] = form;
@@ -444,7 +420,6 @@ router.post('/approve-form', roleAuth('hod'), (req, res) => {
       }
     });
   } catch (error) {
-    console.error('Error in HOD approval:', error);
     res.status(500).json({ success: false, message: 'Approval failed' });
   }
 });
@@ -453,7 +428,6 @@ router.post('/approve-form', roleAuth('hod'), (req, res) => {
 router.post('/upload-signature', roleAuth('hod'), (req, res) => {
   upload.single('signature')(req, res, (err) => {
     if (err) {
-      console.error('Multer error:', err);
       if (err.code === 'LIMIT_FILE_SIZE') {
         return res.status(400).json({
           success: false,
@@ -481,7 +455,7 @@ router.post('/upload-signature', roleAuth('hod'), (req, res) => {
       try {
         signatures = loadJSON(HOD_SIGNATURES);
       } catch {
-        console.log('Creating new signatures file');
+        // Creating new signatures file
       }
 
       const existingIndex = signatures.findIndex(sig => sig.hodId === hodId);
@@ -503,7 +477,6 @@ router.post('/upload-signature', roleAuth('hod'), (req, res) => {
       }
 
       saveJSON(HOD_SIGNATURES, signatures);
-      console.log(`✅ Signature uploaded for HOD ${name}`);
 
       res.json({
         success: true,
@@ -517,7 +490,6 @@ router.post('/upload-signature', roleAuth('hod'), (req, res) => {
         }
       });
     } catch (err) {
-      console.error('Error uploading signature:', err);
       res.status(500).json({ success: false, message: 'Error uploading signature' });
     }
   });
@@ -551,7 +523,6 @@ router.get('/my-signature', roleAuth('hod'), (req, res) => {
       }
     });
   } catch (err) {
-    console.error('Error retrieving signature:', err);
     res.status(500).json({ success: false, message: 'Error retrieving signature' });
   }
 });
@@ -591,7 +562,6 @@ router.post('/save-disposal', roleAuth('hod'), (req, res) => {
       message: 'Disposal form data saved successfully'
     });
   } catch (error) {
-    console.error('Error saving disposal form:', error);
     res.status(500).json({
       success: false,
       message: 'Error saving disposal form data'
@@ -633,7 +603,6 @@ router.post('/save-efile', roleAuth('hod'), (req, res) => {
       message: 'E-file form data saved successfully'
     });
   } catch (error) {
-    console.error('Error saving efile form:', error);
     res.status(500).json({
       success: false,
       message: 'Error saving e-file form data'
@@ -675,7 +644,6 @@ router.post('/save-form365-transfer', roleAuth('hod'), (req, res) => {
       message: 'Form 365 Transfer data saved successfully'
     });
   } catch (error) {
-    console.error('Error saving form365 transfer:', error);
     res.status(500).json({
       success: false,
       message: 'Error saving Form 365 Transfer data'
@@ -717,7 +685,6 @@ router.post('/save-form365-disposal', roleAuth('hod'), (req, res) => {
       message: 'Form 365 Disposal data saved successfully'
     });
   } catch (error) {
-    console.error('Error saving form365 disposal:', error);
     res.status(500).json({
       success: false,
       message: 'Error saving Form 365 Disposal data'
