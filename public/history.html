@@ -41,36 +41,251 @@
 
     .card h2 {
       margin-top: 0;
+      color: #007bff;
+      margin-bottom: 1.5rem;
     }
 
-    .form-link {
-      color: #007bff;
-      text-decoration: underline;
+    /* Table Styles */
+    .history-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1rem;
+      background: white;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .history-table thead {
+      background-color: #007bff;
+      color: white;
+    }
+
+    .history-table th {
+      padding: 15px 12px;
+      text-align: left;
+      font-weight: 600;
+      font-size: 14px;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      border-bottom: 2px solid #0056b3;
       cursor: pointer;
-      display: block;
-      margin: 8px 0;
+      position: relative;
+      user-select: none;
+      transition: background-color 0.2s;
+    }
+
+    .history-table th:hover {
+      background-color: #0056b3;
+    }
+
+    .history-table th.sortable::after {
+      content: ' ⇅';
+      font-size: 12px;
+      color: rgba(255, 255, 255, 0.7);
+    }
+
+    .history-table th.sort-asc::after {
+      content: ' ↑';
+      color: white;
+    }
+
+    .history-table th.sort-desc::after {
+      content: ' ↓';
+      color: white;
+    }
+
+    .history-table td {
+      padding: 12px;
+      border-bottom: 1px solid #e9ecef;
+      font-size: 14px;
+      color: #495057;
+      vertical-align: middle;
+    }
+
+    .history-table tbody tr:nth-child(even) {
+      background-color: #f8f9fa;
+    }
+
+    .history-table tbody tr:hover {
+      background-color: #e3f2fd;
+      transition: background-color 0.2s;
+    }
+
+    /* Status badges */
+    .status-badge {
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      display: inline-block;
+    }
+
+    .status-submitted {
+      background-color: #cce5ff;
+      color: #0056b3;
+    }
+
+    .status-approved {
+      background-color: #d4edda;
+      color: #155724;
+    }
+
+    .status-rejected {
+      background-color: #f8d7da;
+      color: #721c24;
+    }
+
+    .status-pending {
+      background-color: #fff3cd;
+      color: #856404;
+    }
+
+    .status-completed {
+      background-color: #d1ecf1;
+      color: #0c5460;
+    }
+
+    /* Action buttons */
+    .btn-view {
+      background-color: #007bff;
+      color: white;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 12px;
+      margin-right: 5px;
+      transition: background-color 0.2s;
+    }
+
+    .btn-view:hover {
+      background-color: #0056b3;
+    }
+
+    .btn-download {
+      background-color: #28a745;
+      color: white;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 12px;
+      transition: background-color 0.2s;
+    }
+
+    .btn-download:hover {
+      background-color: #1e7e34;
+    }
+
+    /* Name column styling */
+    .name-cell {
+      font-weight: 600;
+      color: #007bff;
+    }
+
+    .form-id-cell {
+      font-family: 'Courier New', monospace;
+      background: #f8f9fa;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-weight: 600;
+    }
+
+    /* Remarks column */
+    .remarks-cell {
+      max-width: 200px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    /* Loading and empty states */
+    .loading {
+      text-align: center;
+      padding: 3rem;
+      color: #6c757d;
+      font-style: italic;
+    }
+
+    .no-data {
+      text-align: center;
+      padding: 3rem;
+      color: #6c757d;
+    }
+
+    .no-data img {
+      width: 80px;
+      height: 80px;
+      opacity: 0.5;
+      margin-bottom: 1rem;
+    }
+
+    /* Application details modal */
+    .application-details {
+      background: #f9f9f9;
+      padding: 1.5rem;
+      border: 1px solid #dee2e6;
+      border-radius: 8px;
+      margin-top: 1rem;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .application-details h3 {
+      color: #007bff;
+      margin-top: 0;
+      margin-bottom: 1rem;
+    }
+
+    .application-details .detail-row {
+      display: flex;
+      margin-bottom: 0.5rem;
+    }
+
+    .application-details .detail-label {
+      font-weight: 600;
+      min-width: 150px;
+      color: #495057;
+    }
+
+    .application-details .detail-value {
+      color: #212529;
     }
 
     .hidden {
       display: none;
     }
 
-    .application-details {
-      background: #f9f9f9;
-      padding: 1rem;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-      margin-top: 1rem;
-    }
+    /* Responsive */
+    @media (max-width: 768px) {
+      .container {
+        padding: 1rem;
+      }
 
-    .btn-download {
-      margin-top: 10px;
-      padding: 8px 12px;
-      background-color: #004080;
-      color: white;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
+      .history-table {
+        font-size: 12px;
+      }
+
+      .history-table th,
+      .history-table td {
+        padding: 8px 6px;
+      }
+
+      .history-table th {
+        font-size: 12px;
+      }
+
+      .btn-view,
+      .btn-download {
+        padding: 4px 8px;
+        font-size: 11px;
+      }
+
+      .remarks-cell {
+        max-width: 100px;
+      }
     }
   </style>
 </head>
@@ -97,7 +312,30 @@
   <div class="container">
     <div class="card">
       <h2>Your Application History</h2>
-      <div id="historyList">Loading...</div>
+      <div id="historyContainer">
+        <div id="loadingMessage" class="loading">Loading your application history...</div>
+        <table id="historyTable" class="history-table hidden">
+          <thead>
+            <tr>
+              <th class="sortable" onclick="sortTable(0)">Name</th>
+              <th class="sortable" onclick="sortTable(1)">Form ID</th>
+              <th class="sortable" onclick="sortTable(2)">No Dues Type</th>
+              <th onclick="return false;">Action</th>
+              <th class="sortable" onclick="sortTable(4)">Status</th>
+              <th class="sortable" onclick="sortTable(5)">Remarks</th>
+            </tr>
+          </thead>
+          <tbody id="historyTableBody">
+            <!-- Data will be populated here -->
+          </tbody>
+        </table>
+        <div id="noDataMessage" class="no-data hidden">
+          <div style="font-size: 48px; margin-bottom: 1rem;">📄</div>
+          <h3>No Applications Found</h3>
+          <p>You haven't submitted any applications yet.</p>
+          <a href="employee.html" style="color: #007bff; text-decoration: none; font-weight: 600;">Submit Your First Application</a>
+        </div>
+      </div>
       <div id="formDetails" class="application-details hidden"></div>
     </div>
   </div>
@@ -111,6 +349,8 @@
 
     document.getElementById('welcomeUser').textContent = `Welcome, ${employeeId}`;
 
+    let sortDirection = {};
+
     function handleProfileOption(select) {
       const choice = select.value;
       if (choice === 'logout') {
@@ -121,28 +361,110 @@
       }
     }
 
+    function sortTable(columnIndex) {
+      const table = document.getElementById('historyTable');
+      const tbody = table.querySelector('tbody');
+      const rows = Array.from(tbody.querySelectorAll('tr'));
+      const headers = table.querySelectorAll('th');
+      
+      // Clear all previous sort indicators
+      headers.forEach(header => {
+        header.classList.remove('sort-asc', 'sort-desc');
+      });
+
+      // Determine sort direction
+      const currentDirection = sortDirection[columnIndex] || 'asc';
+      const newDirection = currentDirection === 'asc' ? 'desc' : 'asc';
+      sortDirection[columnIndex] = newDirection;
+
+      // Add sort indicator to current column
+      headers[columnIndex].classList.add(newDirection === 'asc' ? 'sort-asc' : 'sort-desc');
+
+      // Sort rows
+      rows.sort((a, b) => {
+        const aVal = a.cells[columnIndex].textContent.trim();
+        const bVal = b.cells[columnIndex].textContent.trim();
+        
+        // Handle different data types
+        let comparison = 0;
+        if (!isNaN(aVal) && !isNaN(bVal)) {
+          // Numeric comparison
+          comparison = parseFloat(aVal) - parseFloat(bVal);
+        } else {
+          // String comparison
+          comparison = aVal.localeCompare(bVal);
+        }
+        
+        return newDirection === 'asc' ? comparison : -comparison;
+      });
+
+      // Reappend sorted rows
+      rows.forEach(row => tbody.appendChild(row));
+    }
+
+    function getStatusBadge(status) {
+      if (!status) return '<span class="status-badge status-submitted">Submitted</span>';
+      const statusLower = status.toLowerCase().replace(/\s+/g, '-');
+      return `<span class="status-badge status-${statusLower}">${status}</span>`;
+    }
+
+    function formatDate(dateString) {
+      if (!dateString) return 'N/A';
+      const date = new Date(dateString);
+      return date.toLocaleDateString('en-US', { 
+        year: 'numeric', 
+        month: 'short', 
+        day: 'numeric' 
+      });
+    }
+
     async function loadHistory() {
       try {
         const res = await fetch(`/api/history?employeeId=${employeeId}`);
         const data = await res.json();
 
-        const historyList = document.getElementById('historyList');
+        const loadingMessage = document.getElementById('loadingMessage');
+        const historyTable = document.getElementById('historyTable');
+        const noDataMessage = document.getElementById('noDataMessage');
+        const tableBody = document.getElementById('historyTableBody');
+
+        loadingMessage.classList.add('hidden');
+
         if (data.length === 0) {
-          historyList.textContent = "No previous applications found.";
+          noDataMessage.classList.remove('hidden');
           return;
         }
 
-        historyList.innerHTML = '';
+        // Populate table with new column order: Name, Form ID, No Dues Type, Action, Status, Remarks
+        tableBody.innerHTML = '';
         data.forEach(item => {
-          const link = document.createElement('span');
-          link.textContent = `Form ID: ${item.formId}`;
-          link.className = 'form-link';
-          link.onclick = () => loadDetails(item.formId);
-          historyList.appendChild(link);
+          const row = document.createElement('tr');
+          row.innerHTML = `
+            <td class="name-cell">${item.name || 'N/A'}</td>
+            <td><span class="form-id-cell">${item.formId}</span></td>
+            <td>${item.noDuesType || 'N/A'}</td>
+            <td>
+              <button class="btn-view" onclick="loadDetails('${item.formId}')">View</button>
+              <button class="btn-download" onclick="downloadPDF('${item.formId}')">PDF</button>
+            </td>
+            <td>${getStatusBadge(item.status || 'Submitted')}</td>
+            <td class="remarks-cell" title="${item.remarks || 'No remarks'}">${item.remarks || 'No remarks'}</td>
+          `;
+          tableBody.appendChild(row);
         });
 
+        historyTable.classList.remove('hidden');
+
       } catch (err) {
-        document.getElementById('historyList').textContent = "Failed to load history.";
+        const loadingMessage = document.getElementById('loadingMessage');
+        loadingMessage.innerHTML = `
+          <div style="color: #dc3545;">
+            <div style="font-size: 36px; margin-bottom: 1rem;">⚠️</div>
+            <h3>Failed to load history</h3>
+            <p>Please try again later or contact support.</p>
+            <button onclick="loadHistory()" style="background: #007bff; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer;">Retry</button>
+          </div>
+        `;
       }
     }
 
@@ -156,14 +478,46 @@
 
         details.innerHTML = `
           <h3>Application Details (Form ID: ${formId})</h3>
-          <p><strong>Name:</strong> ${data.name}</p>
-          <p><strong>Employee ID:</strong> ${data.empId}</p>
-          <p><strong>Department:</strong> ${data.department}</p>
-          <p><strong>No Dues Type:</strong> ${data.noDuesType}</p>
-          <p><strong>Email:</strong> ${data.email}</p>
-          <p><strong>Submission Date:</strong> ${data.submissionDate || 'N/A'}</p>
-          <button class="btn-download" onclick="downloadPDF('${formId}')">Download PDF</button>
+          <div class="detail-row">
+            <span class="detail-label">Name:</span>
+            <span class="detail-value">${data.name || 'N/A'}</span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-label">Employee ID:</span>
+            <span class="detail-value">${data.empId || 'N/A'}</span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-label">Department:</span>
+            <span class="detail-value">${data.department || 'N/A'}</span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-label">No Dues Type:</span>
+            <span class="detail-value">${data.noDuesType || 'N/A'}</span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-label">Email:</span>
+            <span class="detail-value">${data.email || 'N/A'}</span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-label">Submission Date:</span>
+            <span class="detail-value">${formatDate(data.submissionDate)}</span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-label">Status:</span>
+            <span class="detail-value">${getStatusBadge(data.status || 'Submitted')}</span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-label">Remarks:</span>
+            <span class="detail-value">${data.remarks || 'No remarks'}</span>
+          </div>
+          <div style="margin-top: 1rem;">
+            <button class="btn-download" onclick="downloadPDF('${formId}')">Download PDF</button>
+            <button onclick="document.getElementById('formDetails').classList.add('hidden')" style="background: #6c757d; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; margin-left: 8px;">Close</button>
+          </div>
         `;
+
+        // Scroll to details
+        details.scrollIntoView({ behavior: 'smooth' });
       } catch (err) {
         alert("Failed to load application details.");
       }
@@ -173,6 +527,7 @@
       window.open(`/download-pdf/${formId}`, '_blank');
     }
 
+    // Load history on page load
     loadHistory();
   </script>
 </body>

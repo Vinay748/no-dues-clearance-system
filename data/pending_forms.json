@@ -519,10 +519,10 @@
     "noDuesType": "Retirement",
     "reason": "",
     "orderLetter": "1755776333821-transfer.webp",
-    "status": "approved",
+    "status": "Submitted to HOD",
     "submissionDate": "2025-08-21T11:38:53.826Z",
     "submittedBy": "EMP1001",
-    "lastUpdated": "2025-08-24T20:00:39.681Z",
+    "lastUpdated": "2025-08-26T12:53:40.321Z",
     "assignedForms": [
       {
         "title": "E-File",
@@ -563,10 +563,63 @@
           }
         ],
         "formId": "",
-        "lastUpdated": "2025-08-24T20:00:39.652Z",
+        "lastUpdated": "2025-08-26T12:53:24.740Z",
+        "userRole": "employee"
+      },
+      "disposalFormData": {
+        "confirmationReason": "Superannuation",
+        "unitName": "WDFEWF",
+        "department": "CSR",
+        "salutationFrom": "Mr.",
+        "nameFrom": "GNFBHF",
+        "designationFrom": "fhfh",
+        "empNoFrom": "3401234",
+        "emailFrom": "GNFBHF",
+        "salutationTo": "Mr.",
+        "nameTo": "FHNTGDJ",
+        "designationTo": "fhfh",
+        "empNoTo": "3401234",
+        "emailTo": "FHNTGDJ",
+        "transferDate": "2025-08-26",
+        "disposableEmail": "FHTJT",
+        "hodName": "",
+        "hodEmpNo": "",
+        "hodEmail": "",
+        "hodSignature": "",
+        "deactivatedEmail": "",
+        "deactivationDate": "",
+        "itName": "",
+        "itDesignation": "",
+        "formId": "",
+        "lastUpdated": "2025-08-26T12:53:34.729Z",
+        "userRole": "employee"
+      },
+      "form365Data": {
+        "reason": "Superannuation",
+        "unitName": "WDFEWF",
+        "department": "Electrical",
+        "fromId": "EFEGF",
+        "empSalutation": "Mr.",
+        "empName": "EFEGF",
+        "designation": "rth",
+        "empNo": "FBHGF",
+        "oldId": "RGERG",
+        "newId": "RGVRG",
+        "toSalutation": "Mr.",
+        "toEmp": "FHFHT",
+        "toDesignation": "RGVRG",
+        "toEmpNo": "ERGEG",
+        "date": "2025-08-26",
+        "disposedId": "EHJLLOIRRFEDHJL",
+        "hodName": "",
+        "hodEmpNo": "",
+        "hodEmail": "",
+        "formId": "",
+        "lastUpdated": "2025-08-26T12:52:45.414Z",
         "userRole": "employee"
       }
     },
-    "remark": "Forms assigned by IT - All three forms selected"
+    "remark": "Forms assigned by IT - All three forms selected",
+    "finalSubmittedAt": "2025-08-26T12:53:40.321Z"
   }
 ]

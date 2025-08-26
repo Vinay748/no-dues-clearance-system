@@ -75,5 +75,60 @@
     "details": {
       "email": "vs23cs92@thdcihet.ac.in"
     }
+  },
+  {
+    "timestamp": "2025-08-26T08:57:51.969Z",
+    "action": "OTP_VERIFY_SUCCESS",
+    "employeeId": "EMP1001",
+    "ip": "unknown",
+    "userAgent": "unknown",
+    "success": true,
+    "details": {
+      "sessionToken": "69f2c381..."
+    }
+  },
+  {
+    "timestamp": "2025-08-26T11:21:37.960Z",
+    "action": "OTP_GENERATED",
+    "employeeId": "EMP1001",
+    "ip": "unknown",
+    "userAgent": "unknown",
+    "success": true,
+    "details": {
+      "email": "vs23cs92@thdcihet.ac.in"
+    }
+  },
+  {
+    "timestamp": "2025-08-26T11:22:38.545Z",
+    "action": "OTP_GENERATED",
+    "employeeId": "EMP1001",
+    "ip": "unknown",
+    "userAgent": "unknown",
+    "success": true,
+    "details": {
+      "email": "vs23cs92@thdcihet.ac.in"
+    }
+  },
+  {
+    "timestamp": "2025-08-26T11:26:30.373Z",
+    "action": "OTP_GENERATED",
+    "employeeId": "EMP1001",
+    "ip": "unknown",
+    "userAgent": "unknown",
+    "success": true,
+    "details": {
+      "email": "vs23cs92@thdcihet.ac.in"
+    }
+  },
+  {
+    "timestamp": "2025-08-26T11:26:47.473Z",
+    "action": "OTP_VERIFY_SUCCESS",
+    "employeeId": "EMP1001",
+    "ip": "unknown",
+    "userAgent": "unknown",
+    "success": true,
+    "details": {
+      "sessionToken": "bf5e79f5..."
+    }
   }
 ]

@@ -1,0 +1,29 @@
+{
+  "70eb5385ea87a5a7a2f8c752032fd50a7ec3c092c1a4afbbfe834eb08755b904": {
+    "employeeId": "EMP1001",
+    "sessionToken": "70eb5385ea87a5a7a2f8c752032fd50a7ec3c092c1a4afbbfe834eb08755b904",
+    "status": "pending_otp",
+    "expiresAt": "2025-08-26T11:31:33.758Z",
+    "createdAt": "2025-08-26T11:21:33.758Z",
+    "otpVerifiedAt": null,
+    "clientInfo": {}
+  },
+  "b2568f22ac994f0d42126054f871ac90966ac8e5a9a9c96addb7a16199e01912": {
+    "employeeId": "EMP1001",
+    "sessionToken": "b2568f22ac994f0d42126054f871ac90966ac8e5a9a9c96addb7a16199e01912",
+    "status": "pending_otp",
+    "expiresAt": "2025-08-26T11:32:34.798Z",
+    "createdAt": "2025-08-26T11:22:34.798Z",
+    "otpVerifiedAt": null,
+    "clientInfo": {}
+  },
+  "bf5e79f50d90fdfd4cb39384913d9f76764b4ad0a218d26dc919502c740ec9e0": {
+    "employeeId": "EMP1001",
+    "sessionToken": "bf5e79f50d90fdfd4cb39384913d9f76764b4ad0a218d26dc919502c740ec9e0",
+    "status": "verified",
+    "expiresAt": "2025-08-26T11:36:26.115Z",
+    "createdAt": "2025-08-26T11:26:26.115Z",
+    "otpVerifiedAt": "2025-08-26T11:26:47.429Z",
+    "clientInfo": {}
+  }
+}

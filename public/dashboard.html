@@ -1178,7 +1178,104 @@
     .status-submitted {
       color: white !important;
     }
+
+    /* Fix white text in Quick Status Overview */
+    #quickStatusCard .status-label {
+      color: #333333 !important;
+      font-weight: 600 !important;
+    }
+
+    #quickStatusCard .status-value {
+      color: #1976d2 !important;
+      font-weight: 700 !important;
+    }
+
+    /* Additional fix for all status items */
+    .status-item .status-label {
+      color: #333333 !important;
+    }
+
+    .status-item .status-value {
+      color: #1976d2 !important;
+    }
+
+    /* =========================
+       PROFILE POPUP FIXES
+       ========================= */
+
+    /* Fix Form ID and Status visibility in profile popup */
+    .profile-popup .info-item .info-value {
+      color: #263238 !important;
+      font-weight: 600 !important;
+      font-size: 14px !important;
+    }
+
+    /* Specifically target Form ID styling */
+    #profileFormId {
+      color: #1976d2 !important;
+      font-weight: 700 !important;
+      background: #f0f7ff !important;
+      padding: 4px 8px !important;
+      border-radius: 6px !important;
+      border: 1px solid #cfe2ff !important;
+      font-family: 'Courier New', monospace !important;
+      font-size: 12px !important;
+    }
+
+    /* Status-specific colors for profile status */
+    #profileStatus {
+      font-weight: 700 !important;
+      padding: 4px 10px !important;
+      border-radius: 12px !important;
+      font-size: 12px !important;
+      text-transform: uppercase !important;
+      letter-spacing: 0.5px !important;
+    }
+
+    #profileStatus.status-approved {
+      background: #d4edda !important;
+      color: #155724 !important;
+      border: 1px solid #c3e6cb !important;
+    }
+
+    #profileStatus.status-pending {
+      background: #fff3cd !important;
+      color: #856404 !important;
+      border: 1px solid #ffeaa7 !important;
+    }
+
+    #profileStatus.status-rejected {
+      background: #f8d7da !important;
+      color: #721c24 !important;
+      border: 1px solid #f5c6cb !important;
+    }
+
+    #profileStatus.status-default {
+      background: #e6f2ff !important;
+      color: #1976d2 !important;
+      border: 1px solid #cfe2ff !important;
+    }
+
+    #profileStatus.status-inactive {
+      background: #f8f9fa !important;
+      color: #6c757d !important;
+      border: 1px solid #dee2e6 !important;
+    }
+
+    /* Ensure all profile popup info values are visible */
+    #profileName,
+    #profileId {
+      color: #263238 !important;
+      font-weight: 600 !important;
+    }
+
+    /* Fallback for any missed profile popup text */
+    .profile-popup .info-value {
+      color: #263238 !important;
+      font-weight: 600 !important;
+    }
   </style>
+
 
 
 
@@ -2139,7 +2236,7 @@
 
             quickStatusContent.innerHTML = `
           <div class="status-item" style="display: flex; justify-content: space-between; padding: ${dashboardState.isMobile ? '6px 0' : '8px 0'}; border-bottom: 1px solid #e3e8ee; flex-wrap: ${dashboardState.isMobile ? 'wrap' : 'nowrap'};">
-            <span class="status-label" style="color: #263238; font-weight: 500; font-size: ${dashboardState.isMobile ? '13px' : '14px'};">Form ID:</span>
+            <span class="status-label" style="color: #333333; font-weight: 500; font-size: ${dashboardState.isMobile ? '13px' : '14px'};">Form ID:</span>
             <span class="status-value" style="color: #1976d2; font-weight: 600; font-size: ${dashboardState.isMobile ? '13px' : '14px'}; word-break: break-all;">${data.formId}</span>
           </div>
           <div class="status-item" style="display: flex; justify-content: space-between; padding: ${dashboardState.isMobile ? '6px 0' : '8px 0'}; border-bottom: 1px solid #e3e8ee; flex-wrap: ${dashboardState.isMobile ? 'wrap' : 'nowrap'};">
@@ -2585,7 +2682,7 @@
       html += '</div>';
       preview.innerHTML = html;
     }*/
-   
+
     // Mobile-optimized form reset
     function resetSavedForms() {
       const modal = document.createElement('div');
@@ -3120,85 +3217,139 @@
 
     // Mobile-optimized history loader
     async function loadHistory() {
-      const user = await validateEmployeeSession();
-      if (!user) return;
+  const user = await validateEmployeeSession();
+  if (!user) return;
 
-      const container = document.getElementById('historyList');
-      if (!container) return;
+  const container = document.getElementById('historyList');
+  if (!container) {
+    console.error('History container not found');
+    return;
+  }
 
-      try {
-        const res = await fetch('/api/employee/history', { credentials: 'include' });
-        const data = await res.json();
+  try {
+    // Try multiple API endpoints to find the working one
+    let res;
+    let data;
+    
+    try {
+      res = await fetch('/api/employee/history', { credentials: 'include' });
+      data = await res.json();
+    } catch (error) {
+      // Fallback to alternative endpoint
+      res = await fetch(`/api/history?employeeId=${user.employeeId || localStorage.getItem('employeeId')}`, { credentials: 'include' });
+      data = await res.json();
+    }
 
-        if (data.history?.length) {
-          container.innerHTML = data.history.map(f => `
-        <div class="form-entry" style="
-          background: #fafbfc; padding: ${dashboardState.isMobile ? '16px' : '20px'}; margin-bottom: 15px; 
-          border-radius: 10px; border: 1px solid #e3e8ee; 
-          box-shadow: 0 1px 8px rgba(25, 118, 210, 0.07);
-        ">
-          <div style="display: ${dashboardState.isMobile ? 'block' : 'grid'}; ${dashboardState.isMobile ? '' : 'grid-template-columns: 1fr auto;'} gap: ${dashboardState.isMobile ? '15px' : '20px'}; align-items: center;">
-            <div>
-              <div style="font-size: ${dashboardState.isMobile ? '14px' : '16px'}; font-weight: bold; color: #1976d2; margin-bottom: 8px;">
-                Form ID: <code style="background: #f7fafc; color: #1976d2; padding: 2px 6px; border-radius: 4px; font-size: ${dashboardState.isMobile ? '12px' : '13px'};">${f.formId}</code>
-              </div>
-              <div style="margin-bottom: 5px; font-size: ${dashboardState.isMobile ? '13px' : '14px'};">
-                <strong style="color: #1976d2;">Status:</strong> 
-                <span class="status status-${f.status.toLowerCase().replace(/\s+/g, '-')}">${f.status}</span>
-              </div>
-              <div style="color: #263238; font-size: ${dashboardState.isMobile ? '13px' : '14px'};">
-                <strong style="color: #1976d2;">Date:</strong> ${new Date(f.submissionDate || f.lastUpdated).toLocaleDateString()}
-              </div>
-            </div>
-            <div style="display: flex; ${dashboardState.isMobile ? 'justify-content: space-between;' : 'flex-direction: column;'} gap: 8px; ${dashboardState.isMobile ? 'margin-top: 10px;' : ''}">
-              <button onclick="viewFormDetails('${f.formId}')" style="
-                background: #1976d2; color: white; border: none; 
-                padding: ${dashboardState.isMobile ? '6px 12px' : '8px 16px'}; border-radius: 5px; cursor: pointer;
-                transition: background-color 0.2s; font-size: ${dashboardState.isMobile ? '12px' : '13px'};
-                touch-action: manipulation; ${dashboardState.isMobile ? 'flex: 1;' : ''}
-              ">View Details</button>
-              <button onclick="downloadPDF('${f.formId}')" style="
-                background: #5cb85c; color: white; border: none; 
-                padding: ${dashboardState.isMobile ? '6px 12px' : '8px 16px'}; border-radius: 5px; cursor: pointer;
-                transition: background-color 0.2s; font-size: ${dashboardState.isMobile ? '12px' : '13px'};
-                touch-action: manipulation; ${dashboardState.isMobile ? 'flex: 1;' : ''}
-              ">Download PDF</button>
-            </div>
-          </div>
+    if (data.success === false) {
+      throw new Error(data.message || 'Failed to load history');
+    }
+
+    // Handle different response formats
+    const historyData = data.history || data || [];
+
+    if (historyData && historyData.length > 0) {
+      // Create table structure dynamically
+      container.innerHTML = `
+        <div class="table-wrapper" style="overflow-x: auto; -webkit-overflow-scrolling: touch;">
+          <table class="history-table" style="
+            width: 100%; border-collapse: collapse; margin-top: 1rem; background: white;
+            border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+          ">
+            <thead style="background-color: #1976d2; color: white;">
+              <tr>
+                <th style="padding: 15px 12px; text-align: left; font-weight: 600; font-size: 14px;">Name</th>
+                <th style="padding: 15px 12px; text-align: left; font-weight: 600; font-size: 14px;">Form ID</th>
+                <th style="padding: 15px 12px; text-align: left; font-weight: 600; font-size: 14px;">No Dues Type</th>
+                <th style="padding: 15px 12px; text-align: left; font-weight: 600; font-size: 14px;">Action</th>
+                <th style="padding: 15px 12px; text-align: left; font-weight: 600; font-size: 14px;">Status</th>
+                <th style="padding: 15px 12px; text-align: left; font-weight: 600; font-size: 14px;">Remarks</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${historyData.map(f => `
+                <tr style="border-bottom: 1px solid #e9ecef;">
+                  <td style="padding: 12px; font-weight: 600; color: #1976d2;">${f.name || user.name || 'N/A'}</td>
+                  <td style="padding: 12px;"><code style="background: #f8f9fa; padding: 4px 8px; border-radius: 4px; font-weight: 600;">${f.formId}</code></td>
+                  <td style="padding: 12px;">${f.noDuesType || f.type || 'Standard'}</td>
+                  <td style="padding: 12px;">
+                    <button onclick="viewFormDetails('${f.formId}')" style="
+                      background: #1976d2; color: white; border: none; padding: 6px 12px; 
+                      border-radius: 4px; cursor: pointer; font-size: 12px; margin-right: 5px;
+                    ">View</button>
+                    <button onclick="downloadPDF('${f.formId}')" style="
+                      background: #28a745; color: white; border: none; padding: 6px 12px; 
+                      border-radius: 4px; cursor: pointer; font-size: 12px;
+                    ">PDF</button>
+                  </td>
+                  <td style="padding: 12px;">
+                    <span style="
+                      padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 600;
+                      background: #d4edda; color: #155724; text-transform: uppercase;
+                    ">${f.status || 'Submitted'}</span>
+                  </td>
+                  <td style="padding: 12px; max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="${f.remarks || f.comments || 'No remarks'}">${f.remarks || f.comments || 'No remarks'}</td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
         </div>
-      `).join('');
-        } else {
-          container.innerHTML = `
-        <div style="text-align: center; padding: ${dashboardState.isMobile ? '40px 16px' : '60px 20px'}; color: #263238; background: #fafbfc; border-radius: 10px; border: 1px solid #e3e8ee; box-shadow: 0 1px 8px rgba(25, 118, 210, 0.07);">
-          <div style="font-size: ${dashboardState.isMobile ? '48px' : '64px'}; margin-bottom: 20px; color: #e3e8ee;">-</div>
-          <h3 style="color: #1976d2; font-size: ${dashboardState.isMobile ? '1.1rem' : '1.2rem'};">No History Available</h3>
-          <p style="margin: 20px 0; line-height: 1.6; font-size: ${dashboardState.isMobile ? '13px' : '14px'};">Your application history will appear here once you submit forms.</p>
+      `;
+    } else {
+      container.innerHTML = `
+        <div style="text-align: center; padding: 60px 20px; color: #263238; background: #fafbfc; border-radius: 10px; border: 1px solid #e3e8ee;">
+          <div style="font-size: 48px; margin-bottom: 20px; color: #e3e8ee;">📄</div>
+          <h3 style="color: #1976d2; font-size: 1.2rem;">No History Available</h3>
+          <p style="margin: 20px 0; line-height: 1.6;">Your application history will appear here once you submit forms.</p>
           <button onclick="loadPage('apply')" style="
-            background: #1976d2; color: white; border: none; 
-            padding: ${dashboardState.isMobile ? '10px 20px' : '12px 24px'}; border-radius: 8px; cursor: pointer; 
-            font-weight: bold; margin-top: 15px; font-size: ${dashboardState.isMobile ? '13px' : '14px'};
-            transition: background-color 0.2s; touch-action: manipulation;
+            background: #1976d2; color: white; border: none; padding: 12px 24px; 
+            border-radius: 8px; cursor: pointer; font-weight: bold; margin-top: 15px;
           ">Submit Your First Application</button>
         </div>
       `;
-        }
-      } catch (err) {
-        container.innerHTML = `
-      <div style="color: #d9534f; text-align: center; padding: ${dashboardState.isMobile ? '30px' : '40px'}; background: #f8d7da; border-radius: 10px; border: 1px solid #f5c6cb;">
-        <h3 style="font-size: ${dashboardState.isMobile ? '1.1rem' : '1.2rem'};">Error Loading History</h3>
-        <p style="margin: 15px 0; font-size: ${dashboardState.isMobile ? '13px' : '14px'};">Unable to load your application history.</p>
+    }
+
+  } catch (err) {
+    console.error('History loading error:', err);
+    container.innerHTML = `
+      <div style="color: #d9534f; text-align: center; padding: 40px; background: #f8d7da; border-radius: 10px;">
+        <h3>Error Loading History</h3>
+        <p>Unable to load your application history: ${err.message}</p>
         <button onclick="loadHistory()" style="
-          background: #d9534f; color: white; border: none; 
-          padding: ${dashboardState.isMobile ? '8px 16px' : '10px 20px'}; border-radius: 6px; cursor: pointer;
-          font-size: ${dashboardState.isMobile ? '13px' : '14px'}; touch-action: manipulation;
+          background: #d9534f; color: white; border: none; padding: 10px 20px; 
+          border-radius: 6px; cursor: pointer;
         ">Try Again</button>
       </div>
     `;
-      } finally {
-        const spinner = document.getElementById('spinner');
-        if (spinner) spinner.style.display = 'none';
-      }
+  } finally {
+    const spinner = document.getElementById('spinner');
+    if (spinner) spinner.style.display = 'none';
+  }
+}
+
+// Add these helper functions if they don't exist
+async function validateEmployeeSession() {
+  try {
+    const res = await fetch('/api/auth/check-session', { credentials: 'include' });
+    if (res.ok) {
+      const data = await res.json();
+      return data.role === 'employee' ? data : null;
     }
+  } catch (err) {
+    console.error('Session validation failed:', err);
+  }
+  return null;
+}
+
+function viewFormDetails(formId) {
+  // Simple implementation - you can enhance this
+  alert(`Viewing details for Form ID: ${formId}`);
+  // Or redirect to detailed view
+  // window.location.href = `/form-details.html?formId=${formId}`;
+}
+
+function downloadPDF(formId) {
+  window.open(`/api/employee/form-pdf/${formId}`, '_blank');
+}
 
     // Mobile-optimized assigned forms loader
     async function fetchAssignedForms() {

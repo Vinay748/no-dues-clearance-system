@@ -22,6 +22,7 @@ function loadJSONFile(filePath) {
     const data = fs.readFileSync(filePath, 'utf8');
     return JSON.parse(data);
   } catch (err) {
+    console.error(`Error loading ${filePath}:`, err);
     return [];
   }
 }
@@ -32,6 +33,7 @@ function saveJSONFile(filePath, data) {
     fs.writeFileSync(filePath, JSON.stringify(data, null, 2), 'utf8');
     return true;
   } catch (err) {
+    console.error(`Error saving ${filePath}:`, err);
     return false;
   }
 }
@@ -48,14 +50,14 @@ function getLatestFormForEmployee(allForms, employeeId, allowedStatuses = []) {
 // Input validation middleware
 const validateFormProcessing = (req, res, next) => {
   const { formId, action } = req.body;
-
+  
   if (!formId || !action) {
     return res.status(400).json({
       success: false,
       message: 'Missing required fields: formId and action'
     });
   }
-
+  
   const validActions = ['complete', 'reject', 'approved', 'rejected'];
   if (!validActions.includes(action)) {
     return res.status(400).json({
@@ -63,14 +65,14 @@ const validateFormProcessing = (req, res, next) => {
       message: 'Invalid action. Must be one of: complete, reject, approved, rejected'
     });
   }
-
+  
   if (action === 'reject' && (!req.body.remarks || req.body.remarks.trim() === '')) {
     return res.status(400).json({
       success: false,
       message: 'Remarks are required for rejection'
     });
   }
-
+  
   next();
 };
 
@@ -83,6 +85,7 @@ router.get('/review-requests', (req, res) => {
     }
     res.json({ success: true, requests });
   } catch (err) {
+    console.error('❌ Error reading review requests:', err);
     res.status(500).json({ success: false, message: 'Failed to load requests.' });
   }
 });
@@ -98,8 +101,10 @@ router.get('/pending', (req, res) => {
     // Filter forms that HOD has approved and sent to IT
     const pendingForIT = requests.filter(form => form.status === 'Submitted to IT');
 
+    console.log(`📋 IT Dashboard: Found ${pendingForIT.length} forms pending IT review`);
     res.json({ success: true, list: pendingForIT });
   } catch (err) {
+    console.error('❌ Error reading IT pending forms:', err);
     res.status(500).json({ success: false, message: 'Failed to load pending forms.' });
   }
 });
@@ -136,6 +141,7 @@ router.get('/form-details/:formId', (req, res) => {
       status: form.status
     });
   } catch (err) {
+    console.error('❌ Error loading IT form details:', err);
     res.status(500).json({ success: false, message: 'Error fetching form details' });
   }
 });
@@ -169,6 +175,7 @@ router.post('/final-process', validateFormProcessing, async (req, res) => {
 
     if (action === 'complete') {
       // Enhanced form completion with PDF generation
+      console.log('🔄 Processing IT completion with PDF generation...');
 
       // Merge HOD data with form responses for PDF generation
       const enrichedFormResponses = {};
@@ -204,6 +211,8 @@ router.post('/final-process', validateFormProcessing, async (req, res) => {
             key.includes('itName') ||
             key.includes('itApproval')
           );
+
+          console.log(`IT sections in ${formKey}:`, hasITData);
         }
 
         // Update form with complete data (employee + HOD + IT)
@@ -211,10 +220,13 @@ router.post('/final-process', validateFormProcessing, async (req, res) => {
 
         // Generate PDF Certificates
         try {
+          console.log('📜 Generating PDF certificates...');
           const pdfCertificates = await generateFormCertificates(formId, enrichedFormResponses);
 
           // Store certificates in database
           await storeCertificates(formId, pdfCertificates, form.employeeId);
+
+          console.log(`✅ Generated ${pdfCertificates.length} PDF certificates`);
 
           // Add certificate info to form record
           form.certificates = pdfCertificates.map(cert => ({
@@ -237,9 +249,11 @@ router.post('/final-process', validateFormProcessing, async (req, res) => {
               }
             );
           } catch (notificationError) {
+            console.warn('Failed to send certificate notification:', notificationError);
           }
 
         } catch (pdfError) {
+          console.error('❌ PDF generation failed:', pdfError.message);
           // Don't fail the entire process if PDF generation fails
           // Just log the error and continue
         }
@@ -254,6 +268,8 @@ router.post('/final-process', validateFormProcessing, async (req, res) => {
         ipAddress: req.ip,
         userAgent: req.get('User-Agent')
       };
+
+      console.log(`✅ Form ${formId} completed by IT with certificate generation`);
 
       // Save updated data
       if (!saveJSONFile(pendingFormsPath, requests)) {
@@ -301,7 +317,10 @@ router.post('/final-process', validateFormProcessing, async (req, res) => {
           }
         );
       } catch (notificationError) {
+        console.warn('Failed to send rejection notification:', notificationError);
       }
+
+      console.log(`❌ Form ${formId} rejected by IT: ${remarks}`);
 
       // Save updated data
       if (!saveJSONFile(pendingFormsPath, requests)) {
@@ -318,6 +337,7 @@ router.post('/final-process', validateFormProcessing, async (req, res) => {
     }
 
   } catch (err) {
+    console.error('❌ Error in IT final processing:', err);
     res.status(500).json({
       success: false,
       message: 'Error during IT processing: ' + err.message
@@ -350,7 +370,10 @@ async function storeCertificates(formId, certificates, employeeId) {
       throw new Error('Failed to save certificate records');
     }
 
+    console.log('✅ Certificate records stored successfully');
+
   } catch (error) {
+    console.error('❌ Error storing certificates:', error);
     throw error;
   }
 }
@@ -400,7 +423,7 @@ router.post('/decision', validateFormProcessing, (req, res) => {
           formId: formId,
           timestamp: new Date().toISOString(),
           priority: 'medium',
-          title: 'Forms Assigned',
+          title: '📋 Forms Assigned',
           message: `Your application ${formId} has been approved. Complete the assigned forms to proceed.`,
           details: {
             assignedForms: form.assignedForms,
@@ -409,6 +432,7 @@ router.post('/decision', validateFormProcessing, (req, res) => {
           }
         });
       } catch (notificationError) {
+        console.warn('Failed to send form assignment notification:', notificationError);
       }
     } else if (decision === 'rejected') {
       // ENHANCED: Proper rejection handling
@@ -435,6 +459,7 @@ router.post('/decision', validateFormProcessing, (req, res) => {
           }
         );
       } catch (notificationError) {
+        console.warn('Failed to send rejection notification:', notificationError);
       }
     }
 
@@ -442,9 +467,11 @@ router.post('/decision', validateFormProcessing, (req, res) => {
       return res.status(500).json({ success: false, message: 'Failed to save form data' });
     }
 
+    console.log(`✅ Form ID ${formId} marked as ${decision}`);
     res.json({ success: true, message: `Form ${decision} successfully` });
 
   } catch (err) {
+    console.error('❌ Error processing decision:', err);
     res.status(500).json({ success: false, message: 'Failed to process request.' });
   }
 });
@@ -465,6 +492,7 @@ router.get('/stats', (req, res) => {
       const certificates = loadJSONFile(certificatesPath);
       certificatesCount = certificates.length;
     } catch (certError) {
+      console.warn('Could not read certificates for stats:', certError.message);
     }
 
     // Get notification system statistics
@@ -477,6 +505,7 @@ router.get('/stats', (req, res) => {
         .filter(n => new Date(n.timestamp) > new Date(Date.now() - 24 * 60 * 60 * 1000));
       notificationStats.totalNotificationsSent = recentNotifications.length;
     } catch (notificationError) {
+      console.warn('Could not get notification stats:', notificationError.message);
     }
 
     const stats = {
@@ -491,6 +520,7 @@ router.get('/stats', (req, res) => {
 
     res.json({ success: true, stats });
   } catch (err) {
+    console.error('❌ Error getting IT stats:', err);
     res.status(500).json({ success: false, message: 'Error fetching statistics' });
   }
 });
@@ -506,8 +536,10 @@ router.get('/completed', (req, res) => {
     // Filter forms that are completed by IT
     const completedForms = requests.filter(form => form.status === 'IT Completed');
 
+    console.log(`📋 IT Completed: Found ${completedForms.length} completed forms`);
     res.json({ success: true, list: completedForms });
   } catch (err) {
+    console.error('❌ Error reading IT completed forms:', err);
     res.status(500).json({ success: false, message: 'Failed to load completed forms.' });
   }
 });
@@ -585,6 +617,7 @@ router.post('/send-notification', (req, res) => {
     });
 
   } catch (error) {
+    console.error('Error sending bulk notification:', error);
     res.status(500).json({
       success: false,
       message: 'Failed to send notification'
@@ -614,6 +647,7 @@ router.get('/notification-stats', (req, res) => {
     });
 
   } catch (error) {
+    console.error('Error getting notification stats:', error);
     res.status(500).json({
       success: false,
       message: 'Failed to get notification statistics'
@@ -623,6 +657,8 @@ router.get('/notification-stats', (req, res) => {
 
 // Enhanced error handling middleware for IT routes
 router.use((error, req, res, next) => {
+  console.error('❌ IT router error:', error);
+
   // Handle specific error types
   if (error.code === 'ENOENT') {
     return res.status(500).json({

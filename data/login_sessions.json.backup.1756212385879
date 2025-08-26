@@ -7,14 +7,5 @@
     "createdAt": "2025-08-26T12:38:41.596Z",
     "otpVerifiedAt": "2025-08-26T12:39:01.100Z",
     "clientInfo": {}
-  },
-  "ea776c98bd12b73214b604b80bda978b0c06474ce016624fea50dfb36d25eb7b": {
-    "employeeId": "EMP1001",
-    "sessionToken": "ea776c98bd12b73214b604b80bda978b0c06474ce016624fea50dfb36d25eb7b",
-    "status": "verified",
-    "expiresAt": "2025-08-26T12:56:25.878Z",
-    "createdAt": "2025-08-26T12:46:25.878Z",
-    "otpVerifiedAt": "2025-08-26T12:46:42.162Z",
-    "clientInfo": {}
   }
 }
