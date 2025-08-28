@@ -1,0 +1,12 @@
+{
+  "EMP1005": {
+    "otpHash": "69d692725b78bfd4dbc579d4df34266a0ff6446d6fc0a56bd9b783f8c4e504c8",
+    "email": "vs23cs92@thdcihet.ac.in",
+    "createdAt": "2025-08-28T11:59:38.715Z",
+    "expiresAt": "2025-08-28T12:04:38.715Z",
+    "attempts": 0,
+    "maxAttempts": 3,
+    "used": false,
+    "sessionToken": "1fb6b7ef72f9c3b7740d63cf5a18d7881f30ab40f22c31c675ae86e75be9f978"
+  }
+}

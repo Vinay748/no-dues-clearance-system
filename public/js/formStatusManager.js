@@ -82,25 +82,21 @@ class FormStatusManager {
 const STATUS_MESSAGES = {
     'pending': null,
     'approved': {
-        icon: '📝',
         title: 'Ready to Complete',
         message: 'Your application has been approved. Complete the required forms below.',
         type: 'info'
     },
     'Submitted to HOD': {
-        icon: '📋',
         title: 'Under HOD Review',
         message: 'Your forms have been submitted and are being reviewed by your Head of Department.',
         type: 'warning'
     },
     'IT Completed': {
-        icon: '✅',
         title: 'Process Complete',
         message: 'Your no-dues clearance has been processed successfully.',
         type: 'success'
     },
     'rejected': {
-        icon: '❌',
         title: 'Application Rejected',
         message: 'This application was rejected. You can submit a new application.',
         type: 'error'
@@ -116,7 +112,6 @@ function updateFormBanner(status, context) {
     if (config) {
         banner.innerHTML = `
             <div class="status-content">
-                <span class="status-icon">${config.icon}</span>
                 <div class="status-text">
                     <strong>${config.title}</strong>
                     <div>${config.message}</div>

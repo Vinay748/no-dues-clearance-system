@@ -2,10 +2,10 @@
   "0a399adf4c62363a2cedb5b9d9befb1de48344575fc1ef2e5f0d3dbc0ad20582": {
     "employeeId": "EMP1005",
     "sessionToken": "0a399adf4c62363a2cedb5b9d9befb1de48344575fc1ef2e5f0d3dbc0ad20582",
-    "status": "verified",
+    "status": "pending_otp",
     "expiresAt": "2025-08-28T13:13:04.655Z",
     "createdAt": "2025-08-28T13:03:04.655Z",
-    "otpVerifiedAt": "2025-08-28T13:05:23.820Z",
+    "otpVerifiedAt": null,
     "clientInfo": {}
   }
 }

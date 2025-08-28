@@ -341,13 +341,44 @@
   </div>
 
   <script>
-    const employeeId = localStorage.getItem('employeeId');
-    if (!employeeId) {
+    // Get employee session data
+    let currentUser = null;
+
+    // Session validation function
+    async function validateEmployeeSession() {
+      try {
+        const res = await fetch('/api/auth/check-session', { credentials: 'include' });
+        if (res.ok) {
+          const data = await res.json();
+          if (data.role === 'employee') {
+            currentUser = data;
+            return data;
+          }
+        }
+      } catch (err) {
+        console.error('Session validation failed:', err);
+      }
+      
+      // Fallback to localStorage
+      const employeeId = localStorage.getItem('employeeId');
+      if (employeeId) {
+        currentUser = { employeeId: employeeId };
+        return currentUser;
+      }
+      
       alert("Login expired. Please login again.");
-      window.location.href = 'login.html';
+      window.location.href = '/';
+      return null;
     }
 
-    document.getElementById('welcomeUser').textContent = `Welcome, ${employeeId}`;
+    // Initialize page
+    async function initializePage() {
+      const user = await validateEmployeeSession();
+      if (user) {
+        document.getElementById('welcomeUser').textContent = `Welcome, ${user.name || user.employeeId || 'User'}`;
+        loadHistory();
+      }
+    }
 
     let sortDirection = {};
 
@@ -355,7 +386,7 @@
       const choice = select.value;
       if (choice === 'logout') {
         localStorage.removeItem('employeeId');
-        window.location.href = 'login.html';
+        window.location.href = '/api/auth/logout';
       } else if (choice === 'change') {
         window.location.href = 'change-password.html';
       }
@@ -420,35 +451,55 @@
 
     async function loadHistory() {
       try {
-        const res = await fetch(`/api/history?employeeId=${employeeId}`);
-        const data = await res.json();
-
         const loadingMessage = document.getElementById('loadingMessage');
         const historyTable = document.getElementById('historyTable');
         const noDataMessage = document.getElementById('noDataMessage');
         const tableBody = document.getElementById('historyTableBody');
 
+        // Try multiple API endpoints that might exist in your project
+        let res, data;
+        
+        try {
+          // Try the employee-specific endpoint first
+          res = await fetch('/api/employee/history', { credentials: 'include' });
+          data = await res.json();
+        } catch (err) {
+          try {
+            // Fallback to general history endpoint
+            const employeeId = currentUser?.employeeId || localStorage.getItem('employeeId');
+            res = await fetch(`/api/history?employeeId=${employeeId}`, { credentials: 'include' });
+            data = await res.json();
+          } catch (err2) {
+            // Last fallback
+            res = await fetch('/api/form-submissions', { credentials: 'include' });
+            data = await res.json();
+          }
+        }
+
         loadingMessage.classList.add('hidden');
 
-        if (data.length === 0) {
+        // Handle different response formats
+        const historyData = data.history || data.submissions || data || [];
+
+        if (historyData.length === 0) {
           noDataMessage.classList.remove('hidden');
           return;
         }
 
         // Populate table with new column order: Name, Form ID, No Dues Type, Action, Status, Remarks
         tableBody.innerHTML = '';
-        data.forEach(item => {
+        historyData.forEach(item => {
           const row = document.createElement('tr');
           row.innerHTML = `
-            <td class="name-cell">${item.name || 'N/A'}</td>
-            <td><span class="form-id-cell">${item.formId}</span></td>
-            <td>${item.noDuesType || 'N/A'}</td>
+            <td class="name-cell">${item.name || currentUser?.name || 'N/A'}</td>
+            <td><span class="form-id-cell">${item.formId || item.id}</span></td>
+            <td>${item.noDuesType || item.type || 'Standard'}</td>
             <td>
-              <button class="btn-view" onclick="loadDetails('${item.formId}')">View</button>
-              <button class="btn-download" onclick="downloadPDF('${item.formId}')">PDF</button>
+              <button class="btn-view" onclick="loadDetails('${item.formId || item.id}')">View</button>
+              <button class="btn-download" onclick="downloadPDF('${item.formId || item.id}')">PDF</button>
             </td>
             <td>${getStatusBadge(item.status || 'Submitted')}</td>
-            <td class="remarks-cell" title="${item.remarks || 'No remarks'}">${item.remarks || 'No remarks'}</td>
+            <td class="remarks-cell" title="${item.remarks || item.comments || 'No remarks'}">${item.remarks || item.comments || 'No remarks'}</td>
           `;
           tableBody.appendChild(row);
         });
@@ -456,6 +507,7 @@
         historyTable.classList.remove('hidden');
 
       } catch (err) {
+        console.error('History loading error:', err);
         const loadingMessage = document.getElementById('loadingMessage');
         loadingMessage.innerHTML = `
           <div style="color: #dc3545;">
@@ -470,8 +522,21 @@
 
     async function loadDetails(formId) {
       try {
-        const res = await fetch(`/api/history/form/${formId}`);
-        const data = await res.json();
+        // Try multiple API endpoints for form details
+        let res, data;
+        
+        try {
+          res = await fetch(`/api/employee/form-details?formId=${encodeURIComponent(formId)}`, { credentials: 'include' });
+          data = await res.json();
+        } catch (err) {
+          try {
+            res = await fetch(`/api/form-details?formId=${encodeURIComponent(formId)}`, { credentials: 'include' });
+            data = await res.json();
+          } catch (err2) {
+            res = await fetch(`/api/history/form/${formId}`, { credentials: 'include' });
+            data = await res.json();
+          }
+        }
 
         const details = document.getElementById('formDetails');
         details.classList.remove('hidden');
@@ -480,11 +545,11 @@
           <h3>Application Details (Form ID: ${formId})</h3>
           <div class="detail-row">
             <span class="detail-label">Name:</span>
-            <span class="detail-value">${data.name || 'N/A'}</span>
+            <span class="detail-value">${data.name || currentUser?.name || 'N/A'}</span>
           </div>
           <div class="detail-row">
             <span class="detail-label">Employee ID:</span>
-            <span class="detail-value">${data.empId || 'N/A'}</span>
+            <span class="detail-value">${data.employeeId || data.empId || currentUser?.employeeId || 'N/A'}</span>
           </div>
           <div class="detail-row">
             <span class="detail-label">Department:</span>
@@ -492,7 +557,7 @@
           </div>
           <div class="detail-row">
             <span class="detail-label">No Dues Type:</span>
-            <span class="detail-value">${data.noDuesType || 'N/A'}</span>
+            <span class="detail-value">${data.noDuesType || data.type || 'N/A'}</span>
           </div>
           <div class="detail-row">
             <span class="detail-label">Email:</span>
@@ -500,7 +565,7 @@
           </div>
           <div class="detail-row">
             <span class="detail-label">Submission Date:</span>
-            <span class="detail-value">${formatDate(data.submissionDate)}</span>
+            <span class="detail-value">${formatDate(data.submissionDate || data.createdAt)}</span>
           </div>
           <div class="detail-row">
             <span class="detail-label">Status:</span>
@@ -508,7 +573,7 @@
           </div>
           <div class="detail-row">
             <span class="detail-label">Remarks:</span>
-            <span class="detail-value">${data.remarks || 'No remarks'}</span>
+            <span class="detail-value">${data.remarks || data.comments || 'No remarks'}</span>
           </div>
           <div style="margin-top: 1rem;">
             <button class="btn-download" onclick="downloadPDF('${formId}')">Download PDF</button>
@@ -519,16 +584,24 @@
         // Scroll to details
         details.scrollIntoView({ behavior: 'smooth' });
       } catch (err) {
-        alert("Failed to load application details.");
+        alert("Failed to load application details: " + err.message);
       }
     }
 
     function downloadPDF(formId) {
-      window.open(`/download-pdf/${formId}`, '_blank');
+      // Try multiple PDF download endpoints
+      const endpoints = [
+        `/api/employee/form-pdf/${formId}`,
+        `/download-pdf/${formId}`,
+        `/api/pdf/download/${formId}`
+      ];
+      
+      // Try the first endpoint
+      window.open(endpoints[0], '_blank');
     }
 
-    // Load history on page load
-    loadHistory();
+    // Initialize page when DOM is loaded
+    document.addEventListener('DOMContentLoaded', initializePage);
   </script>
 </body>
 

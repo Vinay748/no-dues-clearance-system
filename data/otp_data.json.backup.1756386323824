@@ -6,7 +6,7 @@
     "expiresAt": "2025-08-28T13:08:04.655Z",
     "attempts": 0,
     "maxAttempts": 3,
-    "used": true,
+    "used": false,
     "sessionToken": "0a399adf4c62363a2cedb5b9d9befb1de48344575fc1ef2e5f0d3dbc0ad20582"
   }
 }
