@@ -135,34 +135,57 @@ const initializeFormHistoryFile = () => {
   }
 };
 
-// Enhanced CORS configuration
+// Initialize certificates data file
+const initializeCertificatesData = () => {
+  console.log('[INIT] Initializing certificates data file...');
+  const certificatesDataPath = path.join(dataDir, 'certificates.json');
+  if (!fs.existsSync(certificatesDataPath)) {
+    fs.writeFileSync(certificatesDataPath, '[]', 'utf8');
+    console.log('[INIT] Created certificates.json');
+  }
+};
+
+// ✅ FIXED: Enhanced CORS configuration with production domain support
 app.use(cors({
   origin: function (origin, callback) {
     console.log(`[CORS] Origin: ${origin || 'undefined'}`);
-    
-    if (!origin) return callback(null, true);
 
-    if (origin.includes('localhost') || origin.includes('127.0.0.1')) {
-      console.log(`[CORS] Allowed localhost origin: ${origin}`);
+    // Allow requests with no origin (like mobile apps, curl, or same-origin)
+    if (!origin) {
+      console.log(`[CORS] Allowed no-origin request`);
       return callback(null, true);
     }
 
+    // Define allowed origins including your production domain
     const allowedOrigins = [
+      'https://no-dues-clearance-system.onrender.com',  // ✅ Your production domain
       'http://localhost:3000',
       'http://localhost:3001',
-      'http://127.0.0.1:3000'
+      'http://localhost:5000',
+      'http://127.0.0.1:3000',
+      'http://127.0.0.1:5000'
     ];
 
-    if (allowedOrigins.includes(origin)) {
+    // Check for exact match or localhost/127.0.0.1 patterns
+    if (allowedOrigins.includes(origin) ||
+      origin.includes('localhost') ||
+      origin.includes('127.0.0.1') ||
+      origin.includes('render.com')) {  // Allow any render.com subdomain
       console.log(`[CORS] Allowed origin: ${origin}`);
       return callback(null, true);
     }
 
     console.log(`[CORS] Blocked origin: ${origin}`);
+    console.log(`[CORS] Allowed origins:`, allowedOrigins);
     callback(new Error('Not allowed by CORS'));
   },
-  credentials: true
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
 }));
+
+// Enable pre-flight across-the-board
+app.options('*', cors());
 
 // Body parsing middleware with enhanced limits
 app.use(express.json({ limit: '50mb' }));
@@ -380,7 +403,7 @@ app.post('/api/auth/verify-otp', async (req, res) => {
 
     if (result.success) {
       console.log(`[AUTH] OTP verified successfully for employee: ${result.employeeId}`);
-      
+
       // Load employee data for session
       const employeeData = loadEmployeeUser();
       let employee = null;
@@ -855,7 +878,7 @@ app.get('/forms/form365disposal.html', (req, res) => {
 // Enhanced health check endpoint
 app.get('/health', (req, res) => {
   console.log('[HEALTH] Health check requested');
-  
+
   const certificateStatus = {
     main: fs.existsSync(certificatesDir),
     temp: fs.existsSync(path.join(certificatesDir, 'temp')),
@@ -1033,16 +1056,6 @@ app.get('/admin/system/status', (req, res) => {
   }
 });
 
-// Initialize certificates data file
-const initializeCertificatesData = () => {
-  console.log('[INIT] Initializing certificates data file...');
-  const certificatesDataPath = path.join(dataDir, 'certificates.json');
-  if (!fs.existsSync(certificatesDataPath)) {
-    fs.writeFileSync(certificatesDataPath, '[]', 'utf8');
-    console.log('[INIT] Created certificates.json');
-  }
-};
-
 // Enhanced 404 handler
 app.use((req, res) => {
   console.log(`[404] Page not found: ${req.originalUrl}`);
@@ -1164,7 +1177,7 @@ app.use((err, req, res, next) => {
 // Start server with enhanced logging
 app.listen(PORT, () => {
   console.log(`[STARTUP] Server starting on port ${PORT}...`);
-  
+
   // Initialize required data files
   initializeCertificatesData();
   initializeOTPFiles();
