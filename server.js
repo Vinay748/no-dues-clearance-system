@@ -32,6 +32,10 @@ console.log('[STARTUP] OTP Manager initialized');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// ✅ CRITICAL FIX: Trust first proxy (essential for Render/Heroku/production)
+app.set('trust proxy', 1);
+console.log('[STARTUP] Trust proxy configured');
+
 // REQUEST LOGGING MIDDLEWARE
 app.use((req, res, next) => {
   console.log(`[${new Date().toISOString()}] ${req.method} ${req.originalUrl} - IP: ${req.ip}`);
@@ -48,6 +52,17 @@ app.use((req, res, next) => {
     console.log(`[SESSION] User ID: ${req.session.user.id}, Role: ${req.session.user.role}, Name: ${req.session.user.name || 'Unknown'}`);
   } else {
     console.log(`[SESSION] No active session`);
+  }
+  next();
+});
+
+// ✅ SESSION DEBUG MIDDLEWARE
+app.use((req, res, next) => {
+  console.log(`[SESSION_DEBUG] Session ID: ${req.sessionID || 'No session ID'}`);
+  console.log(`[SESSION_DEBUG] Session exists: ${!!req.session}`);
+  console.log(`[SESSION_DEBUG] User in session: ${!!req.session?.user}`);
+  if (req.session?.user) {
+    console.log(`[SESSION_DEBUG] User details: ID=${req.session.user.id}, Role=${req.session.user.role}`);
   }
   next();
 });
@@ -191,7 +206,7 @@ app.options('*', cors());
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 
-// Enhanced session configuration with versioning
+// ✅ FIXED: Enhanced session configuration for production
 app.use(session({
   secret: process.env.SESSION_SECRET || 'super_secret_key_change_in_production',
   name: 'nodues.session.v2025',
@@ -202,7 +217,8 @@ app.use(session({
     secure: process.env.NODE_ENV === 'production',
     httpOnly: true,
     maxAge: 24 * 60 * 60 * 1000, // 24 hours
-    sameSite: 'lax'
+    sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax', // ✅ Important for cross-origin
+    domain: undefined // ✅ Let browser handle domain
   }
 }));
 
