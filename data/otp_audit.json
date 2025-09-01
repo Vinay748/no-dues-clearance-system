@@ -428,5 +428,50 @@
     "details": {
       "email": "vs23cs92@thdcihet.ac.in"
     }
+  },
+  {
+    "timestamp": "2025-08-30T07:13:52.366Z",
+    "action": "OTP_GENERATED",
+    "employeeId": "EMP1005",
+    "ip": "unknown",
+    "userAgent": "unknown",
+    "success": true,
+    "details": {
+      "email": "vs23cs92@thdcihet.ac.in"
+    }
+  },
+  {
+    "timestamp": "2025-08-30T07:14:59.155Z",
+    "action": "OTP_GENERATED",
+    "employeeId": "EMP1005",
+    "ip": "unknown",
+    "userAgent": "unknown",
+    "success": true,
+    "details": {
+      "email": "vs23cs92@thdcihet.ac.in"
+    }
+  },
+  {
+    "timestamp": "2025-08-30T07:15:26.489Z",
+    "action": "OTP_VERIFY_FAILED",
+    "employeeId": "EMP1005",
+    "ip": "unknown",
+    "userAgent": "unknown",
+    "success": false,
+    "details": {
+      "attempts": 1,
+      "remaining": 2
+    }
+  },
+  {
+    "timestamp": "2025-08-30T07:15:35.254Z",
+    "action": "OTP_VERIFY_SUCCESS",
+    "employeeId": "EMP1005",
+    "ip": "unknown",
+    "userAgent": "unknown",
+    "success": true,
+    "details": {
+      "sessionToken": "d7846cf2..."
+    }
   }
 ]

@@ -8,6 +8,7 @@ const cron = require('node-cron');
 
 // CRITICAL: Load environment variables FIRST
 require('dotenv').config();
+console.log('[STARTUP] Environment variables loaded');
 
 const OTPManager = require('./otpManager');
 const NotificationManager = require('./utils/notificationManager');
@@ -22,14 +23,38 @@ const apiAuth = require('./routes/auth');
 const { roleAuth } = require('./middlewares/sessionAuth');
 const { loadJSON, saveJSON } = require('./utils/fileUtils');
 
+console.log('[STARTUP] Dependencies loaded successfully');
+
 // Initialize OTP Manager
 const otpManager = new OTPManager();
+console.log('[STARTUP] OTP Manager initialized');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// REQUEST LOGGING MIDDLEWARE
+app.use((req, res, next) => {
+  console.log(`[${new Date().toISOString()}] ${req.method} ${req.originalUrl} - IP: ${req.ip}`);
+  console.log(`[REQUEST] User-Agent: ${req.get('User-Agent')}`);
+  if (Object.keys(req.body || {}).length > 0) {
+    console.log(`[REQUEST] Body keys: ${Object.keys(req.body).join(', ')}`);
+  }
+  next();
+});
+
+// SESSION LOGGING MIDDLEWARE
+app.use((req, res, next) => {
+  if (req.session && req.session.user) {
+    console.log(`[SESSION] User ID: ${req.session.user.id}, Role: ${req.session.user.role}, Name: ${req.session.user.name || 'Unknown'}`);
+  } else {
+    console.log(`[SESSION] No active session`);
+  }
+  next();
+});
+
 // No-Cache Middleware for API routes
 app.use('/api/', (req, res, next) => {
+  console.log(`[API] ${req.method} ${req.originalUrl}`);
   res.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
   res.set('Pragma', 'no-cache');
   res.set('Expires', '0');
@@ -43,10 +68,15 @@ const dataDir = path.join(__dirname, 'data');
 const publicDir = path.join(__dirname, 'public');
 const certificatesDir = path.join(__dirname, 'public', 'certificates');
 
+console.log('[STARTUP] Creating required directories...');
+
 // Create directories if they don't exist
 [uploadsDir, dataDir, publicDir, certificatesDir].forEach(dir => {
   if (!fs.existsSync(dir)) {
     fs.mkdirSync(dir, { recursive: true });
+    console.log(`[STARTUP] Created directory: ${dir}`);
+  } else {
+    console.log(`[STARTUP] Directory exists: ${dir}`);
   }
 });
 
@@ -59,49 +89,61 @@ const certificateSubDirs = [
 certificateSubDirs.forEach(dir => {
   if (!fs.existsSync(dir)) {
     fs.mkdirSync(dir, { recursive: true });
+    console.log(`[STARTUP] Created certificate subdirectory: ${dir}`);
   }
 });
 
 // Initialize data files
 const initializeOTPFiles = () => {
+  console.log('[INIT] Initializing OTP data files...');
   const otpDataPath = path.join(dataDir, 'otp_data.json');
   const loginSessionsPath = path.join(dataDir, 'login_sessions.json');
 
   if (!fs.existsSync(otpDataPath)) {
     fs.writeFileSync(otpDataPath, '{}', 'utf8');
+    console.log('[INIT] Created otp_data.json');
   }
 
   if (!fs.existsSync(loginSessionsPath)) {
     fs.writeFileSync(loginSessionsPath, '{}', 'utf8');
+    console.log('[INIT] Created login_sessions.json');
   }
 };
 
 const initializeNotificationFiles = () => {
+  console.log('[INIT] Initializing notification files...');
   const notificationsPath = path.join(dataDir, 'notifications.json');
   const employeeSessionsPath = path.join(dataDir, 'employee_sessions.json');
 
   if (!fs.existsSync(notificationsPath)) {
     fs.writeFileSync(notificationsPath, '[]', 'utf8');
+    console.log('[INIT] Created notifications.json');
   }
 
   if (!fs.existsSync(employeeSessionsPath)) {
     fs.writeFileSync(employeeSessionsPath, '[]', 'utf8');
+    console.log('[INIT] Created employee_sessions.json');
   }
 };
 
 const initializeFormHistoryFile = () => {
+  console.log('[INIT] Initializing form history file...');
   const formHistoryPath = path.join(dataDir, 'form_history.json');
   if (!fs.existsSync(formHistoryPath)) {
     fs.writeFileSync(formHistoryPath, '[]', 'utf8');
+    console.log('[INIT] Created form_history.json');
   }
 };
 
 // Enhanced CORS configuration
 app.use(cors({
   origin: function (origin, callback) {
+    console.log(`[CORS] Origin: ${origin || 'undefined'}`);
+    
     if (!origin) return callback(null, true);
 
     if (origin.includes('localhost') || origin.includes('127.0.0.1')) {
+      console.log(`[CORS] Allowed localhost origin: ${origin}`);
       return callback(null, true);
     }
 
@@ -112,9 +154,11 @@ app.use(cors({
     ];
 
     if (allowedOrigins.includes(origin)) {
+      console.log(`[CORS] Allowed origin: ${origin}`);
       return callback(null, true);
     }
 
+    console.log(`[CORS] Blocked origin: ${origin}`);
     callback(new Error('Not allowed by CORS'));
   },
   credentials: true
@@ -139,6 +183,8 @@ app.use(session({
   }
 }));
 
+console.log('[STARTUP] Session middleware configured');
+
 // Enhanced session cleanup middleware with data preservation
 app.use(async (req, res, next) => {
   if (req.session?.user) {
@@ -151,6 +197,7 @@ app.use(async (req, res, next) => {
     const hasOldStructure = !user.sessionVersion || user.sessionVersion !== '2025-08-17';
 
     if (isOldSession || hasOldStructure) {
+      console.log(`[SESSION] Cleaning up session for user: ${user.id}, Old: ${isOldSession}, Outdated: ${hasOldStructure}`);
 
       // Preserve important data before cleanup
       const preservedData = {
@@ -174,6 +221,7 @@ app.use(async (req, res, next) => {
             cleanupPerformed: true
           };
           req.session.save();
+          console.log(`[SESSION] Session regenerated for user: ${user.id}`);
         }
         next();
       });
@@ -194,8 +242,10 @@ app.use((req, res, next) => {
 function loadEmployeeUser() {
   try {
     const usersData = fs.readFileSync(path.join(dataDir, 'users.json'), 'utf8');
+    console.log('[DATA] Loaded employee users data');
     return JSON.parse(usersData);
   } catch (error) {
+    console.error('[DATA] Failed to load employee users:', error.message);
     return null;
   }
 }
@@ -203,8 +253,10 @@ function loadEmployeeUser() {
 function loadHODUsers() {
   try {
     const hodData = fs.readFileSync(path.join(dataDir, 'hod_users.json'), 'utf8');
+    console.log('[DATA] Loaded HOD users data');
     return JSON.parse(hodData);
   } catch (error) {
+    console.error('[DATA] Failed to load HOD users:', error.message);
     return [];
   }
 }
@@ -212,8 +264,10 @@ function loadHODUsers() {
 function loadITUsers() {
   try {
     const itData = fs.readFileSync(path.join(dataDir, 'it_users.json'), 'utf8');
+    console.log('[DATA] Loaded IT users data');
     return JSON.parse(itData);
   } catch (error) {
+    console.error('[DATA] Failed to load IT users:', error.message);
     return [];
   }
 }
@@ -224,8 +278,10 @@ function loadITUsers() {
 app.post('/api/auth/employee-login', async (req, res) => {
   try {
     const { employeeId, password } = req.body;
+    console.log(`[AUTH] Employee login attempt: ${employeeId}`);
 
     if (!employeeId || !password) {
+      console.log(`[AUTH] Missing credentials for employee login`);
       return res.status(400).json({
         success: false,
         message: 'Employee ID and password are required'
@@ -243,6 +299,7 @@ app.post('/api/auth/employee-login', async (req, res) => {
     }
 
     if (!employee) {
+      console.log(`[AUTH] Employee not found: ${employeeId}`);
       return res.status(401).json({
         success: false,
         message: 'Invalid employee ID or password'
@@ -253,6 +310,7 @@ app.post('/api/auth/employee-login', async (req, res) => {
     const isValidPassword = await bcrypt.compare(password, employee.password);
 
     if (!isValidPassword) {
+      console.log(`[AUTH] Invalid password for employee: ${employeeId}`);
       return res.status(401).json({
         success: false,
         message: 'Invalid employee ID or password'
@@ -261,6 +319,7 @@ app.post('/api/auth/employee-login', async (req, res) => {
 
     // Check account status
     if (employee.isActive === false) {
+      console.log(`[AUTH] Deactivated account: ${employeeId}`);
       return res.status(401).json({
         success: false,
         message: 'Account is deactivated. Please contact IT.'
@@ -269,6 +328,7 @@ app.post('/api/auth/employee-login', async (req, res) => {
 
     // Check temporary blocks
     if (employee.otpBlockedUntil && new Date() < new Date(employee.otpBlockedUntil)) {
+      console.log(`[AUTH] Blocked account: ${employeeId}`);
       return res.status(429).json({
         success: false,
         message: 'Account temporarily blocked. Please try again later.'
@@ -276,9 +336,11 @@ app.post('/api/auth/employee-login', async (req, res) => {
     }
 
     // Generate OTP and create session
+    console.log(`[AUTH] Generating OTP for employee: ${employeeId}`);
     const result = await otpManager.createLoginSession(employeeId, employee.email);
 
     if (result.success) {
+      console.log(`[AUTH] OTP sent successfully to employee: ${employeeId}`);
       res.json({
         success: true,
         sessionToken: result.sessionToken,
@@ -287,10 +349,12 @@ app.post('/api/auth/employee-login', async (req, res) => {
         email: employee.email.replace(/(.{2})(.*)(@.*)/, '$1***$3')
       });
     } else {
+      console.error(`[AUTH] OTP generation failed for employee: ${employeeId}`, result);
       res.status(500).json(result);
     }
 
   } catch (error) {
+    console.error('[AUTH] Employee login error:', error);
     res.status(500).json({
       success: false,
       message: 'Login failed. Please try again.'
@@ -302,8 +366,10 @@ app.post('/api/auth/employee-login', async (req, res) => {
 app.post('/api/auth/verify-otp', async (req, res) => {
   try {
     const { sessionToken, otp } = req.body;
+    console.log(`[AUTH] OTP verification attempt with token: ${sessionToken ? 'provided' : 'missing'}`);
 
     if (!sessionToken || !otp) {
+      console.log(`[AUTH] Missing OTP verification data`);
       return res.status(400).json({
         success: false,
         message: 'Session token and OTP are required'
@@ -313,6 +379,8 @@ app.post('/api/auth/verify-otp', async (req, res) => {
     const result = await otpManager.verifyOTP(sessionToken, otp);
 
     if (result.success) {
+      console.log(`[AUTH] OTP verified successfully for employee: ${result.employeeId}`);
+      
       // Load employee data for session
       const employeeData = loadEmployeeUser();
       let employee = null;
@@ -326,6 +394,7 @@ app.post('/api/auth/verify-otp', async (req, res) => {
       // Regenerate session to clear old data
       req.session.regenerate((err) => {
         if (err) {
+          console.error(`[AUTH] Session regeneration error:`, err);
           return res.status(500).json({ success: false, message: 'Session error' });
         }
 
@@ -343,9 +412,11 @@ app.post('/api/auth/verify-otp', async (req, res) => {
 
         req.session.save((saveErr) => {
           if (saveErr) {
+            console.error(`[AUTH] Session save error:`, saveErr);
             return res.status(500).json({ success: false, message: 'Session save error' });
           }
 
+          console.log(`[AUTH] Employee session created successfully: ${result.employeeId}`);
           res.json({
             success: true,
             message: result.message,
@@ -355,10 +426,12 @@ app.post('/api/auth/verify-otp', async (req, res) => {
         });
       });
     } else {
+      console.log(`[AUTH] OTP verification failed:`, result);
       res.status(400).json(result);
     }
 
   } catch (error) {
+    console.error('[AUTH] OTP verification error:', error);
     res.status(500).json({
       success: false,
       message: 'Verification failed. Please try again.'
@@ -370,6 +443,7 @@ app.post('/api/auth/verify-otp', async (req, res) => {
 app.post('/api/auth/resend-otp', async (req, res) => {
   try {
     const { sessionToken } = req.body;
+    console.log(`[AUTH] OTP resend request with token: ${sessionToken ? 'provided' : 'missing'}`);
 
     if (!sessionToken) {
       return res.status(400).json({
@@ -379,9 +453,11 @@ app.post('/api/auth/resend-otp', async (req, res) => {
     }
 
     const result = await otpManager.resendOTP(sessionToken);
+    console.log(`[AUTH] OTP resend result:`, result.success);
     res.json(result);
 
   } catch (error) {
+    console.error('[AUTH] OTP resend error:', error);
     res.status(500).json({
       success: false,
       message: 'Failed to resend OTP'
@@ -393,11 +469,13 @@ app.post('/api/auth/resend-otp', async (req, res) => {
 app.post('/api/auth/hod-login', async (req, res) => {
   try {
     const { hodId, password } = req.body;
+    console.log(`[AUTH] HOD login attempt: ${hodId}`);
 
     const hodUsers = loadHODUsers();
     const hod = hodUsers.find(h => h.hodId === hodId);
 
     if (!hod) {
+      console.log(`[AUTH] HOD not found: ${hodId}`);
       return res.status(401).json({
         success: false,
         message: 'Invalid HOD credentials'
@@ -407,6 +485,7 @@ app.post('/api/auth/hod-login', async (req, res) => {
     const isValidPassword = await bcrypt.compare(password, hod.password);
 
     if (!isValidPassword) {
+      console.log(`[AUTH] Invalid HOD password: ${hodId}`);
       return res.status(401).json({
         success: false,
         message: 'Invalid HOD credentials'
@@ -429,12 +508,14 @@ app.post('/api/auth/hod-login', async (req, res) => {
 
     req.session.save((err) => {
       if (err) {
+        console.error(`[AUTH] HOD session save error:`, err);
         return res.status(500).json({
           success: false,
           message: 'Session creation failed'
         });
       }
 
+      console.log(`[AUTH] HOD login successful: ${hodId}`);
       res.json({
         success: true,
         message: 'HOD login successful',
@@ -452,6 +533,7 @@ app.post('/api/auth/hod-login', async (req, res) => {
     });
 
   } catch (error) {
+    console.error('[AUTH] HOD login error:', error);
     res.status(500).json({
       success: false,
       message: 'Login failed'
@@ -463,11 +545,13 @@ app.post('/api/auth/hod-login', async (req, res) => {
 app.post('/api/auth/it-login', async (req, res) => {
   try {
     const { itId, password } = req.body;
+    console.log(`[AUTH] IT login attempt: ${itId}`);
 
     const itUsers = loadITUsers();
     const itUser = itUsers.find(u => u.itId === itId);
 
     if (!itUser) {
+      console.log(`[AUTH] IT user not found: ${itId}`);
       return res.status(401).json({
         success: false,
         message: 'Invalid IT credentials'
@@ -477,6 +561,7 @@ app.post('/api/auth/it-login', async (req, res) => {
     const isValidPassword = await bcrypt.compare(password, itUser.password);
 
     if (!isValidPassword) {
+      console.log(`[AUTH] Invalid IT password: ${itId}`);
       return res.status(401).json({
         success: false,
         message: 'Invalid IT credentials'
@@ -499,12 +584,14 @@ app.post('/api/auth/it-login', async (req, res) => {
 
     req.session.save((err) => {
       if (err) {
+        console.error(`[AUTH] IT session save error:`, err);
         return res.status(500).json({
           success: false,
           message: 'Session creation failed'
         });
       }
 
+      console.log(`[AUTH] IT login successful: ${itId}`);
       res.json({
         success: true,
         message: 'IT login successful',
@@ -514,6 +601,7 @@ app.post('/api/auth/it-login', async (req, res) => {
     });
 
   } catch (error) {
+    console.error('[AUTH] IT login error:', error);
     res.status(500).json({
       success: false,
       message: 'Login failed'
@@ -524,12 +612,14 @@ app.post('/api/auth/it-login', async (req, res) => {
 // Check session status
 app.get('/api/auth/check-session', (req, res) => {
   if (req.session.user) {
+    console.log(`[SESSION] Session check for user: ${req.session.user.id}, Role: ${req.session.user.role}`);
     res.json({
       success: true,
       role: req.session.user.role,
       user: req.session.user
     });
   } else {
+    console.log(`[SESSION] No valid session found`);
     res.status(401).json({
       success: false,
       message: 'No valid session'
@@ -539,6 +629,7 @@ app.get('/api/auth/check-session', (req, res) => {
 
 // Auto-cleanup cron job - Run daily at 2 AM
 cron.schedule('0 2 * * *', async () => {
+  console.log('[CRON] Starting daily auto-cleanup job...');
 
   try {
     const PENDING_FORMS = './data/pending_forms.json';
@@ -558,6 +649,8 @@ cron.schedule('0 2 * * *', async () => {
       form.itProcessing?.processedAt &&
       new Date() - new Date(form.itProcessing.processedAt) > 7 * 24 * 60 * 60 * 1000
     );
+
+    console.log(`[CRON] Found ${completedForms.length} forms to archive`);
 
     if (completedForms.length > 0) {
       // Move to history
@@ -594,8 +687,10 @@ cron.schedule('0 2 * * *', async () => {
       saveJSON(FORM_HISTORY, history);
       saveJSON(PENDING_FORMS, remainingForms);
 
+      console.log(`[CRON] Archived ${completedForms.length} completed forms`);
     }
   } catch (error) {
+    console.error('[CRON] Auto-cleanup job error:', error);
   }
 });
 
@@ -606,6 +701,8 @@ app.get('/api/employee/notifications', roleAuth('employee'), (req, res) => {
     const employeeId = sessionUser.id || sessionUser.employeeId;
     const limit = parseInt(req.query.limit) || 50;
 
+    console.log(`[NOTIFICATIONS] Fetching notifications for employee: ${employeeId}`);
+
     const notifications = NotificationManager.getInstance()
       .getNotificationHistory(employeeId, limit);
 
@@ -614,6 +711,7 @@ app.get('/api/employee/notifications', roleAuth('employee'), (req, res) => {
       notifications: notifications
     });
   } catch (error) {
+    console.error('[NOTIFICATIONS] Error fetching notifications:', error);
     res.status(500).json({
       success: false,
       message: 'Failed to fetch notifications'
@@ -624,6 +722,7 @@ app.get('/api/employee/notifications', roleAuth('employee'), (req, res) => {
 // WebSocket connection info endpoint
 app.get('/api/notification/websocket-info', (req, res) => {
   const wsPort = process.env.WS_PORT || 8081;
+  console.log(`[WEBSOCKET] Providing connection info, port: ${wsPort}`);
   res.json({
     success: true,
     wsPort: wsPort,
@@ -634,6 +733,7 @@ app.get('/api/notification/websocket-info', (req, res) => {
 
 // Static file serving with certificate protection
 app.use('/certificates', (req, res, next) => {
+  console.log(`[SECURITY] Blocked direct certificate access attempt: ${req.originalUrl}`);
   res.status(403).json({
     success: false,
     message: 'Direct access to certificates is forbidden. Please use the download API.'
@@ -654,85 +754,108 @@ app.use('/api/itadmin', apiItAdmin);
 app.use('/api/pdf', apiPdf);
 app.use('/api/hod', apiHod);
 
+console.log('[STARTUP] API routes mounted');
+
 // Frontend route handlers with role-based access
 app.get('/', (req, res) => {
+  console.log('[ROUTE] Root access - redirecting to login');
   res.sendFile(path.join(publicDir, 'login.html'));
 });
 
 // Employee routes
 app.get('/dashboard.html', roleAuth('employee'), (req, res) => {
+  console.log(`[ROUTE] Dashboard access by employee: ${req.session.user.id}`);
   res.sendFile(path.join(publicDir, 'dashboard.html'));
 });
 
 app.get('/employee.html', roleAuth('employee'), (req, res) => {
+  console.log(`[ROUTE] Employee page access by: ${req.session.user.id}`);
   res.sendFile(path.join(publicDir, 'employee.html'));
 });
 
 app.get('/confirmation.html', roleAuth('employee'), (req, res) => {
+  console.log(`[ROUTE] Confirmation page access by: ${req.session.user.id}`);
   res.sendFile(path.join(publicDir, 'confirmation.html'));
 });
 
 app.get('/employee-dashboard.html', roleAuth('employee'), (req, res) => {
+  console.log(`[ROUTE] Employee dashboard access by: ${req.session.user.id}`);
   res.sendFile(path.join(publicDir, 'employee-dashboard.html'));
 });
 
 app.get('/track.html', roleAuth('employee'), (req, res) => {
+  console.log(`[ROUTE] Track page access by employee: ${req.session.user.id}`);
   res.sendFile(path.join(publicDir, 'track.html'));
 });
 
 // IT routes
 app.get('/itreview.html', roleAuth('it'), (req, res) => {
+  console.log(`[ROUTE] IT review access by: ${req.session.user.id}`);
   res.sendFile(path.join(publicDir, 'itreview.html'));
 });
 
 app.get('/it-form-review.html', roleAuth('it'), (req, res) => {
+  console.log(`[ROUTE] IT form review access by: ${req.session.user.id}`);
   res.sendFile(path.join(publicDir, 'it-form-review.html'));
 });
 
 // HOD routes
 app.get('/hodhome.html', roleAuth('hod'), (req, res) => {
+  console.log(`[ROUTE] HOD home access by: ${req.session.user.id}`);
   res.sendFile(path.join(publicDir, 'hodhome.html'));
 });
 
 app.get('/hodreview.html', roleAuth('hod'), (req, res) => {
+  console.log(`[ROUTE] HOD review access by: ${req.session.user.id}`);
   res.sendFile(path.join(publicDir, 'hodreview.html'));
 });
 
 app.get('/hod-form-review.html', roleAuth('hod'), (req, res) => {
+  console.log(`[ROUTE] HOD form review access by: ${req.session.user.id}`);
   res.sendFile(path.join(publicDir, 'hod-form-review.html'));
 });
 
 // Individual form routes with session check
 app.get('/forms/disposalform.html', (req, res) => {
   if (!req.session.user) {
+    console.log(`[ROUTE] Unauthorized access to disposal form`);
     return res.redirect('/');
   }
+  console.log(`[ROUTE] Disposal form access by: ${req.session.user.id}`);
   res.sendFile(path.join(publicDir, 'forms', 'disposalform.html'));
 });
 
 app.get('/forms/efile.html', (req, res) => {
   if (!req.session.user) {
+    console.log(`[ROUTE] Unauthorized access to efile form`);
     return res.redirect('/');
   }
+  console.log(`[ROUTE] E-file form access by: ${req.session.user.id}`);
   res.sendFile(path.join(publicDir, 'forms', 'efile.html'));
 });
 
 app.get('/forms/form365transfer.html', (req, res) => {
   if (!req.session.user) {
+    console.log(`[ROUTE] Unauthorized access to form 365 transfer`);
     return res.redirect('/');
   }
+  console.log(`[ROUTE] Form 365 transfer access by: ${req.session.user.id}`);
   res.sendFile(path.join(publicDir, 'forms', 'form365transfer.html'));
 });
 
 app.get('/forms/form365disposal.html', (req, res) => {
   if (!req.session.user) {
+    console.log(`[ROUTE] Unauthorized access to form 365 disposal`);
     return res.redirect('/');
   }
+  console.log(`[ROUTE] Form 365 disposal access by: ${req.session.user.id}`);
   res.sendFile(path.join(publicDir, 'forms', 'form365disposal.html'));
 });
 
 // Enhanced health check endpoint
 app.get('/health', (req, res) => {
+  console.log('[HEALTH] Health check requested');
+  
   const certificateStatus = {
     main: fs.existsSync(certificatesDir),
     temp: fs.existsSync(path.join(certificatesDir, 'temp')),
@@ -746,6 +869,7 @@ app.get('/health', (req, res) => {
       certificateCount = files.filter(file => file.endsWith('.pdf')).length;
     }
   } catch (error) {
+    console.error('[HEALTH] Error reading certificate directory:', error);
   }
 
   // Check OTP system health
@@ -802,6 +926,7 @@ app.get('/health', (req, res) => {
 
 // Certificate management endpoints
 app.get('/admin/certificates/status', (req, res) => {
+  console.log('[ADMIN] Certificate status requested');
   try {
     const certificatesPath = path.join(dataDir, 'certificates.json');
     let certificatesData = [];
@@ -835,6 +960,7 @@ app.get('/admin/certificates/status', (req, res) => {
       certificatesData: certificatesData.slice(0, 10)
     });
   } catch (error) {
+    console.error('[ADMIN] Certificate status error:', error);
     res.status(500).json({
       success: false,
       message: 'Error retrieving certificate statistics'
@@ -844,6 +970,7 @@ app.get('/admin/certificates/status', (req, res) => {
 
 // System status endpoint
 app.get('/admin/system/status', (req, res) => {
+  console.log('[ADMIN] System status requested');
   try {
     const pendingFormsPath = path.join(dataDir, 'pending_forms.json');
     const certificatesPath = path.join(dataDir, 'certificates.json');
@@ -898,6 +1025,7 @@ app.get('/admin/system/status', (req, res) => {
       timestamp: new Date().toISOString()
     });
   } catch (error) {
+    console.error('[ADMIN] System status error:', error);
     res.status(500).json({
       success: false,
       message: 'Error retrieving system statistics'
@@ -907,14 +1035,17 @@ app.get('/admin/system/status', (req, res) => {
 
 // Initialize certificates data file
 const initializeCertificatesData = () => {
+  console.log('[INIT] Initializing certificates data file...');
   const certificatesDataPath = path.join(dataDir, 'certificates.json');
   if (!fs.existsSync(certificatesDataPath)) {
     fs.writeFileSync(certificatesDataPath, '[]', 'utf8');
+    console.log('[INIT] Created certificates.json');
   }
 };
 
 // Enhanced 404 handler
 app.use((req, res) => {
+  console.log(`[404] Page not found: ${req.originalUrl}`);
 
   if (req.path.startsWith('/api/')) {
     res.status(404).json({
@@ -981,6 +1112,7 @@ app.use((req, res) => {
 
 // Enhanced global error handler
 app.use((err, req, res, next) => {
+  console.error(`[ERROR] ${req.method} ${req.originalUrl}:`, err);
 
   if (req.path.startsWith('/api/')) {
     res.status(500).json({
@@ -1031,71 +1163,95 @@ app.use((err, req, res, next) => {
 
 // Start server with enhanced logging
 app.listen(PORT, () => {
+  console.log(`[STARTUP] Server starting on port ${PORT}...`);
+  
   // Initialize required data files
   initializeCertificatesData();
   initializeOTPFiles();
   initializeNotificationFiles();
   initializeFormHistoryFile();
 
+  console.log('[STARTUP] Data files initialized');
+
   // Initialize NotificationManager
   try {
     const wsPort = process.env.WS_PORT || 8081;
     NotificationManager.initialize({ wsPort: wsPort });
+    console.log(`[STARTUP] NotificationManager initialized on WebSocket port ${wsPort}`);
   } catch (error) {
+    console.error('[STARTUP] NotificationManager initialization failed:', error);
   }
 
+  console.log(`[STARTUP] ✅✅✅✅✅ Server successfully started at http://localhost:${PORT}`);
+  console.log(`[STARTUP] Environment: ${process.env.NODE_ENV || 'development'}`);
+  console.log(`[STARTUP] Session secret configured: ${!!process.env.SESSION_SECRET}`);
+  console.log(`[STARTUP] Email configured: ${!!(process.env.EMAIL_USER && process.env.EMAIL_PASS)}`);
 });
 
 // Enhanced graceful shutdown handling
 process.on('SIGTERM', () => {
+  console.log('[SHUTDOWN] SIGTERM received, shutting down gracefully...');
 
   // Shutdown notification system
   try {
     NotificationManager.shutdown();
+    console.log('[SHUTDOWN] NotificationManager shutdown complete');
   } catch (error) {
+    console.error('[SHUTDOWN] NotificationManager shutdown error:', error);
   }
 
   try {
     const pendingFormsPath = path.join(dataDir, 'pending_forms.json');
     if (fs.existsSync(pendingFormsPath)) {
       const formsData = JSON.parse(fs.readFileSync(pendingFormsPath, 'utf8'));
+      console.log(`[SHUTDOWN] Preserved ${formsData.length} pending forms`);
     }
 
     const certificatesPath = path.join(dataDir, 'certificates.json');
     if (fs.existsSync(certificatesPath)) {
       const certData = JSON.parse(fs.readFileSync(certificatesPath, 'utf8'));
+      console.log(`[SHUTDOWN] Preserved ${certData.length} certificates`);
     }
 
     // History statistics
     const historyPath = path.join(dataDir, 'form_history.json');
     if (fs.existsSync(historyPath)) {
       const historyData = JSON.parse(fs.readFileSync(historyPath, 'utf8'));
+      console.log(`[SHUTDOWN] Preserved ${historyData.length} historical records`);
     }
 
   } catch (error) {
+    console.error('[SHUTDOWN] Data preservation error:', error);
   }
 
+  console.log('[SHUTDOWN] ✅ Graceful shutdown complete');
   process.exit(0);
 });
 
 process.on('SIGINT', () => {
+  console.log('[SHUTDOWN] SIGINT received, shutting down gracefully...');
 
   // Shutdown notification system
   try {
     NotificationManager.shutdown();
+    console.log('[SHUTDOWN] NotificationManager shutdown complete');
   } catch (error) {
+    console.error('[SHUTDOWN] NotificationManager shutdown error:', error);
   }
 
+  console.log('[SHUTDOWN] ✅ Interrupt shutdown complete');
   process.exit(0);
 });
 
 // Handle uncaught exceptions
 process.on('uncaughtException', (error) => {
+  console.error('[FATAL] Uncaught Exception:', error);
 
   // Emergency shutdown of notification system
   try {
     NotificationManager.shutdown();
   } catch (shutdownError) {
+    console.error('[FATAL] Emergency shutdown error:', shutdownError);
   }
 
   process.exit(1);
@@ -1103,12 +1259,14 @@ process.on('uncaughtException', (error) => {
 
 // Handle unhandled promise rejections
 process.on('unhandledRejection', (reason, promise) => {
+  console.error('[FATAL] Unhandled Rejection at:', promise, 'reason:', reason);
 
   // Emergency shutdown of notification system
   try {
     NotificationManager.shutdown();
   } catch (shutdownError) {
+    console.error('[FATAL] Emergency shutdown error:', shutdownError);
   }
 });
 
-console.log(`Server running at http://localhost:${PORT}`);
+console.log(`[STARTUP] Server configuration loaded, listening on port ${PORT}`);

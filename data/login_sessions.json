@@ -1,11 +1,11 @@
 {
-  "0389aacb18f35f4eb69c306d571c060ba08fff8d0fedf59ed4e0665b78b70aec": {
+  "fcfd4f405ff42e86f78308763cd11fd5f3d2fe6caf6fea16192f2f37c5c1d422": {
     "employeeId": "EMP1005",
-    "sessionToken": "0389aacb18f35f4eb69c306d571c060ba08fff8d0fedf59ed4e0665b78b70aec",
-    "status": "pending_otp",
-    "expiresAt": "2025-08-28T15:37:15.067Z",
-    "createdAt": "2025-08-28T15:27:15.067Z",
-    "otpVerifiedAt": null,
+    "sessionToken": "fcfd4f405ff42e86f78308763cd11fd5f3d2fe6caf6fea16192f2f37c5c1d422",
+    "status": "verified",
+    "expiresAt": "2025-09-01T14:13:42.182Z",
+    "createdAt": "2025-09-01T14:03:42.182Z",
+    "otpVerifiedAt": "2025-09-01T14:04:00.641Z",
     "clientInfo": {}
   }
 }

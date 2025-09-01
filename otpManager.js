@@ -2,11 +2,9 @@ const fs = require('fs');
 const path = require('path');
 const nodemailer = require('nodemailer');
 const crypto = require('crypto');
-const { promisify } = require('util');
-const rateLimit = require('express-rate-limit');
 
 // =========================================
-// PRODUCTION CONFIGURATION
+// BASIC CONFIGURATION
 // =========================================
 
 const CONFIG = {
@@ -14,8 +12,7 @@ const CONFIG = {
         LENGTH: 6,
         EXPIRY_MINUTES: 5,
         MAX_ATTEMPTS: 3,
-        RESEND_LIMIT: 3,
-        CLEANUP_INTERVAL: 60 * 60 * 1000 // 1 hour
+        RESEND_LIMIT: 3
     },
 
     SESSION: {
@@ -25,184 +22,130 @@ const CONFIG = {
     },
 
     EMAIL: {
-        RATE_LIMIT_WINDOW: 15 * 60 * 1000, // 15 minutes
-        RATE_LIMIT_MAX: 5, // 5 emails per window
-        RETRY_ATTEMPTS: 3,
-        RETRY_DELAY: 2000, // 2 seconds
-        TIMEOUT: 30000 // 30 seconds
+        RETRY_ATTEMPTS: 2,
+        RETRY_DELAY: 1000,
+        TIMEOUT: 10000
     },
 
     FILES: {
         OTP_DATA: path.join(__dirname, 'data', 'otp_data.json'),
         SESSIONS: path.join(__dirname, 'data', 'login_sessions.json'),
-        USERS: path.join(__dirname, 'data', 'users.json'),
-        AUDIT_LOG: path.join(__dirname, 'data', 'otp_audit.json')
-    },
-
-    SECURITY: {
-        ENCRYPT_DATA: true,
-        HASH_ALGORITHM: 'sha256',
-        ENCRYPTION_ALGORITHM: 'aes-256-gcm',
-        KEY_DERIVATION_ITERATIONS: 100000
+        USERS: path.join(__dirname, 'data', 'users.json')
     }
 };
 
+console.log('[CONFIG] OTP Manager configuration loaded:', JSON.stringify(CONFIG, null, 2));
+
 // =========================================
-// PRODUCTION LOGGING SYSTEM
+// BASIC LOGGING SYSTEM
 // =========================================
 
 const logger = {
-    info: (message, meta = {}) => console.log(`[INFO] ${new Date().toISOString()} - ${message}`, JSON.stringify(meta)),
-    warn: (message, meta = {}) => console.warn(`[WARN] ${new Date().toISOString()} - ${message}`, JSON.stringify(meta)),
-    error: (message, error, meta = {}) => console.error(`[ERROR] ${new Date().toISOString()} - ${message}`, error?.stack || error, JSON.stringify(meta)),
-    audit: (action, userId, meta = {}) => console.log(`[AUDIT] ${new Date().toISOString()} - ${action} - User: ${userId}`, JSON.stringify(meta))
+    info: (message) => console.log(`[INFO] ${new Date().toISOString()} - ${message}`),
+    warn: (message) => console.warn(`[WARN] ${new Date().toISOString()} - ${message}`),
+    error: (message, error) => console.error(`[ERROR] ${new Date().toISOString()} - ${message}`, error?.message || error)
 };
 
 // =========================================
-// PRODUCTION SECURITY UTILITIES
+// BASIC SECURITY UTILITIES
 // =========================================
 
 class SecurityManager {
-    static generateSecureKey() {
-        if (!this.key) {
-            const keyMaterial = process.env.OTP_ENCRYPTION_KEY || crypto.randomBytes(32);
-            this.key = crypto.pbkdf2Sync(keyMaterial, 'otp-salt', CONFIG.SECURITY.KEY_DERIVATION_ITERATIONS, 32, 'sha512');
-        }
-        return this.key;
-    }
-
-    static encryptData(data) {
-        if (!CONFIG.SECURITY.ENCRYPT_DATA) return data;
-
-        try {
-            const key = this.generateSecureKey();
-            const iv = crypto.randomBytes(16);
-            const cipher = crypto.createCipher(CONFIG.SECURITY.ENCRYPTION_ALGORITHM, key);
-
-            let encrypted = cipher.update(JSON.stringify(data), 'utf8', 'hex');
-            encrypted += cipher.final('hex');
-
-            const authTag = cipher.getAuthTag();
-
-            return {
-                encrypted: true,
-                data: encrypted,
-                iv: iv.toString('hex'),
-                authTag: authTag.toString('hex')
-            };
-        } catch (error) {
-            logger.error('Data encryption failed', error);
-            return data;
-        }
-    }
-
-    static decryptData(encryptedData) {
-        if (!encryptedData.encrypted) return encryptedData;
-
-        try {
-            const key = this.generateSecureKey();
-            const decipher = crypto.createDecipher(CONFIG.SECURITY.ENCRYPTION_ALGORITHM, key);
-
-            decipher.setAuthTag(Buffer.from(encryptedData.authTag, 'hex'));
-
-            let decrypted = decipher.update(encryptedData.data, 'hex', 'utf8');
-            decrypted += decipher.final('utf8');
-
-            return JSON.parse(decrypted);
-        } catch (error) {
-            logger.error('Data decryption failed', error);
-            return {};
-        }
-    }
-
     static hashOTP(otp) {
-        return crypto.createHash(CONFIG.SECURITY.HASH_ALGORITHM).update(otp).digest('hex');
+        console.log('[SECURITY] Hashing OTP with SHA256');
+        const hash = crypto.createHash('sha256').update(otp).digest('hex');
+        console.log('[SECURITY] OTP hashed successfully, length:', hash.length);
+        return hash;
     }
 
     static sanitizeEmail(email) {
-        if (!email || typeof email !== 'string') return null;
+        console.log('[SECURITY] Sanitizing email:', email ? email.substring(0, 3) + '***' : 'null');
+
+        if (!email || typeof email !== 'string') {
+            console.log('[SECURITY] Invalid email input, returning null');
+            return null;
+        }
 
         const sanitized = email.toLowerCase().trim();
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        const isValid = emailRegex.test(sanitized);
 
-        return emailRegex.test(sanitized) ? sanitized : null;
+        console.log('[SECURITY] Email validation result:', isValid);
+        return isValid ? sanitized : null;
     }
 
     static sanitizeEmployeeId(employeeId) {
-        if (!employeeId || typeof employeeId !== 'string') return null;
+        console.log('[SECURITY] Sanitizing employee ID:', employeeId);
 
-        return employeeId.replace(/[^a-zA-Z0-9]/g, '').toUpperCase();
+        if (!employeeId || typeof employeeId !== 'string') {
+            console.log('[SECURITY] Invalid employee ID input, returning null');
+            return null;
+        }
+
+        const sanitized = employeeId.replace(/[^a-zA-Z0-9]/g, '').toUpperCase();
+        console.log('[SECURITY] Employee ID sanitized:', sanitized);
+        return sanitized;
     }
 }
 
 // =========================================
-// PRODUCTION FILE OPERATIONS
+// BASIC FILE OPERATIONS
 // =========================================
 
 class FileManager {
     static async ensureDirectory(filePath) {
         const dir = path.dirname(filePath);
+        console.log('[FILE] Ensuring directory exists:', dir);
 
         try {
             await fs.promises.access(dir);
+            console.log('[FILE] Directory already exists:', dir);
         } catch (error) {
             if (error.code === 'ENOENT') {
-                await fs.promises.mkdir(dir, { recursive: true, mode: 0o755 });
-                logger.info('Directory created', { directory: dir });
+                console.log('[FILE] Creating directory:', dir);
+                await fs.promises.mkdir(dir, { recursive: true });
+                console.log('[FILE] Directory created successfully:', dir);
+            } else {
+                console.error('[FILE] Error checking directory:', error.message);
             }
         }
     }
 
     static async loadJSON(filePath, defaultValue = {}) {
+        console.log('[FILE] Loading JSON file:', filePath);
+
         try {
             await this.ensureDirectory(filePath);
 
             if (!fs.existsSync(filePath)) {
+                console.log('[FILE] File does not exist, creating with default value:', filePath);
                 await fs.promises.writeFile(filePath, JSON.stringify(defaultValue, null, 2));
+                console.log('[FILE] Default file created successfully:', filePath);
                 return defaultValue;
             }
 
+            console.log('[FILE] Reading existing file:', filePath);
             const data = await fs.promises.readFile(filePath, 'utf8');
             const parsed = JSON.parse(data || JSON.stringify(defaultValue));
-
-            return SecurityManager.decryptData(parsed);
+            console.log('[FILE] File loaded successfully, keys:', Object.keys(parsed));
+            return parsed;
         } catch (error) {
+            console.error('[FILE] Failed to load JSON file:', filePath, error.message);
             logger.error(`Failed to load JSON file: ${filePath}`, error);
             return defaultValue;
         }
     }
 
     static async saveJSON(filePath, data) {
+        console.log('[FILE] Saving JSON file:', filePath, 'with keys:', Object.keys(data));
+
         try {
             await this.ensureDirectory(filePath);
-
-            // Create backup
-            if (fs.existsSync(filePath)) {
-                const backupPath = `${filePath}.backup.${Date.now()}`;
-                await fs.promises.copyFile(filePath, backupPath);
-
-                // Keep only last 5 backups
-                const dir = path.dirname(filePath);
-                const basename = path.basename(filePath);
-                const files = await fs.promises.readdir(dir);
-
-                const backupFiles = files
-                    .filter(f => f.startsWith(`${basename}.backup.`))
-                    .sort()
-                    .reverse();
-
-                if (backupFiles.length > 5) {
-                    for (const oldBackup of backupFiles.slice(5)) {
-                        await fs.promises.unlink(path.join(dir, oldBackup));
-                    }
-                }
-            }
-
-            const encryptedData = SecurityManager.encryptData(data);
-            await fs.promises.writeFile(filePath, JSON.stringify(encryptedData, null, 2));
-
+            await fs.promises.writeFile(filePath, JSON.stringify(data, null, 2));
+            console.log('[FILE] File saved successfully:', filePath);
             return true;
         } catch (error) {
+            console.error('[FILE] Failed to save JSON file:', filePath, error.message);
             logger.error(`Failed to save JSON file: ${filePath}`, error);
             return false;
         }
@@ -210,139 +153,85 @@ class FileManager {
 }
 
 // =========================================
-// PRODUCTION OTP MANAGER CLASS
+// SIMPLIFIED OTP MANAGER CLASS
 // =========================================
 
 class OTPManager {
     constructor() {
+        console.log('[OTP_MANAGER] Initializing OTP Manager...');
         this.transporter = null;
         this.isInitialized = false;
-        this.rateLimiter = new Map(); // IP -> { count, resetTime }
-        this.cleanupInterval = null;
-
         this.initialize();
     }
 
     /**
-     * Initialize OTP Manager with enhanced security
+     * Initialize OTP Manager
      */
     async initialize() {
+        console.log('[OTP_MANAGER] Starting initialization process...');
+
         try {
-            // Validate environment variables
+            console.log('[OTP_MANAGER] Checking environment variables...');
             if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
                 throw new Error('EMAIL_USER and EMAIL_PASS environment variables are required');
             }
+            console.log('[OTP_MANAGER] Environment variables found - EMAIL_USER:', process.env.EMAIL_USER);
 
-            // Create enhanced transporter with OAuth2 support
             await this.createTransporter();
-
-            // Start cleanup interval
-            this.startCleanupInterval();
-
-            // Verify email connection
             await this.verifyConnection();
 
             this.isInitialized = true;
-
-            logger.info('OTP Manager initialized successfully', {
-                emailUser: process.env.EMAIL_USER,
-                encryptionEnabled: CONFIG.SECURITY.ENCRYPT_DATA
-            });
+            console.log('[OTP_MANAGER] Initialization completed successfully');
+            logger.info('OTP Manager initialized successfully');
 
         } catch (error) {
+            console.error('[OTP_MANAGER] Initialization failed:', error.message);
             logger.error('OTP Manager initialization failed', error);
             throw error;
         }
     }
 
     /**
-     * Create enhanced transporter with retry logic - FIXED: Changed createTransporter to createTransport
+     * Create email transporter
      */
     async createTransporter() {
+        console.log('[EMAIL] Creating email transporter...');
+
         const transporterConfig = {
             service: 'gmail',
             auth: {
                 user: process.env.EMAIL_USER,
                 pass: process.env.EMAIL_PASS
             },
-            tls: {
-                rejectUnauthorized: false
-            },
             connectionTimeout: CONFIG.EMAIL.TIMEOUT,
             greetingTimeout: CONFIG.EMAIL.TIMEOUT,
             socketTimeout: CONFIG.EMAIL.TIMEOUT
         };
 
-        // Add OAuth2 support if configured
-        if (process.env.OAUTH_CLIENT_ID && process.env.OAUTH_CLIENT_SECRET && process.env.OAUTH_REFRESH_TOKEN) {
-            transporterConfig.auth = {
-                type: 'OAuth2',
-                user: process.env.EMAIL_USER,
-                clientId: process.env.OAUTH_CLIENT_ID,
-                clientSecret: process.env.OAUTH_CLIENT_SECRET,
-                refreshToken: process.env.OAUTH_REFRESH_TOKEN
-            };
-        }
+        console.log('[EMAIL] Transporter config:', {
+            service: transporterConfig.service,
+            user: transporterConfig.auth.user,
+            timeout: transporterConfig.connectionTimeout
+        });
 
-        // FIXED: Changed from createTransporter to createTransport
         this.transporter = nodemailer.createTransport(transporterConfig);
+        console.log('[EMAIL] Transporter created successfully');
     }
 
     /**
      * Verify email connection
      */
     async verifyConnection() {
+        console.log('[EMAIL] Verifying email connection...');
+
         try {
             await this.transporter.verify();
+            console.log('[EMAIL] Connection verification successful');
             logger.info('Email transporter verified successfully');
         } catch (error) {
+            console.error('[EMAIL] Connection verification failed:', error.message);
             logger.error('Email transporter verification failed', error);
             throw new Error('Email service connection failed');
-        }
-    }
-
-    /**
-     * Start cleanup interval for expired data
-     */
-    startCleanupInterval() {
-        this.cleanupInterval = setInterval(() => {
-            this.cleanExpired();
-            this.cleanupRateLimiter();
-        }, CONFIG.OTP.CLEANUP_INTERVAL);
-    }
-
-    /**
-     * Check rate limiting for email sending
-     */
-    checkRateLimit(identifier) {
-        const now = Date.now();
-        const rateLimitData = this.rateLimiter.get(identifier);
-
-        if (!rateLimitData || now > rateLimitData.resetTime) {
-            this.rateLimiter.set(identifier, {
-                count: 1,
-                resetTime: now + CONFIG.EMAIL.RATE_LIMIT_WINDOW
-            });
-            return true;
-        }
-
-        if (rateLimitData.count >= CONFIG.EMAIL.RATE_LIMIT_MAX) {
-            return false;
-        }
-
-        rateLimitData.count++;
-        return true;
-    }
-
-    /**
-     * Clean up rate limiter data
-     */
-    cleanupRateLimiter() {
-        const now = Date.now();
-        for (const [identifier, data] of this.rateLimiter.entries()) {
-            if (now > data.resetTime) {
-                this.rateLimiter.delete(identifier);
-            }
         }
     }
 
@@ -350,138 +239,105 @@ class OTPManager {
      * Generate secure OTP
      */
     generateOTP() {
-        return crypto.randomInt(100000, 999999).toString();
+        console.log('[OTP] Generating new OTP...');
+        const otp = crypto.randomInt(100000, 999999).toString();
+        console.log('[OTP] OTP generated successfully, length:', otp.length);
+        return otp;
     }
 
     /**
      * Generate secure session token
      */
     generateSessionToken() {
-        return crypto.randomBytes(CONFIG.SESSION.TOKEN_LENGTH).toString('hex');
+        console.log('[SESSION] Generating session token...');
+        const token = crypto.randomBytes(CONFIG.SESSION.TOKEN_LENGTH).toString('hex');
+        console.log('[SESSION] Session token generated, length:', token.length);
+        return token;
     }
 
     /**
      * Clean expired OTPs and sessions
      */
     async cleanExpired() {
+        console.log('[CLEANUP] Starting cleanup process...');
+
         try {
             const now = new Date();
+            console.log('[CLEANUP] Current time:', now.toISOString());
 
             // Clean expired OTPs
+            console.log('[CLEANUP] Loading OTP data for cleanup...');
             const otps = await FileManager.loadJSON(CONFIG.FILES.OTP_DATA);
             let otpCleaned = false;
+            let otpCount = 0;
 
             for (const [employeeId, otpData] of Object.entries(otps)) {
                 if (new Date(otpData.expiresAt) < now) {
+                    console.log('[CLEANUP] Removing expired OTP for employee:', employeeId);
                     delete otps[employeeId];
                     otpCleaned = true;
+                    otpCount++;
                 }
             }
 
             if (otpCleaned) {
+                console.log('[CLEANUP] Saving cleaned OTP data, removed:', otpCount, 'entries');
                 await FileManager.saveJSON(CONFIG.FILES.OTP_DATA, otps);
+            } else {
+                console.log('[CLEANUP] No expired OTPs found');
             }
 
             // Clean expired sessions
+            console.log('[CLEANUP] Loading session data for cleanup...');
             const sessions = await FileManager.loadJSON(CONFIG.FILES.SESSIONS);
             let sessionCleaned = false;
+            let sessionCount = 0;
 
             for (const [token, sessionData] of Object.entries(sessions)) {
                 if (new Date(sessionData.expiresAt) < now) {
+                    console.log('[CLEANUP] Removing expired session:', token.substring(0, 8) + '...');
                     delete sessions[token];
                     sessionCleaned = true;
+                    sessionCount++;
                 }
             }
 
             if (sessionCleaned) {
+                console.log('[CLEANUP] Saving cleaned session data, removed:', sessionCount, 'entries');
                 await FileManager.saveJSON(CONFIG.FILES.SESSIONS, sessions);
+            } else {
+                console.log('[CLEANUP] No expired sessions found');
             }
 
-            if (otpCleaned || sessionCleaned) {
-                logger.info('Expired data cleaned up', {
-                    otpsRemoved: otpCleaned,
-                    sessionsRemoved: sessionCleaned
-                });
-            }
+            console.log('[CLEANUP] Cleanup completed - OTPs removed:', otpCount, 'Sessions removed:', sessionCount);
 
         } catch (error) {
+            console.error('[CLEANUP] Cleanup failed:', error.message);
             logger.error('Cleanup failed', error);
         }
     }
 
     /**
-     * Audit log for security events
-     */
-    async auditLog(action, employeeId, metadata = {}) {
-        try {
-            const auditData = await FileManager.loadJSON(CONFIG.FILES.AUDIT_LOG, []);
-
-            auditData.push({
-                timestamp: new Date().toISOString(),
-                action,
-                employeeId,
-                ip: metadata.ip || 'unknown',
-                userAgent: metadata.userAgent || 'unknown',
-                success: metadata.success || false,
-                details: metadata.details || {}
-            });
-
-            // Keep only last 10000 entries
-            if (auditData.length > 10000) {
-                auditData.splice(0, auditData.length - 10000);
-            }
-
-            await FileManager.saveJSON(CONFIG.FILES.AUDIT_LOG, auditData);
-
-            logger.audit(action, employeeId, metadata);
-
-        } catch (error) {
-            logger.error('Audit logging failed', error);
-        }
-    }
-
-    /**
-     * Enhanced login session creation
+     * Create login session
      */
     async createLoginSession(employeeId, email, clientInfo = {}) {
+        console.log('[LOGIN_SESSION] Creating login session for employee:', employeeId);
+        console.log('[LOGIN_SESSION] Client info:', clientInfo);
+
         try {
-            // Sanitize inputs
+            console.log('[LOGIN_SESSION] Sanitizing inputs...');
             const sanitizedEmployeeId = SecurityManager.sanitizeEmployeeId(employeeId);
             const sanitizedEmail = SecurityManager.sanitizeEmail(email);
 
             if (!sanitizedEmployeeId || !sanitizedEmail) {
+                console.error('[LOGIN_SESSION] Input validation failed');
                 throw new Error('Invalid employee ID or email format');
             }
 
-            // Check rate limiting
-            const rateLimitKey = `${sanitizedEmployeeId}:${clientInfo.ip || 'unknown'}`;
-            if (!this.checkRateLimit(rateLimitKey)) {
-                await this.auditLog('OTP_RATE_LIMITED', sanitizedEmployeeId, {
-                    ...clientInfo,
-                    success: false,
-                    details: { reason: 'Rate limit exceeded' }
-                });
-
-                return {
-                    success: false,
-                    message: 'Too many OTP requests. Please try again later.',
-                    retryAfter: Math.ceil(CONFIG.EMAIL.RATE_LIMIT_WINDOW / 1000 / 60) // minutes
-                };
-            }
-
+            console.log('[LOGIN_SESSION] Running cleanup before creating session...');
             await this.cleanExpired();
 
-            // Check for existing sessions
-            const sessions = await FileManager.loadJSON(CONFIG.FILES.SESSIONS);
-            const userSessions = Object.values(sessions).filter(s => s.employeeId === sanitizedEmployeeId);
-
-            // Limit concurrent sessions
-            if (userSessions.length >= CONFIG.SESSION.MAX_SESSIONS_PER_USER) {
-                // Remove oldest session
-                const oldestSession = userSessions.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt))[0];
-                delete sessions[oldestSession.sessionToken];
-            }
-
+            console.log('[LOGIN_SESSION] Generating session components...');
             const sessionToken = this.generateSessionToken();
             const otp = this.generateOTP();
             const otpHash = SecurityManager.hashOTP(otp);
@@ -489,7 +345,12 @@ class OTPManager {
             const sessionExpiry = new Date(now.getTime() + CONFIG.SESSION.EXPIRY_MINUTES * 60 * 1000);
             const otpExpiry = new Date(now.getTime() + CONFIG.OTP.EXPIRY_MINUTES * 60 * 1000);
 
+            console.log('[LOGIN_SESSION] Session expires at:', sessionExpiry.toISOString());
+            console.log('[LOGIN_SESSION] OTP expires at:', otpExpiry.toISOString());
+
             // Store session
+            console.log('[LOGIN_SESSION] Storing session data...');
+            const sessions = await FileManager.loadJSON(CONFIG.FILES.SESSIONS);
             sessions[sessionToken] = {
                 employeeId: sanitizedEmployeeId,
                 sessionToken,
@@ -499,13 +360,15 @@ class OTPManager {
                 otpVerifiedAt: null,
                 clientInfo: {
                     ip: clientInfo.ip,
-                    userAgent: clientInfo.userAgent?.substring(0, 200) // Limit length
+                    userAgent: clientInfo.userAgent
                 }
             };
 
+            console.log('[LOGIN_SESSION] Saving session to file...');
             await FileManager.saveJSON(CONFIG.FILES.SESSIONS, sessions);
 
-            // Store OTP (hashed for security)
+            // Store OTP
+            console.log('[LOGIN_SESSION] Storing OTP data...');
             const otps = await FileManager.loadJSON(CONFIG.FILES.OTP_DATA);
             otps[sanitizedEmployeeId] = {
                 otpHash,
@@ -518,22 +381,15 @@ class OTPManager {
                 sessionToken
             };
 
+            console.log('[LOGIN_SESSION] Saving OTP to file...');
             await FileManager.saveJSON(CONFIG.FILES.OTP_DATA, otps);
 
-            // Send email with retry logic
-            await this.sendEmailOTPWithRetry(sanitizedEmail, otp, sanitizedEmployeeId);
+            // Send email
+            console.log('[LOGIN_SESSION] Sending OTP email...');
+            await this.sendEmailOTP(sanitizedEmail, otp, sanitizedEmployeeId);
 
-            await this.auditLog('OTP_GENERATED', sanitizedEmployeeId, {
-                ...clientInfo,
-                success: true,
-                details: { email: sanitizedEmail }
-            });
-
-            logger.info('OTP session created successfully', {
-                employeeId: sanitizedEmployeeId,
-                email: sanitizedEmail,
-                sessionToken: sessionToken.substring(0, 8) + '...'
-            });
+            console.log('[LOGIN_SESSION] Login session created successfully');
+            logger.info('OTP session created successfully');
 
             return {
                 success: true,
@@ -543,14 +399,8 @@ class OTPManager {
             };
 
         } catch (error) {
-            logger.error('Failed to create login session', error, { employeeId, email });
-
-            await this.auditLog('OTP_GENERATION_FAILED', employeeId, {
-                ...clientInfo,
-                success: false,
-                details: { error: error.message }
-            });
-
+            console.error('[LOGIN_SESSION] Failed to create login session:', error.message);
+            logger.error('Failed to create login session', error);
             return {
                 success: false,
                 message: 'Failed to send OTP. Please try again later.'
@@ -559,209 +409,124 @@ class OTPManager {
     }
 
     /**
-     * Send email OTP with retry mechanism
+     * Send email OTP
      */
-    async sendEmailOTPWithRetry(email, otp, employeeId, attempt = 1) {
+    async sendEmailOTP(email, otp, employeeId) {
+        console.log('[EMAIL_OTP] Preparing to send OTP email to:', email.substring(0, 3) + '***');
+        console.log('[EMAIL_OTP] Employee ID:', employeeId);
+
+        const mailOptions = {
+            from: process.env.EMAIL_FROM || process.env.EMAIL_USER,
+            to: email,
+            subject: 'IT No-Dues System - Login Verification Code',
+            html: `
+                <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+                    <h2>IT No-Dues System - Login Verification</h2>
+                    <p>Your verification code is:</p>
+                    <div style="font-size: 24px; font-weight: bold; background: #f5f5f5; padding: 20px; text-align: center; margin: 20px 0;">
+                        ${otp}
+                    </div>
+                    <p>Employee ID: ${employeeId}</p>
+                    <p>Valid for: ${CONFIG.OTP.EXPIRY_MINUTES} minutes</p>
+                    <p>If you did not request this login, please ignore this email.</p>
+                </div>
+            `,
+            text: `
+                IT No-Dues System - Login Verification
+                
+                Your verification code is: ${otp}
+                Employee ID: ${employeeId}
+                Valid for: ${CONFIG.OTP.EXPIRY_MINUTES} minutes
+                
+                If you did not request this login, please ignore this email.
+            `
+        };
+
+        console.log('[EMAIL_OTP] Mail options prepared:', {
+            from: mailOptions.from,
+            to: mailOptions.to.substring(0, 3) + '***',
+            subject: mailOptions.subject
+        });
+
         try {
-            await this.sendEmailOTP(email, otp, employeeId);
+            console.log('[EMAIL_OTP] Sending email...');
+            const result = await this.transporter.sendMail(mailOptions);
+            console.log('[EMAIL_OTP] Email sent successfully, message ID:', result.messageId);
+            logger.info('OTP email sent successfully');
+            return result;
         } catch (error) {
-            if (attempt < CONFIG.EMAIL.RETRY_ATTEMPTS) {
-                logger.warn(`Email send failed, retrying (${attempt}/${CONFIG.EMAIL.RETRY_ATTEMPTS})`, {
-                    error: error.message,
-                    employeeId
-                });
-
-                await new Promise(resolve => setTimeout(resolve, CONFIG.EMAIL.RETRY_DELAY * attempt));
-                return this.sendEmailOTPWithRetry(email, otp, employeeId, attempt + 1);
-            }
-
+            console.error('[EMAIL_OTP] Failed to send email:', error.message);
             throw error;
         }
     }
 
     /**
-     * Enhanced email OTP sending
-     */
-    async sendEmailOTP(email, otp, employeeId) {
-        const mailOptions = {
-            from: {
-                name: 'IT No-Dues System',
-                address: process.env.EMAIL_FROM || process.env.EMAIL_USER
-            },
-            to: email,
-            subject: 'IT No-Dues System - Login Verification Code',
-            html: `
-        <!DOCTYPE html>
-        <html>
-        <head>
-          <meta charset="utf-8">
-          <meta name="viewport" content="width=device-width, initial-scale=1.0">
-          <title>Login Verification Code</title>
-        </head>
-        <body style="margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f5f5f5;">
-          <div style="max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
-            
-            <!-- Header -->
-            <div style="background: linear-gradient(135deg, #2c5aa0 0%, #1e3a5f 100%); padding: 30px 20px; text-align: center;">
-              <h1 style="color: #ffffff; margin: 0; font-size: 28px; font-weight: 600;">IT No-Dues System</h1>
-              <p style="color: #e8f1ff; margin: 10px 0 0 0; font-size: 16px;">Security Verification</p>
-            </div>
-            
-            <!-- Content -->
-            <div style="padding: 40px 30px;">
-              <h2 style="color: #2c3e50; margin: 0 0 20px 0; font-size: 24px; font-weight: 600;">Your Login Verification Code</h2>
-              
-              <p style="color: #555; font-size: 16px; line-height: 1.6; margin: 0 0 30px 0;">
-                You have requested to log into the IT No-Dues System. Use the verification code below to complete your login:
-              </p>
-              
-              <!-- OTP Box -->
-              <div style="background: #f8f9fa; border: 2px solid #2c5aa0; border-radius: 8px; padding: 25px; text-align: center; margin: 30px 0;">
-                <div style="font-size: 36px; font-weight: 700; color: #2c5aa0; letter-spacing: 8px; font-family: 'Courier New', monospace; margin: 0;">${otp}</div>
-                <p style="color: #666; font-size: 14px; margin: 10px 0 0 0;">Enter this code on the login page</p>
-              </div>
-              
-              <!-- Details -->
-              <div style="background: #f8f9fa; border-radius: 6px; padding: 20px; margin: 30px 0;">
-                <h3 style="color: #2c3e50; margin: 0 0 15px 0; font-size: 18px;">Security Details:</h3>
-                <table style="width: 100%; font-size: 14px; color: #555;">
-                  <tr>
-                    <td style="padding: 5px 0; font-weight: 600;">Employee ID:</td>
-                    <td style="padding: 5px 0;">${employeeId}</td>
-                  </tr>
-                  <tr>
-                    <td style="padding: 5px 0; font-weight: 600;">Valid for:</td>
-                    <td style="padding: 5px 0;">${CONFIG.OTP.EXPIRY_MINUTES} minutes</td>
-                  </tr>
-                  <tr>
-                    <td style="padding: 5px 0; font-weight: 600;">Generated:</td>
-                    <td style="padding: 5px 0;">${new Date().toLocaleString()}</td>
-                  </tr>
-                </table>
-              </div>
-              
-              <!-- Security Warning -->
-              <div style="background: #fff3cd; border: 1px solid #ffeaa7; border-radius: 6px; padding: 15px; margin: 20px 0;">
-                <p style="color: #856404; font-size: 14px; margin: 0; line-height: 1.5;">
-                  <strong>Security Notice:</strong> If you did not request this login verification, please ignore this email and consider changing your account password.
-                </p>
-              </div>
-            </div>
-            
-            <!-- Footer -->
-            <div style="background: #f8f9fa; padding: 20px 30px; text-align: center; border-top: 1px solid #e9ecef;">
-              <p style="color: #6c757d; font-size: 12px; margin: 0; line-height: 1.5;">
-                This is an automated message from the IT No-Dues Clearance System.<br>
-                Please do not reply to this email.
-              </p>
-            </div>
-          </div>
-        </body>
-        </html>
-      `,
-            text: `
-        IT No-Dues System - Login Verification
-        
-        Your verification code is: ${otp}
-        
-        Employee ID: ${employeeId}
-        Valid for: ${CONFIG.OTP.EXPIRY_MINUTES} minutes
-        Generated: ${new Date().toLocaleString()}
-        
-        If you did not request this login, please ignore this email.
-        
-        This is an automated message from IT No-Dues Clearance System.
-      `
-        };
-
-        const result = await this.transporter.sendMail(mailOptions);
-
-        logger.info('OTP email sent successfully', {
-            messageId: result.messageId,
-            email: email.replace(/(.{2}).*@/, '$1***@'), // Partially mask email
-            employeeId
-        });
-
-        return result;
-    }
-
-    /**
-     * Enhanced OTP verification with security features
+     * Verify OTP
      */
     async verifyOTP(sessionToken, inputOTP, clientInfo = {}) {
+        console.log('[VERIFY_OTP] Starting OTP verification...');
+        console.log('[VERIFY_OTP] Session token:', sessionToken ? sessionToken.substring(0, 8) + '...' : 'null');
+        console.log('[VERIFY_OTP] Input OTP length:', inputOTP ? inputOTP.length : 'null');
+
         try {
-            // Sanitize inputs
             if (!sessionToken || !inputOTP) {
+                console.log('[VERIFY_OTP] Missing required parameters');
                 return {
                     success: false,
                     message: 'Session token and OTP are required'
                 };
             }
 
+            console.log('[VERIFY_OTP] Sanitizing OTP input...');
             const sanitizedOTP = inputOTP.replace(/\D/g, '').substring(0, CONFIG.OTP.LENGTH);
+            console.log('[VERIFY_OTP] Sanitized OTP length:', sanitizedOTP.length);
+
             if (sanitizedOTP.length !== CONFIG.OTP.LENGTH) {
+                console.log('[VERIFY_OTP] Invalid OTP format');
                 return {
                     success: false,
                     message: 'Invalid OTP format'
                 };
             }
 
+            console.log('[VERIFY_OTP] Running cleanup...');
             await this.cleanExpired();
 
             // Get session
+            console.log('[VERIFY_OTP] Loading session data...');
             const sessions = await FileManager.loadJSON(CONFIG.FILES.SESSIONS);
             const session = sessions[sessionToken];
 
             if (!session || session.status !== 'pending_otp') {
-                await this.auditLog('OTP_VERIFY_INVALID_SESSION', 'unknown', {
-                    ...clientInfo,
-                    success: false,
-                    details: { sessionToken: sessionToken.substring(0, 8) + '...' }
-                });
-
+                console.log('[VERIFY_OTP] Invalid or expired session, status:', session?.status);
                 return {
                     success: false,
                     message: 'Invalid or expired session'
                 };
             }
 
+            console.log('[VERIFY_OTP] Session found for employee:', session.employeeId);
+
             // Get OTP data
+            console.log('[VERIFY_OTP] Loading OTP data...');
             const otps = await FileManager.loadJSON(CONFIG.FILES.OTP_DATA);
             const otpData = otps[session.employeeId];
 
-            if (!otpData) {
-                await this.auditLog('OTP_VERIFY_NOT_FOUND', session.employeeId, {
-                    ...clientInfo,
-                    success: false
-                });
-
+            if (!otpData || otpData.used) {
+                console.log('[VERIFY_OTP] OTP not found or already used, exists:', !!otpData, 'used:', otpData?.used);
                 return {
                     success: false,
-                    message: 'OTP not found or expired'
+                    message: 'OTP not found or already used'
                 };
             }
 
-            if (otpData.used) {
-                await this.auditLog('OTP_VERIFY_ALREADY_USED', session.employeeId, {
-                    ...clientInfo,
-                    success: false
-                });
-
-                return {
-                    success: false,
-                    message: 'OTP already used'
-                };
-            }
+            console.log('[VERIFY_OTP] OTP data found, expires at:', otpData.expiresAt);
+            console.log('[VERIFY_OTP] Current attempts:', otpData.attempts);
 
             if (new Date() > new Date(otpData.expiresAt)) {
+                console.log('[VERIFY_OTP] OTP expired, cleaning up...');
                 delete otps[session.employeeId];
                 await FileManager.saveJSON(CONFIG.FILES.OTP_DATA, otps);
-
-                await this.auditLog('OTP_VERIFY_EXPIRED', session.employeeId, {
-                    ...clientInfo,
-                    success: false
-                });
-
                 return {
                     success: false,
                     message: 'OTP expired. Please request a new one.'
@@ -769,12 +534,7 @@ class OTPManager {
             }
 
             if (otpData.attempts >= otpData.maxAttempts) {
-                await this.auditLog('OTP_VERIFY_MAX_ATTEMPTS', session.employeeId, {
-                    ...clientInfo,
-                    success: false,
-                    details: { attempts: otpData.attempts }
-                });
-
+                console.log('[VERIFY_OTP] Maximum attempts exceeded');
                 return {
                     success: false,
                     message: 'Too many failed attempts. Please request a new OTP.'
@@ -782,22 +542,15 @@ class OTPManager {
             }
 
             // Verify OTP hash
+            console.log('[VERIFY_OTP] Verifying OTP hash...');
             const inputOTPHash = SecurityManager.hashOTP(sanitizedOTP);
             if (otpData.otpHash !== inputOTPHash) {
+                console.log('[VERIFY_OTP] OTP hash mismatch, incrementing attempts...');
                 otps[session.employeeId].attempts++;
                 await FileManager.saveJSON(CONFIG.FILES.OTP_DATA, otps);
 
                 const remainingAttempts = otpData.maxAttempts - otps[session.employeeId].attempts;
-
-                await this.auditLog('OTP_VERIFY_FAILED', session.employeeId, {
-                    ...clientInfo,
-                    success: false,
-                    details: {
-                        attempts: otps[session.employeeId].attempts,
-                        remaining: remainingAttempts
-                    }
-                });
-
+                console.log('[VERIFY_OTP] Remaining attempts:', remainingAttempts);
                 return {
                     success: false,
                     message: `Invalid OTP. ${remainingAttempts} attempts remaining.`
@@ -805,32 +558,17 @@ class OTPManager {
             }
 
             // Success - mark OTP as used and activate session
+            console.log('[VERIFY_OTP] OTP verified successfully, updating session...');
             otps[session.employeeId].used = true;
             sessions[sessionToken].status = 'verified';
             sessions[sessionToken].otpVerifiedAt = new Date().toISOString();
 
-            // Update user data
-            const userData = await FileManager.loadJSON(CONFIG.FILES.USERS);
-            if (userData && userData.employeeId === session.employeeId) {
-                userData.lastLogin = new Date().toISOString();
-                userData.emailVerified = true;
-                userData.failedOtpAttempts = 0;
-                await FileManager.saveJSON(CONFIG.FILES.USERS, userData);
-            }
-
+            console.log('[VERIFY_OTP] Saving updated data...');
             await FileManager.saveJSON(CONFIG.FILES.OTP_DATA, otps);
             await FileManager.saveJSON(CONFIG.FILES.SESSIONS, sessions);
 
-            await this.auditLog('OTP_VERIFY_SUCCESS', session.employeeId, {
-                ...clientInfo,
-                success: true,
-                details: { sessionToken: sessionToken.substring(0, 8) + '...' }
-            });
-
-            logger.info('OTP verification successful', {
-                employeeId: session.employeeId,
-                sessionToken: sessionToken.substring(0, 8) + '...'
-            });
+            console.log('[VERIFY_OTP] Verification completed successfully');
+            logger.info('OTP verification successful');
 
             return {
                 success: true,
@@ -840,14 +578,8 @@ class OTPManager {
             };
 
         } catch (error) {
+            console.error('[VERIFY_OTP] Verification failed:', error.message);
             logger.error('OTP verification failed', error);
-
-            await this.auditLog('OTP_VERIFY_ERROR', 'unknown', {
-                ...clientInfo,
-                success: false,
-                details: { error: error.message }
-            });
-
             return {
                 success: false,
                 message: 'Verification failed. Please try again.'
@@ -856,50 +588,41 @@ class OTPManager {
     }
 
     /**
-     * Enhanced OTP resend with improved rate limiting
+     * Resend OTP
      */
     async resendOTP(sessionToken, clientInfo = {}) {
+        console.log('[RESEND_OTP] Starting OTP resend process...');
+        console.log('[RESEND_OTP] Session token:', sessionToken ? sessionToken.substring(0, 8) + '...' : 'null');
+
         try {
             if (!sessionToken) {
+                console.log('[RESEND_OTP] Missing session token');
                 return {
                     success: false,
                     message: 'Session token is required'
                 };
             }
 
+            console.log('[RESEND_OTP] Loading session data...');
             const sessions = await FileManager.loadJSON(CONFIG.FILES.SESSIONS);
             const session = sessions[sessionToken];
 
             if (!session || session.status !== 'pending_otp') {
+                console.log('[RESEND_OTP] Invalid session, status:', session?.status);
                 return {
                     success: false,
                     message: 'Invalid session'
                 };
             }
 
-            // Check rate limiting for resends
-            const rateLimitKey = `resend:${session.employeeId}:${clientInfo.ip || 'unknown'}`;
-            if (!this.checkRateLimit(rateLimitKey)) {
-                await this.auditLog('OTP_RESEND_RATE_LIMITED', session.employeeId, {
-                    ...clientInfo,
-                    success: false
-                });
+            console.log('[RESEND_OTP] Session found for employee:', session.employeeId);
 
-                return {
-                    success: false,
-                    message: 'Too many resend requests. Please wait before trying again.'
-                };
-            }
-
+            console.log('[RESEND_OTP] Loading OTP data...');
             const otps = await FileManager.loadJSON(CONFIG.FILES.OTP_DATA);
             const otpData = otps[session.employeeId];
 
             if (otpData && otpData.attempts >= CONFIG.OTP.RESEND_LIMIT) {
-                await this.auditLog('OTP_RESEND_LIMIT_EXCEEDED', session.employeeId, {
-                    ...clientInfo,
-                    success: false
-                });
-
+                console.log('[RESEND_OTP] Resend limit exceeded, attempts:', otpData.attempts);
                 return {
                     success: false,
                     message: 'Too many OTP requests. Please try logging in again.'
@@ -907,16 +630,18 @@ class OTPManager {
             }
 
             // Generate new OTP
+            console.log('[RESEND_OTP] Generating new OTP...');
             const newOTP = this.generateOTP();
             const otpHash = SecurityManager.hashOTP(newOTP);
             const now = new Date();
             const otpExpiry = new Date(now.getTime() + CONFIG.OTP.EXPIRY_MINUTES * 60 * 1000);
 
-            // Get user email
-            const userData = await FileManager.loadJSON(CONFIG.FILES.USERS);
-            const userEmail = userData.email;
+            // Get user email from existing OTP data
+            const userEmail = otpData?.email;
+            console.log('[RESEND_OTP] User email found:', userEmail ? userEmail.substring(0, 3) + '***' : 'null');
 
             if (!userEmail) {
+                console.log('[RESEND_OTP] User email not found');
                 return {
                     success: false,
                     message: 'User email not found'
@@ -924,6 +649,7 @@ class OTPManager {
             }
 
             // Update OTP
+            console.log('[RESEND_OTP] Updating OTP data...');
             otps[session.employeeId] = {
                 otpHash,
                 email: userEmail,
@@ -936,21 +662,15 @@ class OTPManager {
                 resendCount: (otpData?.resendCount || 0) + 1
             };
 
+            console.log('[RESEND_OTP] New resend count:', otps[session.employeeId].resendCount);
             await FileManager.saveJSON(CONFIG.FILES.OTP_DATA, otps);
 
             // Send new OTP
-            await this.sendEmailOTPWithRetry(userEmail, newOTP, session.employeeId);
+            console.log('[RESEND_OTP] Sending new OTP email...');
+            await this.sendEmailOTP(userEmail, newOTP, session.employeeId);
 
-            await this.auditLog('OTP_RESEND_SUCCESS', session.employeeId, {
-                ...clientInfo,
-                success: true,
-                details: { resendCount: otps[session.employeeId].resendCount }
-            });
-
-            logger.info('OTP resent successfully', {
-                employeeId: session.employeeId,
-                resendCount: otps[session.employeeId].resendCount
-            });
+            console.log('[RESEND_OTP] OTP resent successfully');
+            logger.info('OTP resent successfully');
 
             return {
                 success: true,
@@ -959,6 +679,7 @@ class OTPManager {
             };
 
         } catch (error) {
+            console.error('[RESEND_OTP] Resend failed:', error.message);
             logger.error('OTP resend failed', error);
             return {
                 success: false,
@@ -968,36 +689,55 @@ class OTPManager {
     }
 
     /**
-     * Enhanced session validation
+     * Check if session is valid
      */
     async isValidSession(sessionToken) {
+        console.log('[VALID_SESSION] Checking session validity:', sessionToken ? sessionToken.substring(0, 8) + '...' : 'null');
+
         try {
+            console.log('[VALID_SESSION] Running cleanup...');
             await this.cleanExpired();
 
+            console.log('[VALID_SESSION] Loading session data...');
             const sessions = await FileManager.loadJSON(CONFIG.FILES.SESSIONS);
             const session = sessions[sessionToken];
 
-            return session &&
+            const isValid = session &&
                 session.status === 'verified' &&
                 new Date() < new Date(session.expiresAt);
+
+            console.log('[VALID_SESSION] Session validity result:', isValid);
+            console.log('[VALID_SESSION] Session status:', session?.status);
+            console.log('[VALID_SESSION] Session expires:', session?.expiresAt);
+
+            return isValid;
         } catch (error) {
+            console.error('[VALID_SESSION] Session validation failed:', error.message);
             logger.error('Session validation failed', error);
             return false;
         }
     }
 
     /**
-     * Get enhanced session data
+     * Get session data
      */
     async getSessionData(sessionToken) {
+        console.log('[SESSION_DATA] Getting session data for:', sessionToken ? sessionToken.substring(0, 8) + '...' : 'null');
+
         try {
+            console.log('[SESSION_DATA] Loading sessions...');
             const sessions = await FileManager.loadJSON(CONFIG.FILES.SESSIONS);
             const session = sessions[sessionToken];
 
-            if (!session) return null;
+            if (!session) {
+                console.log('[SESSION_DATA] Session not found');
+                return null;
+            }
 
-            // Return sanitized session data
-            return {
+            console.log('[SESSION_DATA] Session found for employee:', session.employeeId);
+            console.log('[SESSION_DATA] Session status:', session.status);
+
+            const sessionData = {
                 employeeId: session.employeeId,
                 status: session.status,
                 createdAt: session.createdAt,
@@ -1005,7 +745,11 @@ class OTPManager {
                 otpVerifiedAt: session.otpVerifiedAt,
                 isExpired: new Date() > new Date(session.expiresAt)
             };
+
+            console.log('[SESSION_DATA] Returning session data:', sessionData);
+            return sessionData;
         } catch (error) {
+            console.error('[SESSION_DATA] Failed to get session data:', error.message);
             logger.error('Failed to get session data', error);
             return null;
         }
@@ -1015,163 +759,31 @@ class OTPManager {
      * Revoke session (logout)
      */
     async revokeSession(sessionToken, clientInfo = {}) {
+        console.log('[REVOKE_SESSION] Revoking session:', sessionToken ? sessionToken.substring(0, 8) + '...' : 'null');
+        console.log('[REVOKE_SESSION] Client info:', clientInfo);
+
         try {
+            console.log('[REVOKE_SESSION] Loading sessions...');
             const sessions = await FileManager.loadJSON(CONFIG.FILES.SESSIONS);
-            const session = sessions[sessionToken];
 
-            if (session) {
-                await this.auditLog('SESSION_REVOKED', session.employeeId, {
-                    ...clientInfo,
-                    success: true,
-                    details: { sessionToken: sessionToken.substring(0, 8) + '...' }
-                });
-
+            if (sessions[sessionToken]) {
+                console.log('[REVOKE_SESSION] Session found, removing...');
                 delete sessions[sessionToken];
                 await FileManager.saveJSON(CONFIG.FILES.SESSIONS, sessions);
-
-                logger.info('Session revoked successfully', {
-                    employeeId: session.employeeId,
-                    sessionToken: sessionToken.substring(0, 8) + '...'
-                });
+                console.log('[REVOKE_SESSION] Session revoked successfully');
+                logger.info('Session revoked successfully');
+            } else {
+                console.log('[REVOKE_SESSION] Session not found');
             }
 
             return true;
         } catch (error) {
+            console.error('[REVOKE_SESSION] Failed to revoke session:', error.message);
             logger.error('Failed to revoke session', error);
             return false;
         }
     }
-
-    /**
-     * Get system statistics
-     */
-    async getSystemStats() {
-        try {
-            const sessions = await FileManager.loadJSON(CONFIG.FILES.SESSIONS);
-            const otps = await FileManager.loadJSON(CONFIG.FILES.OTP_DATA);
-            const auditData = await FileManager.loadJSON(CONFIG.FILES.AUDIT_LOG, []);
-
-            const now = new Date();
-            const activeSessions = Object.values(sessions).filter(s =>
-                s.status === 'verified' && new Date(s.expiresAt) > now
-            );
-
-            const pendingSessions = Object.values(sessions).filter(s =>
-                s.status === 'pending_otp' && new Date(s.expiresAt) > now
-            );
-
-            const activeOTPs = Object.values(otps).filter(o =>
-                !o.used && new Date(o.expiresAt) > now
-            );
-
-            // Recent activity (last 24 hours)
-            const yesterday = new Date(now.getTime() - 24 * 60 * 60 * 1000);
-            const recentActivity = auditData.filter(a => new Date(a.timestamp) > yesterday);
-
-            return {
-                sessions: {
-                    active: activeSessions.length,
-                    pending: pendingSessions.length,
-                    total: Object.keys(sessions).length
-                },
-                otps: {
-                    active: activeOTPs.length,
-                    total: Object.keys(otps).length
-                },
-                recentActivity: {
-                    total: recentActivity.length,
-                    successful: recentActivity.filter(a => a.success).length,
-                    failed: recentActivity.filter(a => !a.success).length
-                },
-                rateLimiter: {
-                    activeEntries: this.rateLimiter.size
-                },
-                system: {
-                    uptime: process.uptime(),
-                    memoryUsage: process.memoryUsage(),
-                    isInitialized: this.isInitialized
-                }
-            };
-        } catch (error) {
-            logger.error('Failed to get system stats', error);
-            return null;
-        }
-    }
-
-    /**
-     * Health check
-     */
-    async healthCheck() {
-        try {
-            const health = {
-                status: 'healthy',
-                timestamp: new Date().toISOString(),
-                services: {
-                    email: 'unknown',
-                    storage: 'unknown',
-                    encryption: 'unknown'
-                }
-            };
-
-            // Test email service
-            try {
-                await this.transporter.verify();
-                health.services.email = 'operational';
-            } catch (error) {
-                health.services.email = 'error';
-                health.status = 'degraded';
-            }
-
-            // Test file storage
-            try {
-                await FileManager.loadJSON(CONFIG.FILES.SESSIONS);
-                health.services.storage = 'operational';
-            } catch (error) {
-                health.services.storage = 'error';
-                health.status = 'degraded';
-            }
-
-            // Test encryption
-            try {
-                const testData = { test: 'data' };
-                const encrypted = SecurityManager.encryptData(testData);
-                const decrypted = SecurityManager.decryptData(encrypted);
-                health.services.encryption = decrypted.test === 'data' ? 'operational' : 'error';
-            } catch (error) {
-                health.services.encryption = 'error';
-                health.status = 'degraded';
-            }
-
-            return health;
-        } catch (error) {
-            return {
-                status: 'unhealthy',
-                timestamp: new Date().toISOString(),
-                error: error.message
-            };
-        }
-    }
-
-    /**
-     * Graceful shutdown
-     */
-    async shutdown() {
-        try {
-            if (this.cleanupInterval) {
-                clearInterval(this.cleanupInterval);
-            }
-
-            await this.cleanExpired();
-
-            if (this.transporter) {
-                this.transporter.close();
-            }
-
-            logger.info('OTP Manager shutdown completed');
-        } catch (error) {
-            logger.error('Error during shutdown', error);
-        }
-    }
 }
 
+console.log('[EXPORT] Exporting OTPManager module');
 module.exports = OTPManager;
