@@ -219,16 +219,6 @@
       color: #155724;
       margin-bottom: 10px;
     }
-
-    .debug-info {
-      background: #f8d7da;
-      border: 1px solid #dc3545;
-      border-radius: 8px;
-      padding: 15px;
-      margin: 15px 0;
-      font-family: monospace;
-      font-size: 12px;
-    }
   </style>
 </head>
 
@@ -237,48 +227,35 @@
     <h1>IT Final Review & Processing</h1>
     <p>Form ID: <span id="formIdLbl"></span> | Status: Final IT Review</p>
   </div>
-
   <div class="workflow-indicator">
     <strong>Final Stage:</strong> Review forms with all employee and HOD details filled in their original positions,
     then add IT approval.
   </div>
-
   <div id="statusMessage" class="status-message" style="display: none;"></div>
-
-  <!-- Debug Info Section -->
-  <div class="debug-info" id="debugInfo" style="display: none;">
-    <strong>Debug Information:</strong>
-    <div id="debugContent"></div>
-  </div>
 
   <!-- Employee Info Section -->
   <div class="form-section">
     <h3>Employee Information</h3>
     <div id="employeeInfo" class="employee-info">Loading employee details...</div>
   </div>
-
   <!-- HOD Approval Info Section -->
   <div class="form-section">
     <h3>HOD Approval Details</h3>
     <div id="hodInfo" class="hod-info">Loading HOD approval details...</div>
   </div>
-
   <!-- Forms with Embedded Employee + HOD Details -->
   <div class="form-section">
     <h3>Disposal Form (Employee & HOD Completed)</h3>
     <iframe id="disposalFrame" src="" data-form-key="disposalForm"></iframe>
   </div>
-
   <div class="form-section">
     <h3>E-file Form (Employee & HOD Completed)</h3>
     <iframe id="efileFrame" src="" data-form-key="efileForm"></iframe>
   </div>
-
   <div class="form-section">
     <h3>Form 365 (Employee & HOD Completed)</h3>
     <iframe id="form365Frame" src="" data-form-key="form365"></iframe>
   </div>
-
   <!-- IT Approval Section -->
   <div class="approval-section">
     <h3>IT Final Approval</h3>
@@ -304,7 +281,6 @@
         </select>
       </div>
     </div>
-
     <div class="signature-upload">
       <label for="itSignatureFile"><strong>IT Officer Signature *</strong></label>
       <br>
@@ -312,13 +288,11 @@
       <div class="text-muted">Upload your digital signature (PNG, JPG, GIF)</div>
       <img id="itSignaturePreview" class="signature-preview" alt="IT Signature Preview">
     </div>
-
     <div class="remarks-section">
       <label for="itRemarks"><strong>IT Remarks</strong></label>
       <textarea id="itRemarks" placeholder="Add any additional remarks or instructions..."></textarea>
     </div>
   </div>
-
   <!-- Action Buttons -->
   <div class="action-buttons">
     <button id="completeBtn" class="btn btn-complete" disabled>
@@ -331,20 +305,16 @@
       Cancel
     </button>
   </div>
-
   <script>
     const qs = new URLSearchParams(location.search);
     const formId = qs.get('formId');
     const $ = s => document.getElementById(s);
-
     // Initialize
     $('formIdLbl').textContent = formId || 'Unknown';
-
     let formData = null;
     let itSignatureData = null;
     let hodSignatureUrl = null;
     let hodApprovalData = null;
-
     // Show status messages
     function showStatus(message, type = 'loading') {
       const statusEl = $('statusMessage');
@@ -352,29 +322,19 @@
       statusEl.className = `status-message status-${type}`;
       statusEl.style.display = 'block';
     }
-
     function hideStatus() {
       $('statusMessage').style.display = 'none';
     }
-
-    // Debug function
-    function showDebugInfo(info) {
-      $('debugInfo').style.display = 'block';
-      $('debugContent').innerHTML = `<pre>${JSON.stringify(info, null, 2)}</pre>`;
-    }
-
     // Enhanced HOD signature injection with better logging
     function injectHODSignature(iframe, signatureUrl) {
       if (!signatureUrl) {
         return false;
       }
-
       try {
         const doc = iframe.contentDocument || iframe.contentWindow.document;
         if (!doc) {
           return false;
         }
-
         // Multiple signature selectors with more thorough search
         const signatureSelectors = [
           '#hodSignatureArea',
@@ -390,18 +350,14 @@
           'div[class*="signature"]',
           '*[id*="hodSignatureArea"]'
         ];
-
         let signatureInjected = false;
         let elementsFound = 0;
-
         signatureSelectors.forEach(selector => {
           const elements = doc.querySelectorAll(selector);
           if (elements.length > 0) {
             elementsFound += elements.length;
           }
-
           elements.forEach((element, index) => {
-
             if (element.tagName === 'IMG') {
               // Direct image element
               element.src = signatureUrl;
@@ -434,17 +390,14 @@
             }
           });
         });
-
         // If no specific containers found, try to find ANY element with text containing "signature"
         if (!signatureInjected) {
-
           const allElements = doc.querySelectorAll('div, span, p');
           allElements.forEach(element => {
             const text = element.textContent.toLowerCase();
             if ((text.includes('signature') && text.includes('hod')) ||
               (text.includes('upload') && text.includes('signature')) ||
               text.includes('click to upload hod signature')) {
-
               element.innerHTML = `
                 <div style="text-align: center; padding: 15px; border: 3px solid #28a745; border-radius: 8px; background: #f8fff9;">
                   <img src="${signatureUrl}" 
@@ -462,11 +415,9 @@
             }
           });
         }
-
         if (signatureInjected) {
           iframe.classList.add('hod-signature-frame');
         } else {
-
           // Last resort: create a new signature area at the end of the document
           const body = doc.body;
           if (body) {
@@ -490,20 +441,16 @@
             signatureInjected = true;
           }
         }
-
         return signatureInjected;
-
       } catch (error) {
         return false;
       }
     }
-
     // Enhanced table styling with more aggressive CSS
     function enhanceTableVisibility(iframe) {
       try {
         const doc = iframe.contentDocument || iframe.contentWindow.document;
         if (!doc) return;
-
         const style = doc.createElement('style');
         style.id = 'itReviewTableStyles';
         style.textContent = `
@@ -583,11 +530,9 @@
             margin: 20px 0 !important;
           }
         `;
-
         const target = doc.head || doc.body;
         if (target && !doc.querySelector('#itReviewTableStyles')) {
           target.appendChild(style);
-
           // Force table visibility
           setTimeout(() => {
             const tables = doc.querySelectorAll('table');
@@ -597,30 +542,25 @@
             });
           }, 500);
         }
-
       } catch (error) {
       }
     }
-
     // Enhanced API blocking
     function disableIframeAPICall(iframe) {
       try {
         const iframeWindow = iframe.contentWindow;
         const iframeDoc = iframe.contentDocument || iframeWindow.document;
-
         // Direct function override
         if (iframeWindow && typeof iframeWindow.loadFormData === 'function') {
           iframeWindow.loadFormData = function () {
             return Promise.resolve();
           };
         }
-
         // Script injection
         if (iframeDoc && !iframeDoc.querySelector('#itReviewBlocker')) {
           const script = iframeDoc.createElement('script');
           script.id = 'itReviewBlocker';
           const timestamp = Date.now();
-
           script.textContent = `
             (function() {
               
@@ -647,47 +587,34 @@
               window.userRole = 'it';
             })();
           `;
-
           const target = iframeDoc.head || iframeDoc.body || iframeDoc.documentElement;
           if (target) {
             target.appendChild(script);
           }
         }
-
         return true;
       } catch (error) {
         return false;
       }
     }
-
     // Enhanced form data loading with proper HOD signature extraction
     async function loadFormData() {
       try {
         showStatus('Loading forms with complete employee and HOD details...', 'loading');
-
         const response = await fetch(`/api/itadmin/form-details/${formId}`, {
           credentials: 'include'
         });
-
         if (!response.ok) {
           throw new Error(`Server responded with ${response.status}`);
         }
-
         const data = await response.json();
-
         if (!data.success) {
           throw new Error(data.message || 'Failed to load form data');
         }
-
         formData = data;
-
-        // Show debug info temporarily
-        showDebugInfo(data);
-
         // Extract HOD signature from the CORRECT location
         if (data.hodApproval) {
           hodApprovalData = data.hodApproval;
-
           // Check for signature in hodApproval object
           const possibleSignatureFields = [
             'signature',
@@ -696,14 +623,12 @@
             'signatureUrl',
             'digitalSignature'
           ];
-
           possibleSignatureFields.forEach(field => {
             if (hodApprovalData[field] && !hodSignatureUrl) {
               hodSignatureUrl = hodApprovalData[field];
             }
           });
         }
-
         // Also check in forms as fallback
         if (!hodSignatureUrl && data.forms) {
           Object.values(data.forms).forEach(form => {
@@ -713,7 +638,6 @@
                 'signatureDataUrl',
                 'signature'
               ];
-
               possibleSignatureFields.forEach(field => {
                 if (form[field] && !hodSignatureUrl) {
                   hodSignatureUrl = form[field];
@@ -722,19 +646,15 @@
             }
           });
         }
-
         // Display information and setup forms
         displayEmployeeInfo(data.employee);
         displayHODInfo(data.hodApproval);
         setupCompleteFormsView(data.forms, data.noDuesType);
-
         hideStatus();
-
       } catch (error) {
         showStatus(`Failed to load form data: ${error.message}`, 'error');
       }
     }
-
     // Display employee information
     function displayEmployeeInfo(employee) {
       $('employeeInfo').innerHTML = `
@@ -746,14 +666,12 @@
         </div>
       `;
     }
-
     // Display HOD approval information
     function displayHODInfo(hodApproval) {
       if (!hodApproval) {
         $('hodInfo').innerHTML = '<p>No HOD approval data available</p>';
         return;
       }
-
       $('hodInfo').innerHTML = `
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
           <div><strong>Approved By:</strong> ${hodApproval.approvedBy || 'N/A'}</div>
@@ -766,7 +684,6 @@
         ${hodApproval.remarks ? `<div style="margin-top: 10px;"><strong>HOD Remarks:</strong> ${hodApproval.remarks}</div>` : ''}
       `;
     }
-
     // Enhanced form setup with better timing
     function setupCompleteFormsView(forms, noDuesType) {
       const framesToLoad = [
@@ -786,23 +703,17 @@
           key: noDuesType === 'Transfer' ? 'form365Trans' : 'form365Disp'
         }
       ];
-
       framesToLoad.forEach((frameInfo, index) => {
         const frame = $(frameInfo.frameId);
-
         frame.src = `${frameInfo.url}?role=it&formId=${encodeURIComponent(formId)}&skipLoad=true&itReview=true&hasSignature=${hodSignatureUrl ? 'true' : 'false'}&timestamp=${Date.now()}`;
         frame.dataset.formKey = frameInfo.key;
-
         frame.onload = () => {
-
           const delay = 1200 + (index * 500); // Longer delays
           setTimeout(() => {
             disableIframeAPICall(frame);
             enhanceTableVisibility(frame);
-
             setTimeout(() => {
               populateFormWithAllData(frame, forms[frameInfo.key]);
-
               // Inject HOD signature with even longer delay
               setTimeout(() => {
                 if (hodSignatureUrl) {
@@ -815,22 +726,18 @@
         };
       });
     }
-
     // Enhanced form population with HOD data integration
     function populateFormWithAllData(iframe, formData) {
       if (!formData) {
         return;
       }
-
       try {
         const doc = iframe.contentDocument || iframe.contentWindow.document;
         if (!doc) {
           return;
         }
-
         // Combine form data with HOD approval data
         const allData = { ...formData };
-
         if (hodApprovalData) {
           // Add HOD data with appropriate field names
           allData.hodName = hodApprovalData.approvedBy;
@@ -842,22 +749,16 @@
           allData.hodRemarks = hodApprovalData.remarks;
           allData.hodSignature = hodSignatureUrl;
           allData.hodSignatureArea = hodSignatureUrl;
-
         }
-
         // Populate ALL form fields
         Object.entries(allData).forEach(([fieldId, value]) => {
           if (!value) return;
-
           const element = doc.getElementById(fieldId);
           if (!element) return;
-
           const tagName = element.tagName.toLowerCase();
-
           if (tagName === 'input' || tagName === 'select' || tagName === 'textarea') {
             element.value = value;
             element.disabled = true;
-
             if (fieldId.toLowerCase().includes('hod')) {
               element.style.backgroundColor = '#d4edda';
               element.style.border = '2px solid #28a745';
@@ -868,7 +769,6 @@
             if (value && value.trim()) {
               element.src = value;
               element.style.display = 'block';
-
               if (fieldId.toLowerCase().includes('hod') && fieldId.toLowerCase().includes('signature')) {
                 element.style.border = '3px solid #28a745';
                 element.style.borderRadius = '8px';
@@ -880,7 +780,6 @@
             }
           } else {
             element.textContent = value;
-
             if (fieldId.toLowerCase().includes('hod')) {
               element.style.backgroundColor = '#d4edda';
               element.style.padding = '4px 8px';
@@ -891,16 +790,13 @@
             }
           }
         });
-
       } catch (error) {
       }
     }
-
     // Handle IT signature upload
     $('itSignatureFile').onchange = function (event) {
       const file = event.target.files[0];
       if (!file) return;
-
       const reader = new FileReader();
       reader.onload = function (e) {
         itSignatureData = e.target.result;
@@ -911,7 +807,6 @@
       };
       reader.readAsDataURL(file);
     };
-
     // Update button states based on form completion
     function updateButtonStates() {
       const name = $('itOfficerName').value.trim();
@@ -919,61 +814,47 @@
       const email = $('itEmail').value.trim();
       const decision = $('itDecision').value;
       const hasSignature = !!itSignatureData;
-
       const isFormComplete = name && id && email && decision && hasSignature;
-
       $('completeBtn').disabled = !isFormComplete || decision !== 'approved';
       $('rejectBtn').disabled = !isFormComplete || decision !== 'rejected';
     }
-
     // Attach event listeners for form validation
     ['itOfficerName', 'itOfficerId', 'itEmail', 'itDecision'].forEach(fieldId => {
       $(fieldId).addEventListener('input', updateButtonStates);
       $(fieldId).addEventListener('change', updateButtonStates);
     });
-
     // Complete clearance
     $('completeBtn').onclick = async function () {
       if (this.disabled) return;
-
       if (!confirm('Are you sure you want to complete this clearance? This action cannot be undone.')) {
         return;
       }
-
       await processITDecision('complete');
     };
-
     // Reject clearance
     $('rejectBtn').onclick = async function () {
       if (this.disabled) return;
-
       const remarks = $('itRemarks').value.trim();
       if (!remarks) {
         alert('Please provide remarks for rejection.');
         $('itRemarks').focus();
         return;
       }
-
       if (!confirm('Are you sure you want to reject this clearance? It will be returned to the employee.')) {
         return;
       }
-
       await processITDecision('reject');
     };
-
     // Process IT decision
     async function processITDecision(action) {
       try {
         showStatus(`${action === 'complete' ? 'Completing' : 'Rejecting'} clearance...`, 'loading');
-
         const allFormData = {};
         const iframes = document.querySelectorAll('iframe[data-form-key]');
-
         for (const iframe of iframes) {
           const key = iframe.dataset.formKey;
           const doc = iframe.contentDocument || iframe.contentWindow.document;
           const data = {};
-
           if (doc) {
             doc.querySelectorAll('[id]').forEach(el => {
               if (['INPUT', 'SELECT', 'TEXTAREA'].includes(el.tagName)) {
@@ -985,7 +866,6 @@
               }
             });
           }
-
           // Add IT approval data
           data.itOfficerName = $('itOfficerName').value;
           data.itOfficerId = $('itOfficerId').value;
@@ -994,26 +874,21 @@
           data.itSignature = itSignatureData;
           data.itRemarks = $('itRemarks').value;
           data.itProcessedDate = new Date().toISOString();
-
           allFormData[key] = data;
         }
-
         const payload = {
           formId,
           formResponses: allFormData,
           action,
           remarks: $('itRemarks').value
         };
-
         const response = await fetch('/api/itadmin/final-process', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           credentials: 'include',
           body: JSON.stringify(payload)
         });
-
         const result = await response.json();
-
         if (response.ok && result.success) {
           showStatus(
             action === 'complete'
@@ -1021,23 +896,18 @@
               : 'Clearance rejected and returned',
             'success'
           );
-
           $('completeBtn').disabled = true;
           $('rejectBtn').disabled = true;
-
           setTimeout(() => {
             window.close();
           }, 3000);
-
         } else {
           throw new Error(result.message || 'Processing failed');
         }
-
       } catch (error) {
         showStatus(`Error: ${error.message}`, 'error');
       }
     }
-
     // Initialize on page load
     window.addEventListener('DOMContentLoaded', loadFormData);
   </script>
